@@ -36,7 +36,6 @@ class UserTransformer extends TransformerAbstract
                 'users.plans' => [
                     'href' => route('users.planusers.index', $user->id),
                 ],
-
             ],
         ];
     }

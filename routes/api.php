@@ -20,7 +20,7 @@ use Illuminate\Http\Request;
 /** 
  * Plans resources
  */
-Route::Apiresource('users.planusers', 'Users\PlanUserController');
+
 
 
 /**
@@ -28,6 +28,7 @@ Route::Apiresource('users.planusers', 'Users\PlanUserController');
  */
 Route::Apiresource('users', 'Users\UserController');
 Route::Apiresource('users.emergencies', 'Users\UserEmergencyController');
+Route::Apiresource('users.planusers', 'Users\PlanUserController');
 
 /**
  *  Token for api

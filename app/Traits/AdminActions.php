@@ -6,7 +6,7 @@ trait AdminActions
 {
 	public function before($user, $ability)
     {
-        if ($user->esAdministrador()) {
+        if ($user->role_user('role_id', 1)) {
             return true;
         }
     }
