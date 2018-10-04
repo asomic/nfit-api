@@ -25,6 +25,12 @@ class UserController extends ApiController
       return $this->showAll($users);
     }
 
+    public function profile()
+    {
+        $user = Auth::user();
+        return $this->showOne($user, 200);
+    }
+
     /**
      * Display the specified resource.
      *
