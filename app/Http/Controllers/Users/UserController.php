@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Users;
 
+use Auth;
 use App\Models\Users\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ApiController;
@@ -53,6 +54,18 @@ class UserController extends ApiController
     {
       $user->update($request->all());
       return $this->showOne($user, 200);
+    }
+
+    public function logout()
+    {
+      if (Auth::check()) {
+          Auth::user()->token()->revoke();
+          return $this->successResponse('Sesion finalizada', 200);
+          // return response()->json(['success' =>'logout_success'],200);
+      }else{
+          return $this->errorResponse('Error al intentar cerrar sesion', 500);
+          // return response()->json(['error' =>'api.something_went_wrong'], 500);
+      }
     }
 }
 

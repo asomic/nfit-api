@@ -27,6 +27,8 @@ use Illuminate\Http\Request;
  *  Users resources
  */
 Route::Apiresource('users', 'Users\UserController');
+	Route::get('profile', 'Users\UserController@profile');
+	Route::get('logout', 'Users\UserController@logout');
 Route::Apiresource('users.emergencies', 'Users\UserEmergencyController');
 Route::Apiresource('users.planusers', 'Users\PlanUserController');
 
