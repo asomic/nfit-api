@@ -64,10 +64,8 @@ class UserController extends ApiController
     {
       if (Auth::check()) {
           Auth::user()->token()->revoke();
-          // return $this->successResponse('Sesion finalizada', 200);
           return response()->json(['success' =>'Sesion finalizada'], 200);
       }else{
-          // return $this->errorResponse('Error al intentar cerrar sesion', 500);
           return response()->json(['error' =>'api.something_went_wrong'], 500);
       }
     }
