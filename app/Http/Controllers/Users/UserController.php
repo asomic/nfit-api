@@ -56,6 +56,10 @@ class UserController extends ApiController
       return $this->showOne($user, 200);
     }
 
+    /**
+     * [logout description]
+     * @return [type] [description]
+     */
     public function logout()
     {
       if (Auth::check()) {
