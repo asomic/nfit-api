@@ -5,7 +5,6 @@ namespace App\Models\Users;
 use App\Models\Bills\Installment;
 use App\Models\Clases\Block;
 use App\Models\Clases\Clase;
-use App\Models\Clases\Reservation;
 use App\Models\Plans\Plan;
 use App\Models\Plans\PlanUser;
 use App\Models\Users\Emergency;
@@ -13,12 +12,13 @@ use App\Models\Users\Millestone;
 use App\Models\Users\Role;
 use App\Models\Users\RoleUser;
 use App\Models\Users\StatusUser;
-use App\Transformers\UserTransformer;
 use Freshwork\ChileanBundle\Rut;
+use App\Models\Clases\Reservation;
+use Laravel\Passport\HasApiTokens;
+use App\Transformers\UserTransformer;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Passport\HasApiTokens;
 
 /**
  * [User description]
@@ -26,7 +26,7 @@ use Laravel\Passport\HasApiTokens;
 class User extends Authenticatable
 {
     use HasApiTokens, Notifiable, SoftDeletes;
-
+    
     protected $fillable = [
       'rut', 'first_name', 'last_name',
       'birthdate', 'gender', 'email',
@@ -191,7 +191,7 @@ class User extends Authenticatable
      */
     public function roles()
     {
-        return $this->belongsToMany(Role::class)->using(RoleUser::class);
+      return $this->belongsToMany(Role::class, 'role_user', 'user_id', 'role_id');
     }   
 
     /**

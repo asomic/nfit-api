@@ -3,11 +3,12 @@
 namespace App\Policies\Users;
 
 use App\Models\Users\User;
+use App\Traits\AdminActions;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class UserPolicy
 {
-    use HandlesAuthorization;
+    use HandlesAuthorization, AdminActions;
 
     /**
      * Determine whether the user can view the model.
@@ -18,7 +19,7 @@ class UserPolicy
      */
     public function view(User $user, User $model)
     {
-        //
+        return $user->id === $model->id;
     }
 
     /**

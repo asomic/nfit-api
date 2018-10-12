@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Role extends Model
 {
-   	// Innecesario ya que se agregara desde DB
+	// Innecesario ya que se agregara desde DB
    	protected $fillable = ['role'];
 
 	/**
@@ -18,6 +18,6 @@ class Role extends Model
 	*/
 	public function users()
 	{
-	    return $this->belongsToMany(User::class)->using(RoleUser::class);
+		return $this->belongsToMany(User::class, 'role_user', 'role_id', 'user_id');
 	}	
 }
