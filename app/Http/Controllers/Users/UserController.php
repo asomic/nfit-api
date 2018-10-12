@@ -26,18 +26,21 @@ class UserController extends ApiController
       return $this->showAll($users);
     }
 
+    /**
+     * Request for the auth user profile
+     * @return [json] [return authenticated user]
+     */
     public function profile()
     {
         $user = Auth::user();
         return $this->showOne($user, 200);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Users\User  $user
-     * @return \Illuminate\Http\Response
-     */
+    // *
+    //  * Display the specified resource.
+    //  *
+    //  * @param  \App\Models\Users\User  $user
+    //  * @return \Illuminate\Http\Response
     public function show(User $user)
     {
       return $this->showOne($user, 200);
@@ -57,8 +60,8 @@ class UserController extends ApiController
     }
 
     /**
-     * [logout description]
-     * @return [type] [description]
+     * Revoke the token to the auth user
+     * @return json with good or bad response
      */
     public function logout()
     {
