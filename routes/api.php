@@ -3,9 +3,10 @@
 use Illuminate\Http\Request;
 
 /** 
- * Plans resources
+ * Classes resources
  */
-
+Route::Apiresource('clases', 'Clases\ClaseController');
+	Route::post('clases/{clase}/reserve', 'Clases\ClaseController@reserve');
 /**
  *  Users resources
  */
