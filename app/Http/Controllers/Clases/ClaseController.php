@@ -40,51 +40,67 @@ class ClaseController extends ApiController
      */
     public function reserve(Request $request, Clase $clase)
     {
-        $planuser = PlanUser::where('plan_status_id', 1)->where('user_id', Auth::id())->get();
-        if (!$planuser->plan_id == 5 && !$planuser->counter < 12) {
-            return $this->errorResponse('El plan de 12 clases mensual no le permite tomar mas clases', 400);
-        }elseif (!$planuser->plan_id == 6 && !$planuser->counter < 12) {
-            return $this->errorResponse('El plan de 12 clases trimestral no le permite tomar mas clases', 400);
-        }elseif (!$planuser->plan_id == 7 && !$planuser->counter < 12) {
-            return $this->errorResponse('El plan de 12 clases semestral no le permite tomar mas clases', 400);
-        }elseif (!$planuser->plan_id == 8 && !$planuser->counter < 12) {
-            return $this->errorResponse('El plan de 12 clases anual no le permite tomar mas clases', 400);
+        $response = $this->hasReserve($clase);
+        if ($response != null) {
+            return $this->errorResponse($response, 400);
         }
-        if ($planuser->plan_id == 5 && $planuser->counter < 12) {
+
+        $planuser = PlanUser::where('plan_status_id', 1)->where('user_id', Auth::id())->first();
+        $responseTwo = $this->hasTwelvePlan($planuser);
+        if ($responseTwo != null) {
+            return $this->errorResponse($responseTwo, 400);
+        }else{
             $campos['user_id'] = Auth::id();
             $campos['clase_id'] = $clase->id;
             $campos['reservation_status_id'] = 1;
             $planuser->counter = $planuser->counter + 1;
+            $planuser->save();
             $reservation = Reservation::create($campos);
+
             return $this->showOne($reservation->clase, 200);
-        }else {
-            
         }
-        
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Clases\Clase  $clase
-     * @return \Illuminate\Http\Response
-     */
+    private function hasReserve($clase)
+    {
+        $response = '';
+        $clases = Clase::where('date', $clase->date)->get();
+        foreach ($clases as $clase) {
+            $reservations = Reservation::where('user_id', Auth::id())->where('clase_id', $clase->id)->get();
+            if (count($reservations) != 0) {
+                $response = 'ya tiene clase tomada este día';
+            }
+        }
+        return $response;
+    }
+
+    private function hasTwelvePlan($planuser)
+    {
+        $responseTwo = null;
+        if ($planuser->plan_id == 5 && $planuser->counter >= 12) {
+            $responseTwo = 'El plan de 12 clases mensual no le permite tomar mas clases';
+        }
+        elseif ($planuser->plan_id == 6 && $planuser->counter >= 12) {
+            $responseTwo = 'El plan de 12 clases trimestral no le permite tomar mas clases';
+        }
+        elseif ($planuser->plan_id == 7 && $planuser->counter >= 12) {
+            $responseTwo = 'El plan de 12 clases semestral no le permite tomar mas clases';
+        }
+        elseif ($planuser->plan_id == 8 && $planuser->counter >= 12) {
+            $responseTwo = 'El plan de 12 clases anual no le permite tomar mas clases';
+        }
+
+        return $responseTwo;
+    }
+
     public function update(Request $request, Clase $clase)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Clases\Clase  $clase
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(Clase $clase)
     {
         //
     }
-
 
 }
