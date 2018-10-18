@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
  */
 Route::Apiresource('clases', 'Clases\ClaseController');
 	Route::post('clases/{clase}/reserve', 'Clases\ClaseController@reserve');
+	Route::post('clases/{clase}/remove', 'Clases\ClaseController@remove');
 /**
  *  Users resources
  */
