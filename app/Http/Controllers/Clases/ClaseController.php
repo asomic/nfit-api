@@ -56,11 +56,10 @@ class ClaseController extends ApiController
             return $this->errorResponse($responseTwo, 400);
         } 
 
-        $class_hour = Carbon::parse($clase->start_at)->format('H:i');
-        if (now()->format('H:i') > ($class_hour)) {
-            return $this->errorResponse('Ya no se puede tomar esta clase', 400);
+        if ($clase->date < toDay()->format('Y-m-d')) {
+            return $this->errorResponse('No puede tomar una clase de un dia anterior a hoy', 400);
         }
-        else{
+        elseif ($clase->date > toDay()->format('Y-m-d')) {
             $campos['user_id'] = Auth::id();
             $campos['clase_id'] = $clase->id;
             $campos['reservation_status_id'] = 1;
@@ -68,6 +67,22 @@ class ClaseController extends ApiController
             $reservation = Reservation::create($campos);
 
             return $this->showOne($reservation->clase, 200);
+        }
+        else {
+            $class_hour = Carbon::parse($clase->start_at);
+            $diff_mns = $class_hour->diffInMinutes(now()->format('H:i'));
+            // ??? SERA NECESARIO PONER LAS RESPUESTAS PERSONALIZADAS ???
+            if ((now()->format('H:i') > $class_hour) || (diff_mns < 40)) {
+                return $this->errorResponse('Ya no se puede tomar esta clase', 400);
+            }else{
+                $campos['user_id'] = Auth::id();
+                $campos['clase_id'] = $clase->id;
+                $campos['reservation_status_id'] = 1;
+                $planuser->update(['counter' => $planuser->counter + 1]);
+                $reservation = Reservation::create($campos);
+
+                return $this->showOne($reservation->clase, 200);
+            }
         }
     }
 
