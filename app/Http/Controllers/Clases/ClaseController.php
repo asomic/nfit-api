@@ -41,12 +41,16 @@ class ClaseController extends ApiController
      */
     public function reserve(Request $request, Clase $clase)
     {
+        $planuser = PlanUser::where('plan_status_id', 1)->where('user_id', Auth::id())->first();
+        if ($planuser == null) {
+            return $this->errorResponse('No puede reservar, no tiene ningun plan activo', 400);
+        } 
+
         $response = $this->hasReserve($clase);
         if ($response != null) {
             return $this->errorResponse($response, 400);
         }
 
-        $planuser = PlanUser::where('plan_status_id', 1)->where('user_id', Auth::id())->first();
         $responseTwo = $this->hasTwelvePlan($planuser);
         if ($responseTwo != null) {
             return $this->errorResponse($responseTwo, 400);
@@ -60,8 +64,7 @@ class ClaseController extends ApiController
             $campos['user_id'] = Auth::id();
             $campos['clase_id'] = $clase->id;
             $campos['reservation_status_id'] = 1;
-            $planuser->counter = $planuser->counter + 1;
-            $planuser->save();
+            $planuser->update(['counter' => $planuser->counter + 1]);
             $reservation = Reservation::create($campos);
 
             return $this->showOne($reservation->clase, 200);
@@ -75,7 +78,7 @@ class ClaseController extends ApiController
         foreach ($clases as $clase) {
             $reservations = Reservation::where('user_id', Auth::id())->where('clase_id', $clase->id)->get();
             if (count($reservations) != 0) {
-                $response = 'ya tiene clase tomada este día';
+                $response = 'Ya tiene clase tomada este dia';
             }
         }
         return $response;
@@ -85,7 +88,7 @@ class ClaseController extends ApiController
     {
         $responseTwo = null;
         if ($planuser->plan_id == 5 && $planuser->counter >= 12) {
-            $responseTwo = 'El plan de 12 clases mensual no le permite tomar mas clases';
+            $responseTwo = 'No puede reservar, ya ha ocupado o reservado sus 12 clases del plan 12 clases mensual';
         }
         elseif ($planuser->plan_id == 6 && $planuser->counter >= 12) {
             $responseTwo = 'El plan de 12 clases trimestral no le permite tomar mas clases';
@@ -104,10 +107,13 @@ class ClaseController extends ApiController
     public function remove(Request $request, Clase $clase)
     {
         $reservation = Reservation::where('clase_id', $clase->id)->where('user_id', Auth::id())->first();
+        if ($reservation == null) {
+            return $this->errorResponse('No puede votar una clase en la que no esta', 403);
+        }
         $planuser = PlanUser::where('plan_status_id', 1)->where('user_id', Auth::id())->first();
 
         if ($clase->date < toDay()->format('Y-m-d')) {
-            return $this->errorResponse('Ya no puede votar una clase de un día anterior a hoy', 403);
+            return $this->errorResponse('No puede votar una clase de un día anterior a hoy', 403);
         }
         elseif ($clase->date > toDay()->format('Y-m-d')) {
             if ($reservation->delete()) {
