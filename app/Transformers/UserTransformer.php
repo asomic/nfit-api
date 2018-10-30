@@ -33,10 +33,10 @@ class UserTransformer extends TransformerAbstract
                 'self' => [
                     'href' => route('users.show', $user->id),
                 ],
-                'users.plans' => [
+                'plans' => [
                     'href' => route('users.planusers.index', $user->id),
                 ],
-                'users.active_plan' => [
+                'active_plan' => [
                     'href' => route('users.planusers.active', $user->id),
                 ],
             ],
