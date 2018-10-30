@@ -162,7 +162,8 @@ class User extends Authenticatable
     public function active_planuser()
     {
       $active = PlanUser::where('user_id', $this->id)
-                          ->where('plan_status_id', 1);
+                          ->where('plan_status_id', 1)
+                          ->first();
       return $active;
     }
 

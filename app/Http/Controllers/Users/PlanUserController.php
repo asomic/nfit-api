@@ -31,6 +31,12 @@ class PlanUserController extends ApiController
         // return $this->showOne($plan);
     }
 
+    public function active(User $user)
+    {
+        $plan = $user->active_planuser();
+        return $this->showOne($plan);
+    }
+
     /**
      * Update the specified resource in storage.
      *

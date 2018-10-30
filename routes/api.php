@@ -16,6 +16,7 @@ Route::Apiresource('users', 'Users\UserController');
 	Route::get('logout', 'Users\UserController@logout');
 Route::Apiresource('users.emergencies', 'Users\UserEmergencyController');
 Route::Apiresource('users.planusers', 'Users\PlanUserController');
+	Route::get('users/{user}/planusers-active', 'Users\PlanUserController@active')->name('users.planusers.active');
 
 /**
  *  Token for api
