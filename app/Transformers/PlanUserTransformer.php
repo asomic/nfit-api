@@ -23,6 +23,7 @@ class PlanUserTransformer extends TransformerAbstract
             'estadoPlan' => (string)$planuser->plan_status_id,
             'idDescuento' => (int)$planuser->discount_id,
             'idPlan' => (string)$planuser->plan_id,
+            'nombrePlan' => (string)$planuser->plan->plan,
             'idUsuario' => (int)$planuser->user_id,
             'fechaCreacion' => (string)$planuser->created_at,
             'fechaActualizacion' => (string)$planuser->updated_at,
@@ -41,7 +42,7 @@ class PlanUserTransformer extends TransformerAbstract
 
     /**
      * [originalAttribute changes the faced version to the original]
-     * 
+     *
      * @return [array]        [description]
      */
     public static function originalAttribute($index)
@@ -66,7 +67,7 @@ class PlanUserTransformer extends TransformerAbstract
 
     /**
      * [transformedAttribute changes the original attributes to the faced]
-     * 
+     *
      * @return [type]        [description]
      */
     public static function transformedAttribute($index)
