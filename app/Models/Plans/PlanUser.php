@@ -18,7 +18,7 @@ class PlanUser extends Pivot
   use SoftDeletes;
 
   protected $table = 'plan_user';
-  protected $dates = ['deleted_at'];
+  protected $dates = ['deleted_at','start_date', 'finish_date'];
   protected $fillable = ['start_date', 'finish_date', 'amount',
   'counter', 'plan_status_id', 'discount_id', 'plan_id', 'user_id'];
   public $transformer = PlanUserTransformer::class;

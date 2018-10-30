@@ -18,6 +18,7 @@ class PlanUserTransformer extends TransformerAbstract
             'identificador' => (int)$planuser->id,
             'fechaInicio' => (string)$planuser->start_date,
             'fechatermino' => (string)$planuser->finish_date,
+            'vencimiento' => (string)$planuser->finish_date,
             'monto' => (string)$planuser->amount,
             'contador' => (string)$planuser->counter,
             'estadoPlan' => (string)$planuser->plan_status_id,
