@@ -17,7 +17,7 @@ class WodTransformer extends TransformerAbstract
         return [
             'identificador' => (int)$wod->id,
             'fecha' => (string)$wod->date,
-
+            'fechaHuman' => (string)$wod->date->format('l jS \\of F Y'),
             'fechaCreacion' => (string)$wod->created_at,
             'fechaActualizacion' => (string)$wod->updated_at,
             'fechaEliminacion' => isset($wod->deleted_at) ? (string) $wod->deleted_at : null,
