@@ -44,7 +44,7 @@ class ClaseController extends ApiController
         $planuser = PlanUser::where('plan_status_id', 1)->where('user_id', Auth::id())->first();
         if ($planuser == null) {
             return $this->errorResponse('No puede reservar, no tiene ningun plan activo', 400);
-        } 
+        }
 
         $response = $this->hasReserve($clase);
         if ($response != null) {
@@ -54,7 +54,7 @@ class ClaseController extends ApiController
         $responseTwo = $this->hasTwelvePlan($planuser);
         if ($responseTwo != null) {
             return $this->errorResponse($responseTwo, 400);
-        } 
+        }
 
         if ($clase->date < toDay()->format('Y-m-d')) {
             return $this->errorResponse('No puede tomar una clase de un dia anterior a hoy', 400);
@@ -150,5 +150,7 @@ class ClaseController extends ApiController
             }
         }
     }
-    
+
+
+
 }

@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 
-/** 
+/**
  * Classes resources
  */
 Route::Apiresource('clases', 'Clases\ClaseController');
@@ -17,6 +17,11 @@ Route::Apiresource('users', 'Users\UserController');
 Route::Apiresource('users.emergencies', 'Users\UserEmergencyController');
 Route::Apiresource('users.planusers', 'Users\PlanUserController');
 	Route::get('users/{user}/planusers-active', 'Users\PlanUserController@active')->name('users.planusers.active');
+
+	/**
+	 *  Wods
+	 */
+	Route::get('todaywods', 'Wods\WodController@today')->name('wods.today');
 
 /**
  *  Token for api
