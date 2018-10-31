@@ -12,7 +12,7 @@ class Wod extends Model
   public $transformer = WodTransformer::class;
 
   protected $fillable = ['date','clase_type_id'];
-  protected $date = ['date'];
+  protected $dates = ['date'];
   protected $appends = ['start','allDay','title','url'];
 
 
