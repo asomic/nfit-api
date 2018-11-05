@@ -6,14 +6,21 @@ use Illuminate\Http\Request;
  * Classes resources
  */
 Route::Apiresource('clases', 'Clases\ClaseController');
+	Route::get('clases-historic/', 'Clases\ClaseController@historic')->name('clases.historic');
+	Route::get('clases-reserved/', 'Clases\ClaseController@reserved')->name('clases.reserved');
 	Route::post('clases/{clase}/reserve', 'Clases\ClaseController@reserve');
 	Route::post('clases/{clase}/remove', 'Clases\ClaseController@remove');
+
 /**
  *  Users resources
  */
 Route::Apiresource('users', 'Users\UserController');
 	Route::get('profile', 'Users\UserController@profile');
 	Route::get('logout', 'Users\UserController@logout');
+
+
+
+
 Route::Apiresource('users.emergencies', 'Users\UserEmergencyController');
 Route::Apiresource('users.planusers', 'Users\PlanUserController');
 	Route::get('users/{user}/planusers-active', 'Users\PlanUserController@active')->name('users.planusers.active');

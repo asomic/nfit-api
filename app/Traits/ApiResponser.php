@@ -28,8 +28,8 @@ trait ApiResponser
 		$transformer = $collection->first()->transformer;
 
 		// $collection = $this->filterData($collection, $transformer);
-		// $collection = $this->sortData($collection, $transformer);
-		// $collection = $this->paginate($collection);
+		$collection = $this->sortData($collection, $transformer);
+		$collection = $this->paginate($collection);
 		$collection = $this->transformData($collection, $transformer);
 		// $collection = $this->cacheResponse($collection);
 
@@ -63,41 +63,50 @@ trait ApiResponser
 	// 	return $collection;
 	// }
 
-	// protected function sortData(Collection $collection, $transformer)
-	// {
-	// 	if (request()->has('sort_by')) {
-	// 		$attribute = $transformer::originalAttribute(request()->sort_by);
+//sort data para la coleccion
+	protected function sortData(Collection $collection, $transformer)
+	{
+		if (request()->has('sort_by_desc')) {
+			$attribute = $transformer::originalAttribute(request()->sort_by_desc);
 
-	// 		$collection = $collection->sortBy->{$attribute};
-	// 	}
-	// 	return $collection;
-	// }
+			$collection = $collection->sortByDesc->{$attribute};
+		}
 
-	// protected function paginate(Collection $collection)
-	// {
-	// 	$rules = [
-	// 		'per_page' => 'integer|min:2|max:50'
-	// 	];
+		if (request()->has('sort_by_asc')) {
+			$attribute = $transformer::originalAttribute(request()->sort_by_asc);
 
-	// 	Validator::validate(request()->all(), $rules);
+			$collection = $collection->sortBy->{$attribute};
+		}
+		return $collection;
+	}
 
-	// 	$page = LengthAwarePaginator::resolveCurrentPage();
 
-	// 	$perPage = 15;
-	// 	if (request()->has('per_page')) {
-	// 		$perPage = (int) request()->per_page;
-	// 	}
 
-	// 	$results = $collection->slice(($page - 1) * $perPage, $perPage)->values();
+	protected function paginate(Collection $collection)
+	{
+		$rules = [
+			'per_page' => 'integer|min:2|max:50'
+		];
 
-	// 	$paginated = new LengthAwarePaginator($results, $collection->count(), $perPage, $page, [
-	// 		'path' => LengthAwarePaginator::resolveCurrentPath(),
-	// 	]);
+		Validator::validate(request()->all(), $rules);
 
-	// 	$paginated->appends(request()->all());
+		$page = LengthAwarePaginator::resolveCurrentPage();
 
-	// 	return $paginated;
-	// }
+		$perPage = 10;
+		if (request()->has('per_page')) {
+			$perPage = (int) request()->per_page;
+		}
+
+		$results = $collection->slice(($page - 1) * $perPage, $perPage)->values();
+
+		$paginated = new LengthAwarePaginator($results, $collection->count(), $perPage, $page, [
+			'path' => LengthAwarePaginator::resolveCurrentPath(),
+		]);
+
+		$paginated->appends(request()->all());
+
+		return $paginated;
+	}
 
 	protected function transformData($data, $transformer)
 	{

@@ -26,7 +26,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class User extends Authenticatable
 {
     use HasApiTokens, Notifiable, SoftDeletes;
-    
+
     protected $fillable = [
       'rut', 'first_name', 'last_name',
       'birthdate', 'gender', 'email',
@@ -56,7 +56,7 @@ class User extends Authenticatable
     {
       return $this->first_name.' '.$this->last_name;
     }
-    
+
     /**
      * [hasRole description]
      * @param  [type]  $role [description]
@@ -87,7 +87,7 @@ class User extends Authenticatable
     {
       return $this->where('status_user_id', 1);
     }
- 
+
     /**
      * [blocks description]
      * @return [type] [description]
@@ -103,7 +103,9 @@ class User extends Authenticatable
     */
     public function clases()
     {
-      return $this->belongsToMany(Clase::Class)->using(Reservation::class);
+      //return $this->belongsToMany(Clase::Class)->using(Reservation::class);
+      return $this->belongsToMany(Clase::Class, 'reservations', 'user_id');
+      //return $this->hasManyThrough(Clase::Class, Reservation::class);
     }
 
     /**
@@ -183,7 +185,12 @@ class User extends Authenticatable
     */
     public function reservations()
     {
-      return $this->hasMany(Reservation::class);
+      return $this->hasMany(Reservation::class)->where();
+    }
+
+    public function historics()
+    {
+      return $this->hasMany(Reservation::class)->where();
     }
 
     /**
@@ -193,7 +200,7 @@ class User extends Authenticatable
     public function roles()
     {
       return $this->belongsToMany(Role::class, 'role_user', 'user_id', 'role_id');
-    }   
+    }
 
     /**
      * [status_user description]

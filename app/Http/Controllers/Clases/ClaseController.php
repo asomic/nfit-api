@@ -23,6 +23,26 @@ class ClaseController extends ApiController
         //
     }
 
+    public function index()
+    {
+        $clases = Clase::Where('date','>=',today())->get();
+        return $this->showAll($clases);
+    }
+
+    public function historic()
+    {
+        $clases = Auth::user()->clases->where('date','<=',today());
+
+        return $this->showAll($clases);
+    }
+
+    public function reserved()
+    {
+        $clases = Auth::user()->clases->where('date','>=',today());
+
+        return $this->showAll($clases);
+    }
+
     /**
      * Display the specified resource.
      *

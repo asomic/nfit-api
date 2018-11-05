@@ -72,6 +72,12 @@ class UserController extends ApiController
           return response()->json(['error' =>'api.something_went_wrong'], 500);
       }
     }
+
+    public function clases()
+    {
+      $clases = Auth::user()->clases->where('date','<=',today());
+      return $this->showAll($clases);
+    }
 }
 
   // public function profile()
