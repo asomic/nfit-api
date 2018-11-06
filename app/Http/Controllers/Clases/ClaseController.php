@@ -29,6 +29,12 @@ class ClaseController extends ApiController
         return $this->showAll($clases);
     }
 
+    public function week()
+    {
+        $clases = Clase::Where('date','>=',today())->get();
+        return $this->showAll($clases);
+    }
+
     public function historic()
     {
         $clases = Auth::user()->clases->where('date','<=',today());
