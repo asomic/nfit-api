@@ -8,6 +8,7 @@ use App\Models\Clases\Reservation;
 use App\Transformers\ClaseTransformer;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Auth;
 
 /**
  * [Clase description]
@@ -15,9 +16,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Clase extends Model
 {
     use SoftDeletes;
-    
+
     protected $table = 'clases';
-    protected $dates = ['deleted_at'];
+    protected $dates = ['date','deleted_at'];
     protected $fillable = ['date', 'start_at', 'finish_at', 'room', 'profesor_id', 'quota' ,'block_id'];
     protected $appends = ['start','end','url','reservation_count'];
 
@@ -35,6 +36,22 @@ class Clase extends Model
     {
       return $this->hasMany(Reservation::class);
     }
+
+    public function auth_has_reservation()
+    {
+      $exist = Reservation::where('user_id',Auth::user()->id)->where('clase_id',$this->id)->first();
+      if(count($exist)!=0)
+      {
+        return true;
+      } else {
+        return false;
+      }
+    }
+    // public function auth_get_reservation()
+    // {
+    //   return  Reservation::where('user_id',Auth::user()->id)->where('clase_id',$this->id)->first();
+    // }
+
     /**
      * [stages description]
      * @return [type] [description]
@@ -50,7 +67,7 @@ class Clase extends Model
      */
     public function users()
     {
-    return $this->belongsToMany(User::Class)->using(Reservation::class);
+      return $this->belongsToMany(User::Class, 'reservations','clase_id');
     }
 
     public function profresor()

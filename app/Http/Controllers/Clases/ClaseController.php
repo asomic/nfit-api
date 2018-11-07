@@ -42,12 +42,18 @@ class ClaseController extends ApiController
         return $this->showAll($clases);
     }
 
-    public function reserved()
+    public function coming()
     {
         $clases = Auth::user()->clases->where('date','>=',today());
-
         return $this->showAll($clases);
     }
+
+    public function users(Clase $clase)
+    {
+        $users = $clase->users;
+        return $this->showAll($users, 200);
+    }
+
 
     /**
      * Display the specified resource.

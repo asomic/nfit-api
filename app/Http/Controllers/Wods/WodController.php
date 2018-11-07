@@ -17,5 +17,10 @@ class WodController extends ApiController
     $wods = Wod::where('date',today())->get();
     return $this->showAll($wods);
   }
+
+  public function show(Wod $wod)
+  {
+      return $this->showOne($wod, 200);
+  }
     //
 }
