@@ -6,7 +6,7 @@ use App\Models\Users\User;
 use App\Models\Clases\Clase;
 use Illuminate\Database\Eloquent\Model;
 use App\Transformers\ReservationTransformer;
-use Illuminate\Database\Eloquent\SoftDeletes;
+
 use App\Models\Clases\ReservationStatisticStage;
 use App\Models\Clases\ReservationStatus;
 
@@ -15,7 +15,7 @@ use App\Models\Clases\ReservationStatus;
  */
 class Reservation extends Model
 {
-  use SoftDeletes;
+
 
   protected $dates = ['deleted_at'];
   protected $fillable = ['clase_id', 'reservation_status_id', 'user_id'];

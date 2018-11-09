@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Carbon\Carbon;
 
 trait ApiResponser
 {
@@ -27,7 +28,7 @@ trait ApiResponser
 		}
 		$transformer = $collection->first()->transformer;
 
-		// $collection = $this->filterData($collection, $transformer);
+		$collection = $this->filterData($collection, $transformer);
 		$collection = $this->sortData($collection, $transformer);
 		$collection = $this->paginate($collection);
 		$collection = $this->transformData($collection, $transformer);
@@ -50,18 +51,19 @@ trait ApiResponser
 		return $this->successResponse(['data' => $message], $code);
 	}
 
-	// protected function filterData(Collection $collection, $transformer)
-	// {
-	// 	foreach (request()->query() as $query => $value) {
-	// 		$attribute = $transformer::originalAttribute($query);
+	protected function filterData(Collection $collection, $transformer)
+	{
+		foreach (request()->query() as $query => $value) {
+			$attribute = $transformer::originalAttribute($query);
 
-	// 		if (isset($attribute, $value)) {
-	// 			$collection = $collection->where($attribute, $value);
-	// 		}
-	// 	}
+			if (isset($attribute, $value)) {
 
-	// 	return $collection;
-	// }
+				$collection = $collection->where($attribute, Carbon::parse($value));
+			}
+		}
+
+		return $collection;
+	}
 
 //sort data para la coleccion
 	protected function sortData(Collection $collection, $transformer)

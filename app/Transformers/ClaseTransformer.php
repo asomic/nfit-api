@@ -31,7 +31,7 @@ class ClaseTransformer extends TransformerAbstract
 
         return [
             'clase_id' => (int)$clase->id,
-            'date' => (string)$clase->date,
+            'date' => (string)$clase->date->toDateString(),
             'dateHuman' => (string)$clase->date->format('jS \o\f F'),
             'start' => (string)$clase->start_at,
             'end' => (string)$clase->finish_at,

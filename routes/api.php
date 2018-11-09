@@ -11,7 +11,11 @@ Route::Apiresource('clases', 'Clases\ClaseController');
 	Route::get('clases-coming/', 'Clases\ClaseController@coming')->name('clases.coming');
 	Route::post('clases/{clase}/reserve', 'Clases\ClaseController@reserve');
 	Route::post('clases/{clase}/remove', 'Clases\ClaseController@remove');
+	Route::post('clases/{clase}/confirm', 'Clases\ClaseController@confirm');
 
+
+//week
+	Route::get('week', 'Clases\ClaseController@week');
 /**
  * Reservation resources
  */
@@ -32,6 +36,7 @@ Route::Apiresource('users', 'Users\UserController');
 Route::Apiresource('users.emergencies', 'Users\UserEmergencyController');
 Route::Apiresource('users.planusers', 'Users\PlanUserController');
 	Route::get('users/{user}/planusers-active', 'Users\PlanUserController@active')->name('users.planusers.active');
+	Route::get('users-alerts', 'Users\UserController@alerts')->name('users.alerts');
 
 	/**
 	 *  Wods

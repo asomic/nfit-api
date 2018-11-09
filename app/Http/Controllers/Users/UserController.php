@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Users;
 
 use Auth;
 use App\Models\Users\User;
+use App\Models\Clases\Reservation;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ApiController;
 
@@ -77,6 +78,36 @@ class UserController extends ApiController
     {
       $clases = Auth::user()->clases->where('date','<=',today());
       return $this->showAll($clases);
+    }
+
+    public function alerts()
+    {
+      $alerts = [];
+      $confirmation = [];
+      $has_confirmation = (bool)false;
+
+      $clase = Auth::user()->clases->where('date',today())->first();
+      if($clase)
+      {
+        $reservation = Reservation::where('user_id',Auth::user()->id)->where('clase_id',$clase->id)->where('reservation_status_id',1)->first();
+        if($reservation) {
+          $confirmation = [
+            'start' => (string)$clase->start_at,
+            'end' => (string)$clase->finish_at,
+            'clase_id' => (string)$clase->id
+
+          ];
+          $has_confirmation = (bool)true;
+        }
+      }
+
+
+      $alerts = [
+        'has_confirmation' => $has_confirmation,
+        'confirmation' => $confirmation,
+      ];
+
+      return response()->json(['data' => $alerts ], 200);
     }
 }
 

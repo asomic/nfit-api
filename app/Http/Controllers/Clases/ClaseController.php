@@ -25,14 +25,45 @@ class ClaseController extends ApiController
 
     public function index()
     {
-        $clases = Clase::Where('date','>=',today())->get();
+        $clases = Clase::all();
         return $this->showAll($clases);
     }
 
     public function week()
     {
-        $clases = Clase::Where('date','>=',today())->get();
-        return $this->showAll($clases);
+      $week = [];
+      $today = carbon::today();
+      $date = $today;
+      $day = [];
+      for ($i=0; $i < 7; $i++) {
+        $dow = $date->dayOfWeek;
+        if($i==0){
+          $isToday = (bool)true;
+        }else{
+          $isToday = (bool)false;
+        }
+
+        $day = ["date" => (string)$date->toDateString(),
+                "day"=> (string)$date->format('d'),
+                "dayName"=> (string)$date->format('l'),
+                "today"=> $isToday,
+                "hasClases"=> (bool)true,
+              ];
+
+        $week = array_add($week, $dow, $day);
+
+
+
+        $date = $date->addDay();
+      }
+
+
+      array_forget($week, '0');
+
+
+      return response()->json(['data' => $week ], 200);
+
+
     }
 
     public function historic()
@@ -116,6 +147,17 @@ class ClaseController extends ApiController
                 return $this->showOne($reservation->clase, 200);
             }
         }
+    }
+
+    public function confirm(Request $request, Clase $clase)
+    {
+      $reservation = Reservation::where('clase_id', $clase->id)->where('user_id', Auth::id())->first();
+      if ($reservation == null) {
+          return $this->errorResponse('No puede confirmar una clase en la que no esta', 403);
+      }
+      $reservation->reservation_status_id = 2;
+      $reservation->save();
+      return $this->showOne($reservation->clase, 200);
     }
 
     private function hasReserve($clase)
