@@ -29,7 +29,7 @@ class UserTransformer extends TransformerAbstract
             'fechaCreacion' => (string)$user->created_at,
             'fechaActualizacion' => (string)$user->updated_at,
             'fechaEliminacion' => isset($user->deleted_at) ? (string) $user->deleted_at : null,
-            'avatar' => 'http://pura-sangre-backend.test/storage/users/'.$user->avatar.'.jpg',
+            'avatar' => 'http://purasangre.asomic.com/storage/users/'.$user->avatar.'.jpg',
 
             'rels' => [
                 'self' => [
