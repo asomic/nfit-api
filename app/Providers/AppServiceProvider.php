@@ -14,7 +14,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-      Carbon::setLocale(config('app.locale'));
+      //Carbon::setLocale(LC_ALL, "es_CL.UTF-8");
       setlocale(LC_ALL, "es_CL.UTF-8");
     }
 

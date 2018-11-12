@@ -24,7 +24,7 @@ class ReservationTransformer extends TransformerAbstract
                   'start' => (string)$reservation->clase->start_at,
                   'end' => (string)$reservation->clase->finish_at,
                   'date' => (string)$reservation->clase->date,
-                  'dateHuman' => (string)$reservation->clase->date->format('jS \o\f F'),
+                  'dateHuman' => (string)$reservation->clase->date->formatLocalized('%A %d de %B, %Y'),
                   'href' => (string)route('clases.show', ['clase' => (int)$reservation->clase_id]),
                   'users' => [
                     'count' => (int)count($reservation->clase->users),

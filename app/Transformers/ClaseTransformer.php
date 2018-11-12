@@ -32,7 +32,7 @@ class ClaseTransformer extends TransformerAbstract
         return [
             'clase_id' => (int)$clase->id,
             'date' => (string)$clase->date->toDateString(),
-            'dateHuman' => (string)$clase->date->format('jS \o\f F'),
+            'dateHuman' => (string)$clase->date->formatLocalized('%A %d de %B, %Y'),
             'start' => (string)$clase->start_at,
             'end' => (string)$clase->finish_at,
             'quota' => (int)$clase->quota,
