@@ -40,7 +40,7 @@ class Clase extends Model
     public function auth_has_reservation()
     {
       $exist = Reservation::where('user_id',Auth::user()->id)->where('clase_id',$this->id)->first();
-      if(count($exist)!=0)
+      if($exist)
       {
         return true;
       } else {

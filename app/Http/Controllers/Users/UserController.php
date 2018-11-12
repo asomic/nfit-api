@@ -109,6 +109,8 @@ class UserController extends ApiController
 
       return response()->json(['data' => $alerts ], 200);
     }
+
+
 }
 
   // public function profile()
