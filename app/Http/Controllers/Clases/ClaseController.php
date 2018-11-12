@@ -114,10 +114,10 @@ class ClaseController extends ApiController
             return $this->errorResponse($response, 400);
         }
 
-        $responseTwo = $this->hasTwelvePlan($planuser);
-        if ($responseTwo != null) {
-            return $this->errorResponse($responseTwo, 400);
-        }
+        // $responseTwo = $this->hasTwelvePlan($planuser);
+        // if ($responseTwo != null) {
+        //     return $this->errorResponse($responseTwo, 400);
+        // }
 
         if ($clase->date < toDay()->format('Y-m-d')) {
             return $this->errorResponse('No puede tomar una clase de un dia anterior a hoy', 400);
