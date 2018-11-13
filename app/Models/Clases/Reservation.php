@@ -18,7 +18,7 @@ class Reservation extends Model
 
 
   protected $dates = ['deleted_at'];
-  protected $fillable = ['clase_id', 'reservation_status_id', 'user_id'];
+  protected $fillable = ['clase_id', 'reservation_status_id', 'user_id', 'details'];
 
   public $transformer = ReservationTransformer::class;
 

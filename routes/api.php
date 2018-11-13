@@ -23,6 +23,7 @@ Route::Apiresource('reservations', 'Clases\ReservationController');
 //Route::get('reservations/{reservation}/users', 'Clases\ReservationController@users')->name('reservations.users');
 	Route::get('reservations-historic/', 'Clases\ReservationController@historic')->name('reservations.historic');
 	Route::get('reservations-coming/', 'Clases\ReservationController@coming')->name('reservations.reserved');
+	Route::post('reservations/{reservation}/details', 'Clases\ReservationController@details')->name('reservations.details');
 /**
  *  Users resources
  */

@@ -38,6 +38,12 @@ class ReservationController extends ApiController
         return $this->showAll($reservations);
     }
 
+    public function details(Reservation $reservation, Request $request)
+    {
+        $reservation->update($request->all());
+        return $this->showOne($reservation, 200);
+    }
+
     // public function week()
     // {
     //     $clases = Clase::Where('date','>=',today())->get();
