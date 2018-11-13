@@ -31,38 +31,38 @@ class ClaseController extends ApiController
 
     public function week()
     {
-      $week = [];
-      $today = carbon::today();
-      $date = $today;
-      $day = [];
-      for ($i=0; $i < 7; $i++) {
-        $dow = $date->dayOfWeek;
-        if($i==0){
-          $isToday = (bool)true;
-        }else{
-          $isToday = (bool)false;
-        }
+        $week = [];
+        $today = carbon::today();
+        $date = $today;
+        $day = [];
+        for ($i=0; $i < 7; $i++) {
+            $dow = $date->dayOfWeek;
+            if($i==0){
+                $isToday = (bool)true;
+            }else{
+                $isToday = (bool)false;
+            }
 
-        $day = ["date" => (string)$date->toDateString(),
-                "day"=> (string)$date->format('d'),
-                "dayName"=> (string)$date->format('l'),
-                "today"=> $isToday,
-                "hasClases"=> (bool)true,
-              ];
+            $reservation_today = $this->hasClase($date);
+            $can_reserve = $this->canReserve($date); 
+            $day = ["date" => (string)$date->toDateString(),
+                    "day"=> (string)$date->format('d'),
+                    "dayName"=> (string)$date->format('l'),
+                    "today"=> $isToday,
+                    "hasClases"=> $reservation_today,
+                    "canReserve"=> $can_reserve,
+                   ];
 
-        $week = array_add($week, $dow, $day);
+            $week = array_add($week, $dow, $day);
 
-
-
-        $date = $date->addDay();
+            $date = $date->addDay();
       }
 
 
       array_forget($week, '0');
 
 
-      return response()->json(['data' => $week ], 200);
-
+      return response()->json(['data' => $week], 200);
 
     }
 
@@ -84,7 +84,6 @@ class ClaseController extends ApiController
         $users = $clase->users;
         return $this->showAll($users, 200);
     }
-
 
     /**
      * Display the specified resource.
@@ -173,25 +172,35 @@ class ClaseController extends ApiController
         return $response;
     }
 
-    private function hasTwelvePlan($planuser)
+    private function hasClase($date)
     {
-        $responseTwo = null;
-        if ($planuser->plan_id == 5 && $planuser->counter >= 12) {
-            $responseTwo = 'No puede reservar, ya ha ocupado o reservado sus 12 clases del plan 12 clases mensual';
+        $response = false;
+        $clases = Clase::where('date', $date)->get();
+        foreach ($clases as $clase) {
+            $reservations = Reservation::where('user_id', Auth::id())->where('clase_id', $clase->id)->get();
+            if (count($reservations) != 0) {
+                $response = true;
+            }
         }
-        elseif ($planuser->plan_id == 6 && $planuser->counter >= 12) {
-            $responseTwo = 'El plan de 12 clases trimestral no le permite tomar mas clases';
-        }
-        elseif ($planuser->plan_id == 7 && $planuser->counter >= 12) {
-            $responseTwo = 'El plan de 12 clases semestral no le permite tomar mas clases';
-        }
-        elseif ($planuser->plan_id == 8 && $planuser->counter >= 12) {
-            $responseTwo = 'El plan de 12 clases anual no le permite tomar mas clases';
-        }
-
-        return $responseTwo;
+        return $response;
     }
 
+    public function canReserve($date)
+    {   
+        $response = false;
+        $planusers = PlanUser::whereIn('plan_status_id', [1,3])->where('user_id', Auth::id())->get();
+        foreach ($planusers as $planuser) {
+            // dd($planuser->plan_user_periods);
+            foreach ($planuser->plan_user_periods as $pup) {
+                if ($date->between(Carbon::parse($pup->start_date), Carbon::parse($pup->finish_date))) {
+                    if ($pup->counter > 0) {
+                        $response = true;
+                    }
+                }
+            }
+        }
+        return $response;
+    }
 
     public function remove(Request $request, Clase $clase)
     {
@@ -226,5 +235,22 @@ class ClaseController extends ApiController
     }
 
 
-
 }
+    // private function hasTwelvePlan($planuser)
+    // {
+    //     $responseTwo = null;
+    //     if ($planuser->plan_id == 5 && $planuser->counter >= 12) {
+    //         $responseTwo = 'No puede reservar, ya ha ocupado o reservado sus 12 clases del plan 12 clases mensual';
+    //     }
+    //     elseif ($planuser->plan_id == 6 && $planuser->counter >= 12) {
+    //         $responseTwo = 'El plan de 12 clases trimestral no le permite tomar mas clases';
+    //     }
+    //     elseif ($planuser->plan_id == 7 && $planuser->counter >= 12) {
+    //         $responseTwo = 'El plan de 12 clases semestral no le permite tomar mas clases';
+    //     }
+    //     elseif ($planuser->plan_id == 8 && $planuser->counter >= 12) {
+    //         $responseTwo = 'El plan de 12 clases anual no le permite tomar mas clases';
+    //     }
+
+    //     return $responseTwo;
+    // }

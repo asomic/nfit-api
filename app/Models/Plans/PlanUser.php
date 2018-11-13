@@ -2,18 +2,19 @@
 
 namespace App\Models\Plans;
 
-use Carbon\Carbon;
-use App\Models\Plans\Plan;
-use App\Models\Users\User;
-use App\Models\Plans\Discount;
 use App\Models\Bills\Installment;
+use App\Models\Plans\Discount;
+use App\Models\Plans\Plan;
+use App\Models\Plans\PlanUserPeriod;
+use App\Models\Users\User;
 use App\Observers\Plans\PlanUserObserver;
 use App\Transformers\PlanUserTransformer;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\Pivot;
 
 /** [PlanUser description] */
-class PlanUser extends Pivot
+class PlanUser extends Model
 {
   use SoftDeletes;
 
@@ -92,4 +93,13 @@ class PlanUser extends Pivot
   {
       return $this->belongsTo(User::class);
   }
+
+   /**
+     * [plan_user_periods description]
+     * @return [model] [description]
+     */
+    public function plan_user_periods()
+    {
+        return $this->hasMany(PlanUserPeriod::class);
+    }
 }
