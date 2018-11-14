@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers\Users;
 
-use Carbon\Carbon;
-use App\Models\Users\User;
-use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use App\Models\Users\PasswordReset;
-use App\Http\Controllers\ApiController;
+use App\Models\Users\User;
 use App\Notifications\PasswordResetRequest;
 use App\Notifications\PasswordResetSuccess;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
 
-class PasswordResetController extends ApiController
+class PasswordResetController extends Controller
 {
      /**
      * Create token password reset
@@ -25,7 +25,9 @@ class PasswordResetController extends ApiController
         ]);
         $user = User::where('email', $request->email)->first();
         if (!$user){
-	        return $this->errorResponse('No podemos encontrar un usuario con ese correo', 404);
+            return response()->json([
+                'message' => 'No podemos encontrar un usuario con ese correo.'
+            ], 404);
 		}
         $passwordReset = PasswordReset::updateOrCreate(
             ['email' => $user->email],
@@ -39,7 +41,9 @@ class PasswordResetController extends ApiController
             $user->notify(
                 new PasswordResetRequest($passwordReset->token)
             );
-            return $this->successResponse('Hemos enviado un correo con el enlace de reinicio de contraseña', 200);
+            return response()->json([
+                'message' => 'Hemos enviado un correo con el enlace de reinicio de contraseña'
+            ]);
     	}
     }
     /**
@@ -53,11 +57,15 @@ class PasswordResetController extends ApiController
     {
         $passwordReset = PasswordReset::where('token', $token)->first();
         if (!$passwordReset){
-        	return $this->errorResponse('El token de reinicio es inválido', 404);
+            return response()->json([
+                'message' => 'El token de reinicio de contraseña es inválido.'
+            ], 404);
         }
         if (Carbon::parse($passwordReset->updated_at)->addMinutes(720)->isPast()) {
             $passwordReset->delete();
-            return $this->errorResponse('El token ya ha expirado', 404);
+            return response()->json([
+                'message' => 'El token ya ha expirado.'
+            ], 404);
         }
         return response()->json($passwordReset);
     }
@@ -83,11 +91,15 @@ class PasswordResetController extends ApiController
             ['email', $request->email]
         ])->first();
         if (!$passwordReset){
-        	return $this->errorResponse('El token de reinicio de contraseña es inválido', 404);
+            return response()->json([
+                'message' => 'El token de reinicio de contraseña es inválido.'
+            ], 404);
         }
         $user = User::where('email', $passwordReset->email)->first();
         if (!$user){
-            return $this->errorResponse('No podemos encontrar un usuario con ese correo', 404);
+            return response()->json([
+                'message' => 'No podemos encontrar un usuario con ese correo.'
+            ], 404);
         }
         $user->password = bcrypt($request->password);
         $user->save();
