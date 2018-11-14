@@ -3,6 +3,11 @@
 use Illuminate\Http\Request;
 
 /**
+ * Bills resources
+ */
+Route::Apiresource('bills', 'Bills\BillController');
+
+/**
  * Classes resources
  */
 Route::Apiresource('clases', 'Clases\ClaseController');

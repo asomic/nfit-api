@@ -2,12 +2,12 @@
 
 namespace App\Models\Bills;
 
-use App\Models\Users\User;
 use App\Models\Bills\Installment;
 use App\Models\Bills\PaymentType;
+use App\Models\Users\User;
+use App\Transformers\BillTransformer;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-// use App\Models\Bills\Payment_status;
 
 /**
  * [Bill description]
@@ -19,6 +19,8 @@ class Bill extends Model
     protected $dates = ['deleted_at'];
     protected $fillable = ['payment_type_id', 'user_id',
     'date', 'detail', 'amount', 'sub_total', 'total'];
+
+    public $transformer = BillTransformer::class;
 
     /**
      * [installments description]

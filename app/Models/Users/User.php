@@ -2,9 +2,11 @@
 
 namespace App\Models\Users;
 
+use App\Models\Bills\Bill;
 use App\Models\Bills\Installment;
 use App\Models\Clases\Block;
 use App\Models\Clases\Clase;
+use App\Models\Clases\Reservation;
 use App\Models\Plans\Plan;
 use App\Models\Plans\PlanUser;
 use App\Models\Users\Emergency;
@@ -12,13 +14,12 @@ use App\Models\Users\Millestone;
 use App\Models\Users\Role;
 use App\Models\Users\RoleUser;
 use App\Models\Users\StatusUser;
-use Freshwork\ChileanBundle\Rut;
-use App\Models\Clases\Reservation;
-use Laravel\Passport\HasApiTokens;
 use App\Transformers\UserTransformer;
-use Illuminate\Notifications\Notifiable;
+use Freshwork\ChileanBundle\Rut;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Passport\HasApiTokens;
 
 /**
  * [User description]
@@ -132,6 +133,16 @@ class User extends Authenticatable
     {
         return $this->hasManyThrough(
             Installment::class,
+            PlanUser::class,
+            'user_id',
+            'plan_user_id'
+        );
+    }
+
+    public function bills()
+    {
+        return $this->hasManyThrough(
+            Bill::class,
             PlanUser::class,
             'user_id',
             'plan_user_id'

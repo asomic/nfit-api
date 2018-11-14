@@ -64,7 +64,6 @@ class WodTransformer extends TransformerAbstract
         $attributes = [
             'id' => 'identificador',
             'date' => 'fecha',
-
             'created_at' => 'fechaCreacion',
             'updated_at' => 'fechaActualizacion',
             'deleted_at' => 'fechaEliminacion',
