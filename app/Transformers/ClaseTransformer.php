@@ -6,6 +6,7 @@ namespace App\Transformers;
 use App\Models\Clases\Clase;
 use App\Models\Clases\Reservation;
 use League\Fractal\TransformerAbstract;
+use Carbon\Carbon;
 use Auth;
 
 class ClaseTransformer extends TransformerAbstract
@@ -17,6 +18,19 @@ class ClaseTransformer extends TransformerAbstract
      */
     public function transform(Clase $clase)
     {
+        $start = $clase->start_at;
+        $end = $clase->finish_at;
+
+        $dateTimeString = $clase->date->format('Y-m-d')." ".$start;
+        $dateTime = Carbon::createFromFormat('Y-m-d H:i:s', $dateTimeString);
+
+        if($dateTime > Carbon::now())
+        {
+          $active = true;
+        } else {
+          $active = false;
+        }
+
         if($clase->auth_has_reservation())
         {
           $reservation = Reservation::where('user_id',Auth::user()->id)->where('clase_id',$clase->id)->first();
@@ -32,10 +46,12 @@ class ClaseTransformer extends TransformerAbstract
         return [
             'clase_id' => (int)$clase->id,
             'date' => (string)$clase->date->toDateString(),
-            'dateHuman' => (string)$clase->date->formatLocalized('%A %d de %B, %Y'),
-            'start' => (string)$clase->start_at,
-            'end' => (string)$clase->finish_at,
+            'dateHuman' => (string)$clase->date->formatLocalized('%A %d de %B'),
+            'year' => (string)$clase->date->formatLocalized('%Y'),
+            'start' => (string)date('H:i', strtotime($start)),
+            'end' => (string)date('H:i', strtotime($end)),
             'quota' => (int)$clase->quota,
+            'active' => (bool)$active,
 
             'rels' => [
                 'wod' => [
