@@ -20,10 +20,12 @@ class UserTransformer extends TransformerAbstract
        {
          $plan = $userPlan->plan->plan;
          $expiration = $userPlan->finish_date->formatLocalized('%A %d de %B, %Y');
+         $counter = $userPlan->counter;
        } else {
 
          $plan = 'no tiene activo';
          $expiration = '---';
+         $counter = '--' ;
 
        }
 
@@ -57,7 +59,7 @@ class UserTransformer extends TransformerAbstract
                 ],
                 'stats' => [
                     'clases_consumed' => (int)$user->reservations(3)->count(),
-                    'clases_quantity' => (int)$user->active_planuser()->counter,
+                    'clases_quantity' => (int)$counter,
                     'clases_lost' => (int)$user->reservations(4)->count(),
                     'assistance' => '',
                 ],
