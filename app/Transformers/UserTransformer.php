@@ -41,8 +41,8 @@ class UserTransformer extends TransformerAbstract
                     'href' => route('users.planusers.index', $user->id),
                 ],
                 'active_plan' => [
-                    'plan' => (string)$user->active_planuser()->plan->plan,
-                    'expiration' => (string)$user->active_planuser()->finish_date->formatLocalized('%A %d de %B, %Y'),
+                    'plan' => (string)$user->active_planuser()->plan->plan ?? 'sin plan',
+                    'expiration' => (string)$user->active_planuser()->finish_date->formatLocalized('%A %d de %B, %Y') ?? 'sin plan',
                     'href' => route('users.planusers.active', $user->id),
                 ],
                 'stats' => [

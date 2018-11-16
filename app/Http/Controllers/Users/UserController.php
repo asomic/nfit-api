@@ -48,6 +48,12 @@ class UserController extends ApiController
       return $this->showOne($user, 200);
     }
 
+    public function Payments()
+    {
+      $bills = Auth::user()->bills;
+      return $this->showAll($bills, 200);
+    }
+
     /**
      * Update the specified resource in storage.
      *
