@@ -183,15 +183,16 @@ class User extends Authenticatable
     * @method reservations
     * @return [Model]       [description]
     */
-    public function coming_reservations()
+
+    public function reservations($status = null )
     {
-      return $this->hasMany(Reservation::class)->where('reservation_status_id','<=',2);
+      if($status!=null){
+        return $this->hasMany(Reservation::class)->where('reservation_status_id', $status);
+      } else {
+        return $this->hasMany(Reservation::class);
+      }
     }
 
-    public function historic_reservations()
-    {
-      return $this->hasMany(Reservation::class)->where('reservation_status_id','>=',3);
-    }
 
     /**
      * [roles description]

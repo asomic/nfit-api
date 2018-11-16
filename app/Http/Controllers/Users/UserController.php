@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Users;
 
 use Auth;
 use App\Models\Users\User;
+use App\Models\Wods\Wod;
 use App\Models\Clases\Reservation;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ApiController;
@@ -92,8 +93,8 @@ class UserController extends ApiController
         $reservation = Reservation::where('user_id',Auth::user()->id)->where('clase_id',$clase->id)->where('reservation_status_id',1)->first();
         if($reservation) {
           $confirmation = [
-            'start' => (string)$clase->start_at,
-            'end' => (string)$clase->finish_at,
+            'start' => (string)date('H:i', strtotime($clase->start_at)),
+            'end' => (string)date('H:i', strtotime($clase->finish_at)),
             'clase_id' => (string)$clase->id
 
           ];
@@ -108,6 +109,55 @@ class UserController extends ApiController
       ];
 
       return response()->json(['data' => $alerts ], 200);
+    }
+
+    public function today()
+    {
+      $reservationHas = false;
+      $reservation = Auth::User()->clases()->where('date',today())->first();
+      $todayReservation = [];
+
+      $wodHas = false;
+      $wod = Wod::where('date',today())->first();
+      $todayWod = [];
+
+
+      if($reservation){
+        $reservationHas = true;
+        $todayReservation = [
+          'id' => (int)$reservation->id,
+          'start' => (string)date('H:i', strtotime($reservation->start_at)),
+          'end' => (string)date('H:i', strtotime($reservation->finish_at)),
+          'href' => (string)route('clases.show', ['clase' => $reservation->id]),
+        ];
+      }
+
+
+      if($wod)
+      {
+        $wodHas = true;
+        $todayWod = [
+            'warmup' => (string)$wod->stage(1)->description,
+            'skill' => (string)$wod->stage(2)->description,
+            'wod' => (string)$wod->stage(3)->description,
+        ];
+      }
+
+      $today = [
+        'date' => today()->format('Y-m-d'),
+        'dateHuman' =>  today()->formatLocalized('%A %d de %B'),
+        'wod' => [
+          'has' => (bool)$wodHas,
+          'stages' => $todayWod,
+        ],
+        'auth_reservation' => [
+          'has' => (bool)$reservationHas,
+          'reservation' => $todayReservation ,
+        ]
+      ];
+
+      return response()->json(['data' => $today ], 200);
+
     }
 
 
