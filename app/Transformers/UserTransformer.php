@@ -15,7 +15,17 @@ class UserTransformer extends TransformerAbstract
      */
     public function transform(User $user)
     {
-      //$clases_quantity = $user->active_planuser()->counter;
+       $userPlan = $user->active_planuser();
+       if($userPlan)
+       {
+         $plan = $userPlan->plan->plan;
+         $expiration = $userPlan->finish_date->formatLocalized('%A %d de %B, %Y');
+       } else {
+
+         $plan = 'no tiene activo';
+         $expiration = '---';
+
+       }
 
         return [
             'identificador' => (int)$user->id,
@@ -41,8 +51,8 @@ class UserTransformer extends TransformerAbstract
                     'href' => route('users.planusers.index', $user->id),
                 ],
                 'active_plan' => [
-                    'plan' => (string)$user->active_planuser()->plan->plan ?? 'sin plan',
-                    'expiration' => (string)$user->active_planuser()->finish_date->formatLocalized('%A %d de %B, %Y') ?? 'sin plan',
+                    'plan' => (string)$plan,
+                    'expiration' => (string)$expiration,
                     'href' => route('users.planusers.active', $user->id),
                 ],
                 'stats' => [
