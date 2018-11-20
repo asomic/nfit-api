@@ -45,10 +45,10 @@ class PlanUserTransformer extends TransformerAbstract
                 ],
                 'bill' => [
                   'has' => (bool)$hasBill,
-                  'bill_id' => (string)$bill_id,
-                  'bill_method' => (string)$bill_method,
-                  'bill_date' => (string)$bill_date,
-                  'bill_detail' => (string)$bill_detail,
+                  'id' => (string)$bill_id,
+                  'method' => (string)$bill_method,
+                  'date' => (string)$bill_date,
+                  'detail' => (string)$bill_detail,
 
 
                 ],
