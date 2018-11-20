@@ -26,7 +26,8 @@ class PlanUserTransformer extends TransformerAbstract
           $bill_id = $planuser->bill->id;
           $bill_date = $planuser->bill->date;
           $bill_method = $planuser->bill->payment_type->payment_type;
-          $bill_amount = $planuser->bill->amount;
+          $bill_amount = '$'.number_format($planuser->bill->amount, 0, ',', '.');
+
         }
 
 
@@ -51,7 +52,7 @@ class PlanUserTransformer extends TransformerAbstract
                   'method' => (string)$bill_method,
                   'date' => (string)$bill_date,
                   'detail' => (string)$bill_detail,
-                  'amount' => (string)'$'.number_format($bill_amount, 0, ',', '.'),
+                  'amount' => (string)  $bill_amount,
 
 
                 ],
