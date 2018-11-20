@@ -50,7 +50,7 @@ class PlanUserTransformer extends TransformerAbstract
                   'method' => (string)$bill_method,
                   'date' => (string)$bill_date,
                   'detail' => (string)$bill_detail,
-                  'amount' => (string)$bill_amount,
+                  'amount' => (string)'$'.number_format($bill_amount, 0, ',', '.'),
 
 
                 ],
