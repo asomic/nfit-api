@@ -19,12 +19,14 @@ class PlanUserTransformer extends TransformerAbstract
         $bill_date = '--';
         $bill_method = '--';
         $bill_detail = '--';
+        $bill_amount = '--';
         if($planuser->bill)
         {
           $hasBill = true;
           $bill_id = $planuser->bill->id;
           $bill_date = $planuser->bill->date;
           $bill_method = $planuser->bill->payment_type->payment_type;
+          $bill_amount = $planuser->bill->amount;
         }
 
 
@@ -33,7 +35,6 @@ class PlanUserTransformer extends TransformerAbstract
             'start' => (string)$planuser->start_date,
             'end' => (string)$planuser->finish_date,
             'vencimiento' => (string)$planuser->finish_date->formatLocalized('%A %d de %B, %Y'),
-            'amount' => (string)$planuser->amount,
             'counter' => (string)$planuser->counter,
             'plan_status' => (string)$planuser->plan_status_id,
             'plan_id' => (string)$planuser->plan_id,
@@ -49,6 +50,7 @@ class PlanUserTransformer extends TransformerAbstract
                   'method' => (string)$bill_method,
                   'date' => (string)$bill_date,
                   'detail' => (string)$bill_detail,
+                  'amount' => (string)$bill_amount,
 
 
                 ],
