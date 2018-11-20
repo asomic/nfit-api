@@ -31,6 +31,7 @@ Route::Apiresource('users', 'Users\UserController');
 	Route::get('profile', 'Users\UserController@profile');
 	Route::get('logout', 'Users\UserController@logout');
 	Route::get('today', 'Users\UserController@today')->name('users.today');
+	Route::get('plans', 'Users\UserController@plans')->name('users.plans');
 
 
 

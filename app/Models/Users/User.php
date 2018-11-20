@@ -211,4 +211,10 @@ class User extends Authenticatable
     {
       return $this->belongsTo(StatusUser::class);
     }
+
+    // public function bills()
+    // {
+    //   return $this->belongsTo(StatusUser::class);
+    // }
+
 }

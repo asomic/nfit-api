@@ -7,6 +7,7 @@ use App\Models\Bills\Installment;
 use App\Models\Bills\PaymentType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Transformers\BillTransformer;
 // use App\Models\Bills\Payment_status;
 
 /**
@@ -19,6 +20,8 @@ class Bill extends Model
     protected $dates = ['deleted_at'];
     protected $fillable = ['payment_type_id', 'user_id',
     'date', 'detail', 'amount', 'sub_total', 'total'];
+
+    public $transformer = BillTransformer::class;
 
     /**
      * [installments description]
@@ -37,7 +40,7 @@ class Bill extends Model
      */
     public function payment_type()
     {
-      return $this->hasOne(PaymentType::class);
+      return $this->belongsTo(PaymentType::class);
     }
 
     /**

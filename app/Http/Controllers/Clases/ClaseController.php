@@ -197,13 +197,13 @@ class ClaseController extends ApiController
         $response = false;
         $planusers = PlanUser::whereIn('plan_status_id', [1,3])->where('user_id', Auth::id())->get();
         foreach ($planusers as $planuser) {
-            foreach ($planuser->plan_user_periods as $pup) {
-                if ($date->between(Carbon::parse($pup->start_date), Carbon::parse($pup->finish_date))) {
-                    if ($pup->counter > 0) {
-                        $response = true;
-                    }
-                }
-            }
+
+          if ($date->between(Carbon::parse($planuser->start_date), Carbon::parse($planuser->finish_date))) {
+              if ($planuser->counter > 0) {
+                  $response = true;
+              }
+          }
+
         }
         return $response;
     }

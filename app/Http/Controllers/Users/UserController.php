@@ -48,10 +48,10 @@ class UserController extends ApiController
       return $this->showOne($user, 200);
     }
 
-    public function Payments()
+    public function plans()
     {
-      $bills = Auth::user()->bills;
-      return $this->showAll($bills, 200);
+      $user_plans = Auth::user()->plan_users;
+      return $this->showAll($user_plans, 200);
     }
 
     /**
@@ -168,9 +168,3 @@ class UserController extends ApiController
 
 
 }
-
-  // public function profile()
-  // {
-  //     $user = Auth::user();
-  //     return response()->json(compact('user'), 200);
-  // }

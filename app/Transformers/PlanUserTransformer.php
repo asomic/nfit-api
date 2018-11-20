@@ -14,30 +14,46 @@ class PlanUserTransformer extends TransformerAbstract
      */
     public function transform(PlanUser $planuser)
     {
-        return [
-            'identificador' => (int)$planuser->id,
-            'fechaInicio' => (string)$planuser->start_date,
-            'fechatermino' => (string)$planuser->finish_date,
-            'vencimiento' => (string)$planuser->finish_date->formatLocalized('%A %d de %B, %Y'),
-            'monto' => (string)$planuser->amount,
-            'contador' => (string)$planuser->counter,
-            'estadoPlan' => (string)$planuser->plan_status_id,
-            'idDescuento' => (int)$planuser->discount_id,
-            'idPlan' => (string)$planuser->plan_id,
-            'nombrePlan' => (string)$planuser->plan->plan,
-            'idUsuario' => (int)$planuser->user_id,
-            'fechaCreacion' => (string)$planuser->created_at,
-            'fechaActualizacion' => (string)$planuser->updated_at,
-            'fechaEliminacion' => isset($planuser->deleted_at) ? (string) $planuser->deleted_at : null,
+        $hasBill = false;
+        $bill_id = '--';
+        $bill_date = '--';
+        $bill_method = '--';
+        $bill_detail = '--';
+        if($planuser->bill)
+        {
+          $hasBill = true;
+          $bill_id = $planuser->bill->id;
+          $bill_date = $planuser->bill->date;
+          $bill_method = $planuser->bill->payment_type->payment_type;
+        }
 
-            // 'rels' => [
-            //     'self' => [
-            //         'href' => route('users.plans.show', [
-            //             'user' => $planuser->user_id,
-            //             'plan' => $planuser->plan_id]),
-            //     ],
-            // ],
-            // //
+
+        return [
+            'plan_user_id' => (int)$planuser->id,
+            'start' => (string)$planuser->start_date,
+            'end' => (string)$planuser->finish_date,
+            'vencimiento' => (string)$planuser->finish_date->formatLocalized('%A %d de %B, %Y'),
+            'amount' => (string)$planuser->amount,
+            'counter' => (string)$planuser->counter,
+            'plan_status' => (string)$planuser->plan_status_id,
+            'plan_id' => (string)$planuser->plan_id,
+            'plan_name' => (string)$planuser->plan->plan,
+
+            'rels' => [
+                'user' => [
+                  'user_id' => $planuser->user->id,
+                ],
+                'bill' => [
+                  'has' => (bool)$hasBill,
+                  'bill_id' => (string)$bill_id,
+                  'bill_method' => (string)$bill_method,
+                  'bill_date' => (string)$bill_date,
+                  'bill_detail' => (string)$bill_detail,
+
+
+                ],
+            ],
+            //
         ];
     }
 
