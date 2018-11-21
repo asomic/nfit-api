@@ -38,6 +38,20 @@ class UserController extends ApiController
         return $this->showOne($user, 200);
     }
 
+    public function image(Request $request)
+    {
+      $user = Auth::user();
+      if ($request->image) {
+          request()->file('image')->storeAs('public/users', $user->id.$user->first_name.'.jpg');
+          $user->avatar = url('/').'/storage/users/'.$user->id.$user->first_name.'.jpg';
+          return response()->json(['success' =>'Sesion finalizada'], 200);
+      }
+      else {
+        return response()->json(['error' =>'nooooooooooooooo'], 400);
+      }
+
+    }
+
     // *
     //  * Display the specified resource.
     //  *
