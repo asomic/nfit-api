@@ -165,7 +165,7 @@ class UserController extends ApiController
 
       $today = [
         'date' => today()->format('Y-m-d'),
-        'dateHuman' =>  today()->formatLocalized('%A %d de %B'),
+        'dateHuman' =>  (string) ucfirst(today()->formatLocalized('%A %d')).' de '. ucfirst(today()->formatLocalized('%B')) ,
         'wod' => [
           'has' => (bool)$wodHas,
           'stages' => $todayWod,
