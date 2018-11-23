@@ -14,6 +14,7 @@ class PlanUserTransformer extends TransformerAbstract
      */
     public function transform(PlanUser $planuser)
     {
+        
         $hasBill = false;
         $bill_id = '--';
         $bill_date = '--';

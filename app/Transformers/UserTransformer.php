@@ -15,6 +15,7 @@ class UserTransformer extends TransformerAbstract
      */
     public function transform(User $user)
     {
+      
        $userPlan = $user->active_planuser();
        if($userPlan)
        {

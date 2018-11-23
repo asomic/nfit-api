@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
  */
 Route::Apiresource('clases', 'Clases\ClaseController');
 	Route::get('clases/{clase}/users', 'Clases\ClaseController@users')->name('clases.users');
+	Route::get('clases/{clase}/reservations', 'Clases\ClaseController@reservations')->name('clases.reservations');
 	Route::get('clases-historic/', 'Clases\ClaseController@historic')->name('clases.historic');
 	Route::get('clases-coming/', 'Clases\ClaseController@coming')->name('clases.coming');
 	Route::post('clases/{clase}/reserve', 'Clases\ClaseController@reserve');

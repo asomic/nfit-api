@@ -84,7 +84,15 @@ class ClaseController extends ApiController
     public function users(Clase $clase)
     {
         $users = $clase->users;
+        //dd($users);
         return $this->showAll($users, 200);
+    }
+
+    public function reservations(Clase $clase)
+    {
+        $reservations = $clase->reservations;
+        //dd($users);
+        return $this->showAll($reservations, 200);
     }
 
     /**

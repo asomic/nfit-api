@@ -34,6 +34,13 @@ class ReservationTransformer extends TransformerAbstract
                     'id' => (int)$reservation->clase->wod_id,
                     'href' => route('wods.show', ['wod' => (int)$reservation->clase->wod_id])
                   ],
+                  'user' => [
+                    'id' => (int)$reservation->user->id,
+                    'first_name' => (string)$reservation->user->first_name,
+                    'last_name' => (string)$reservation->user->last_name,
+                    'avatar' => (string)$reservation->user->avatar,
+                    'href' => route('users.show', ['user' =>  (int)$reservation->user->id])
+                  ]
 
                 ],
 
