@@ -49,9 +49,9 @@ class ReservationTransformer extends TransformerAbstract
                 ],
 
 
-            ],
+            ];
 
-        ];
+
     }
 
     /**
