@@ -24,7 +24,10 @@ class ReservationTransformer extends TransformerAbstract
                   'start' => (string)$reservation->clase->start_at,
                   'end' => (string)$reservation->clase->finish_at,
                   'date' => (string)$reservation->clase->date,
-                  'dateHuman' => (string)$reservation->clase->date->formatLocalized('%A %d de %B, %Y'),
+                  'dateHuman' => (string) ucfirst($reservation->clase->date->formatLocalized('%A %d')).' de '.ucfirst($reservation->clase->date->formatLocalized('%B, %Y')) ,
+                  'day' => (string)ucfirst($reservation->clase->date->formatLocalized('%A %d' )),
+                  'month' =>(string)ucfirst($reservation->clase->date->formatLocalized('%B' )),
+                  'year' =>(string)$reservation->clase->date->formatLocalized('%Y' ),
                   'href' => (string)route('clases.show', ['clase' => (int)$reservation->clase_id]),
                   'users' => [
                     'count' => (int)count($reservation->clase->users),

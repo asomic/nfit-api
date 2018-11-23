@@ -46,7 +46,9 @@ class ClaseTransformer extends TransformerAbstract
         return [
             'clase_id' => (int)$clase->id,
             'date' => (string)$clase->date->toDateString(),
-            'dateHuman' => (string)$clase->date->formatLocalized('%A %d de %B'),
+            'dateHuman' => (string)ucfirst($clase->date->formatLocalized('%A %d')).' de '.ucfirst($clase->date->formatLocalized('%B')) ,
+            'day' => (string)ucfirst($clase->date->formatLocalized('%A %d' )),
+            'month' =>(string)ucfirst($clase->date->formatLocalized('%B' )),
             'year' => (string)$clase->date->formatLocalized('%Y'),
             'start' => (string)date('H:i', strtotime($start)),
             'end' => (string)date('H:i', strtotime($end)),

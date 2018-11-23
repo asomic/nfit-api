@@ -17,7 +17,7 @@ class WodTransformer extends TransformerAbstract
         return [
             'identificador' => (int)$wod->id,
             'fecha' => (string)$wod->date,
-            'fechaHuman' => (string)$wod->date->formatLocalized('%A %d de %B'),
+            'fechaHuman' =>  (string)ucfirst($wod->date->formatLocalized('%A %d')).' de '.ucfirst($wod->date->formatLocalized('%B')) ,
             'year' => (string)$wod->date->formatLocalized('%Y'),
             'fechaCreacion' => (string)$wod->created_at,
             'fechaActualizacion' => (string)$wod->updated_at,

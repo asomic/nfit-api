@@ -14,7 +14,7 @@ class PlanUserTransformer extends TransformerAbstract
      */
     public function transform(PlanUser $planuser)
     {
-        
+
         $hasBill = false;
         $bill_id = '--';
         $bill_date = '--';
@@ -36,8 +36,8 @@ class PlanUserTransformer extends TransformerAbstract
             'plan_user_id' => (int)$planuser->id,
             'start' => (string)$planuser->start_date,
             'end' => (string)$planuser->finish_date,
-            'vencimiento' => (string)$planuser->finish_date->formatLocalized('%A %d de %B, %Y'),
-            'inicio' => (string)$planuser->start_date->formatLocalized('%A %d de %B, %Y'),
+            'vencimiento' => (string)ucfirst($planuser->finish_date->formatLocalized('%A %d')).' de '.ucfirst($planuser->finish_date->formatLocalized('%B, %Y')) ,
+            'inicio' => (string)ucfirst($planuser->start_date->formatLocalized('%A %d')).' de '.ucfirst($planuser->start_date->formatLocalized('%B, %Y')) ,
             'counter' => (string)$planuser->counter,
             'plan_status' => (string)$planuser->plan_status_id,
             'plan_id' => (string)$planuser->plan_id,
