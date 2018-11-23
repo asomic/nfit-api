@@ -60,9 +60,9 @@ class ClaseTransformer extends TransformerAbstract
                   'id' => (int)$clase->wod_id,
                   'href' => route('wods.show', ['wod' => (int)$clase->wod_id])
                 ],
-                'users' => [
+                'reservations' => [
                   'count' => (int)count($clase->users),
-                  'href' => route('clases.users', ['clase' => (int)$clase->id])
+                  'href' => route('clases.reservations', ['clase' => (int)$clase->id])
                 ],
                 'auth_reservation' => [
                   'has' => (bool)$clase->auth_has_reservation(),
