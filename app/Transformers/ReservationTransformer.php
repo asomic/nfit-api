@@ -32,6 +32,7 @@ class ReservationTransformer extends TransformerAbstract
                   'users' => [
                     'count' => (int)count($reservation->clase->users),
                     'href' => (string)route('clases.users', ['clase' => (int)$reservation->clase_id]),
+                    ],
                   ],
                   'wod' => [
                     'id' => (int)$reservation->clase->wod_id,
