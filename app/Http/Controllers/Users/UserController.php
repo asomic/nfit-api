@@ -40,7 +40,12 @@ class UserController extends ApiController
 
     public function image(Request $request)
     {
+
       $user = Auth::user();
+      return response()->json(
+        ['error' =>'BLAS',
+         'user' =>$user->id,
+        ], 400);
       if ($request->image) {
           request()->file('image')->storeAs('public/users', $user->id.$user->first_name.'.jpg');
           $user->avatar = url('/').'/storage/users/'.$user->id.$user->first_name.'.jpg';
