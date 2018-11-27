@@ -47,6 +47,7 @@ class UserController extends ApiController
 
           request()->file('image')->storeAs('public/users', $user->id.$user->first_name.'.jpg');
           $user->avatar = url('/').'/storage/users/'.$user->id.$user->first_name.'.jpg';
+          $user->save();
           return response()->json(['success' =>'Sesion finalizada'], 200);
       }
       else {
