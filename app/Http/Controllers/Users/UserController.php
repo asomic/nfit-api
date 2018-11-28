@@ -56,6 +56,15 @@ class UserController extends ApiController
 
     }
 
+    public function assistance(User $user)
+    {
+      return response()->json([
+        'label' => ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
+        'data'  => [12, 19, 3, 5, 5, 3, 1, 3, 10, 5, 7, 8 ],
+
+      ], 200);
+    }
+
     // *
     //  * Display the specified resource.
     //  *
