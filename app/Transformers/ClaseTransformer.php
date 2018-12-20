@@ -66,6 +66,7 @@ class ClaseTransformer extends TransformerAbstract
                 ],
                 'auth_reservation' => [
                   'has' => (bool)$clase->auth_has_reservation(),
+                  'can' => (bool)$clase->auth_can_reserve(),
                   'reservation_id' => (int)$reservation_id,
                   'status' => (string)$reservation_status,
                   'details' => (string)$reservation_details,
