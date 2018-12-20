@@ -55,7 +55,7 @@ class Clase extends Model
       if($planUser)
       {
           $ids = $this->block->getPlansIdAttribute()->toArray();
-          if(in_array($planUser->plan_id,$ids))
+          if((in_array($planUser->plan_id,$ids)) && ($planUser->counter > 0 ) )
           {
             return true;
           } else {
