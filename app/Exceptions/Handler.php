@@ -112,7 +112,7 @@ class Handler extends ExceptionHandler
             return parent::render($request, $exception);
         }
 
-        return $this->errorResponse('Falla inesperada. Intente luego', 500);
+        return $this->errorResponse('Falla inesperada. Intente luego'. $exception ), 500);
     }
 
     /**
