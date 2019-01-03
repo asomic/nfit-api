@@ -113,6 +113,7 @@ class ClaseController extends ApiController
      */
     public function reserve(Request $request, Clase $clase)
     {
+      $planuser = PlanUser::where('plan_status_id', 1)->where('user_id', Auth::id())->first();
       $reservation = new Reservation;
       $reservation->user_id = Auth::user()->id;
       $reservation->clase_id = $clase->id;
@@ -120,6 +121,8 @@ class ClaseController extends ApiController
       $reservation->reservation_status_id = 1 ;
       if($reservation->save())
       {
+        $planuser->counter = $planuser->counter - 1;
+        $planuser->save();
         return $this->showOne($reservation->clase, 200);
       } else {
         return $this->errorResponse('No se puede tomar la clase', 400);
@@ -229,7 +232,7 @@ class ClaseController extends ApiController
         }
         elseif ($clase->date > toDay()->format('Y-m-d')) {
             if ($reservation->delete()) {
-                    $planuser->counter = $planuser->counter - 1;
+                    $planuser->counter = $planuser->counter + 1;
                     $planuser->save();
                     return $this->showOne($clase, 200);
                 }
