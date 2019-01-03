@@ -56,12 +56,31 @@ class UserController extends ApiController
 
     }
 
-    public function assistance(User $user)
+    public function assistance()
     {
-      //dd($user->reservations(3)->get());
+    //  $reservations = Auth::user()->reservations(3)->get();
+    $reservations = Auth::user()->assistence()->whereRaw('MONTH(date) = 2')->count();
+    //dd($reservations);
+
+      // foreach ($reservations as $key => $value) {
+      //   $year =
+      // }
       return response()->json([
         'label' => ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
-        'data'  => [12, 19, 3, 5, 5, 3, 1, 3, 10, 5, 7, 8 ],
+        'data'  => [
+          Auth::user()->assistence()->whereRaw('MONTH(date) = 1')->count(),
+          Auth::user()->assistence()->whereRaw('MONTH(date) = 2')->count(),
+          Auth::user()->assistence()->whereRaw('MONTH(date) = 3')->count(),
+          Auth::user()->assistence()->whereRaw('MONTH(date) = 4')->count(),
+          Auth::user()->assistence()->whereRaw('MONTH(date) = 5')->count(),
+          Auth::user()->assistence()->whereRaw('MONTH(date) = 6')->count(),
+          Auth::user()->assistence()->whereRaw('MONTH(date) = 7')->count(),
+          Auth::user()->assistence()->whereRaw('MONTH(date) = 8')->count(),
+          Auth::user()->assistence()->whereRaw('MONTH(date) = 9')->count(),
+          Auth::user()->assistence()->whereRaw('MONTH(date) = 10')->count(),
+          Auth::user()->assistence()->whereRaw('MONTH(date) = 11')->count(),
+          Auth::user()->assistence()->whereRaw('MONTH(date) = 12')->count(),
+         ],
 
       ], 200);
     }

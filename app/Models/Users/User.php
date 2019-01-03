@@ -193,6 +193,15 @@ class User extends Authenticatable
       }
     }
 
+    public function assistence()
+    {
+      return $this->belongsToMany(
+          Clase::class,
+          'reservations',
+          'user_id',
+          'clase_id'
+      )->wherePivot('reservation_status_id', 3)->where('date','>=',date("Y").'-01-01');
+    }
 
     /**
      * [roles description]
