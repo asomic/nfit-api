@@ -47,7 +47,7 @@ class ClaseController extends ApiController
             $can_reserve = $this->canReserve($date);
             $day = ["date" => (string)$date->toDateString(),
                     "day"=> (string)$date->format('d'),
-                    "dayName"=> (string)$date->formatLocalized('%A' ),
+                    "dayName"=> (string)ucfirst($date->formatLocalized('%A' )),
                     "today"=> $isToday,
                     "hasClases"=> $reservation_today,
                     "canReserve"=> $can_reserve,
