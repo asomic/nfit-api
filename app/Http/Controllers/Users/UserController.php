@@ -179,6 +179,7 @@ class UserController extends ApiController
         $reservationHas = true;
         $todayReservation = [
           'id' => (int)$reservation->id,
+          'status' => (int)$reservation->status_id,
           'start' => (string)date('H:i', strtotime($reservation->start_at)),
           'end' => (string)date('H:i', strtotime($reservation->finish_at)),
           'href' => (string)route('clases.show', ['clase' => $reservation->id]),
