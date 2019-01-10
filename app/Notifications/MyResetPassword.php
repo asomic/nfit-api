@@ -45,7 +45,7 @@ class MyResetPassword extends Notification
      */
     public function toMail($notifiable)
     {
-        $url = url('https://admin.purasangrecrossfit.cl/password/reset/'.$this->token);
+        $url = 'https://admin.purasangrecrossfit.cl/password/reset/'.$this->token;
         if (static::$toMailCallback) {
             return call_user_func(static::$toMailCallback, $notifiable, $this->token);
         }
