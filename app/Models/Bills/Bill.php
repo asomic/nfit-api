@@ -2,9 +2,9 @@
 
 namespace App\Models\Bills;
 
+use App\Models\Users\User;
 use App\Models\Bills\Installment;
 use App\Models\Bills\PaymentType;
-use App\Models\Users\User;
 use App\Transformers\BillTransformer;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -39,7 +39,7 @@ class Bill extends Model
      */
     public function payment_type()
     {
-      return $this->hasOne(PaymentType::class);
+      return $this->belongsTo(PaymentType::class);
     }
 
     /**

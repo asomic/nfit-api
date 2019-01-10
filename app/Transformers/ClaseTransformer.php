@@ -6,6 +6,7 @@ namespace App\Transformers;
 use App\Models\Clases\Clase;
 use App\Models\Clases\Reservation;
 use League\Fractal\TransformerAbstract;
+use Carbon\Carbon;
 use Auth;
 
 class ClaseTransformer extends TransformerAbstract
@@ -17,6 +18,19 @@ class ClaseTransformer extends TransformerAbstract
      */
     public function transform(Clase $clase)
     {
+        $start = $clase->start_at;
+        $end = $clase->finish_at;
+
+        $dateTimeString = $clase->date->format('Y-m-d')." ".$start;
+        $dateTime = Carbon::createFromFormat('Y-m-d H:i:s', $dateTimeString);
+
+        if($dateTime > Carbon::now())
+        {
+          $active = true;
+        } else {
+          $active = false;
+        }
+
         if($clase->auth_has_reservation())
         {
           $reservation = Reservation::where('user_id',Auth::user()->id)->where('clase_id',$clase->id)->first();
@@ -32,22 +46,27 @@ class ClaseTransformer extends TransformerAbstract
         return [
             'clase_id' => (int)$clase->id,
             'date' => (string)$clase->date->toDateString(),
-            'dateHuman' => (string)$clase->date->formatLocalized('%A %d de %B, %Y'),
-            'start' => (string)$clase->start_at,
-            'end' => (string)$clase->finish_at,
+            'dateHuman' => (string)ucfirst($clase->date->formatLocalized('%A %d')).' de '.ucfirst($clase->date->formatLocalized('%B')) ,
+            'day' => (string)ucfirst($clase->date->formatLocalized('%A %d' )),
+            'month' =>(string)ucfirst($clase->date->formatLocalized('%B' )),
+            'year' => (string)$clase->date->formatLocalized('%Y'),
+            'start' => (string)date('H:i', strtotime($start)),
+            'end' => (string)date('H:i', strtotime($end)),
             'quota' => (int)$clase->quota,
+            'active' => (bool)$active,
 
             'rels' => [
                 'wod' => [
                   'id' => (int)$clase->wod_id,
                   'href' => route('wods.show', ['wod' => (int)$clase->wod_id])
                 ],
-                'users' => [
+                'reservations' => [
                   'count' => (int)count($clase->users),
-                  'href' => route('clases.users', ['clase' => (int)$clase->id])
+                  'href' => route('clases.reservations', ['clase' => (int)$clase->id])
                 ],
                 'auth_reservation' => [
                   'has' => (bool)$clase->auth_has_reservation(),
+                  'can' => (bool)$clase->auth_can_reserve(),
                   'reservation_id' => (int)$reservation_id,
                   'status' => (string)$reservation_status,
                   'details' => (string)$reservation_details,

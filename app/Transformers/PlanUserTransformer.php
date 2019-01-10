@@ -14,30 +14,51 @@ class PlanUserTransformer extends TransformerAbstract
      */
     public function transform(PlanUser $planuser)
     {
-        return [
-            'identificador' => (int)$planuser->id,
-            'fechaInicio' => (string)$planuser->start_date,
-            'fechatermino' => (string)$planuser->finish_date,
-            'vencimiento' => (string)$planuser->finish_date->formatLocalized('%A %d de %B, %Y'),
-            'monto' => (string)$planuser->amount,
-            'contador' => (string)$planuser->counter,
-            'estadoPlan' => (string)$planuser->plan_status_id,
-            'idDescuento' => (int)$planuser->discount_id,
-            'idPlan' => (string)$planuser->plan_id,
-            'nombrePlan' => (string)$planuser->plan->plan,
-            'idUsuario' => (int)$planuser->user_id,
-            'fechaCreacion' => (string)$planuser->created_at,
-            'fechaActualizacion' => (string)$planuser->updated_at,
-            'fechaEliminacion' => isset($planuser->deleted_at) ? (string) $planuser->deleted_at : null,
 
-            // 'rels' => [
-            //     'self' => [
-            //         'href' => route('users.plans.show', [
-            //             'user' => $planuser->user_id,
-            //             'plan' => $planuser->plan_id]),
-            //     ],
-            // ],
-            // //
+        $hasBill = false;
+        $bill_id = '--';
+        $bill_date = '--';
+        $bill_method = '--';
+        $bill_detail = '--';
+        $bill_amount = '--';
+        if($planuser->bill)
+        {
+          $hasBill = true;
+          $bill_id = $planuser->bill->id;
+          $bill_date = $planuser->bill->date;
+          $bill_method = $planuser->bill->payment_type->payment_type;
+          $bill_amount = '$'.number_format($planuser->bill->amount, 0, ',', '.');
+
+        }
+
+
+        return [
+            'plan_user_id' => (int)$planuser->id,
+            'start' => (string)$planuser->start_date,
+            'end' => (string)$planuser->finish_date,
+            'vencimiento' => (string)ucfirst($planuser->finish_date->formatLocalized('%A %d')).' de '.ucfirst($planuser->finish_date->formatLocalized('%B, %Y')) ,
+            'inicio' => (string)ucfirst($planuser->start_date->formatLocalized('%A %d')).' de '.ucfirst($planuser->start_date->formatLocalized('%B, %Y')) ,
+            'counter' => (string)$planuser->counter,
+            'plan_status' => (string)$planuser->plan_status_id,
+            'plan_id' => (string)$planuser->plan_id,
+            'plan_name' => (string)$planuser->plan->plan,
+
+            'rels' => [
+                'user' => [
+                  'user_id' => $planuser->user->id,
+                ],
+                'bill' => [
+                  'has' => (bool)$hasBill,
+                  'id' => (string)$bill_id,
+                  'method' => (string)$bill_method,
+                  'date' => (string)$bill_date,
+                  'detail' => (string)$bill_detail,
+                  'amount' => (string)  $bill_amount,
+
+
+                ],
+            ],
+            //
         ];
     }
 

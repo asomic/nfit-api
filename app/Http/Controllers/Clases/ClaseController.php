@@ -44,10 +44,10 @@ class ClaseController extends ApiController
             }
 
             $reservation_today = $this->hasClase($date);
-            $can_reserve = $this->canReserve($date); 
+            $can_reserve = $this->canReserve($date);
             $day = ["date" => (string)$date->toDateString(),
                     "day"=> (string)$date->format('d'),
-                    "dayName"=> (string)$date->format('l'),
+                    "dayName"=> (string)ucfirst($date->formatLocalized('%A' )),
                     "today"=> $isToday,
                     "hasClases"=> $reservation_today,
                     "canReserve"=> $can_reserve,
@@ -76,15 +76,23 @@ class ClaseController extends ApiController
 
     public function coming()
     {
-        $clases = Auth::user()->clases->where('date','>=',today())
-                                      ->where(now()->format('H:i'), '>=', 'finish_at');
+        $clases = Auth::user()->clases->where('date','>=',today());
+                                      // ->where(now()->format('H:i'), '>=', 'finish_at');
         return $this->showAll($clases);
     }
 
     public function users(Clase $clase)
     {
         $users = $clase->users;
+        //dd($users);
         return $this->showAll($users, 200);
+    }
+
+    public function reservations(Clase $clase)
+    {
+        $reservations = $clase->reservations;
+        //dd($users);
+        return $this->showAll($reservations, 200);
     }
 
     /**
@@ -105,41 +113,57 @@ class ClaseController extends ApiController
      */
     public function reserve(Request $request, Clase $clase)
     {
-        $planusers = PlanUser::whereIn('plan_status_id', [1,3])->where('user_id', Auth::id())->get();
+      $planuser = PlanUser::where('plan_status_id', 1)->where('user_id', Auth::id())->first();
+      $reservation = new Reservation;
+      $reservation->user_id = Auth::user()->id;
+      $reservation->clase_id = $clase->id;
+      $reservation->by_god = false;
+      $reservation->reservation_status_id = 1 ;
+      if($reservation->save())
+      {
+        $planuser->counter = $planuser->counter - 1;
+        $planuser->save();
+        return $this->showOne($reservation->clase, 200);
+      } else {
+        return $this->errorResponse('No se puede tomar la clase', 400);
+      }
+        // $planusers = PlanUser::whereIn('plan_status_id', [1,3])->where('user_id', Auth::id())->get();
+        //
+        // foreach ($planusers as $planuser) {
+        //     foreach ($planuser->plan_user_periods as $pup) {
+        //         if ($date_class->between(Carbon::parse($pup->start_date), Carbon::parse($pup->finish_date))) {
+        //             $period_plan = $pup;
+        //         }
+        //     }
+        // }
+        //
+        // if ($clase->date > toDay()->format('Y-m-d')) {
+        //     $campos['user_id'] = Auth::id();
+        //     $campos['clase_id'] = $clase->id;
+        //     $campos['reservation_status_id'] = 1;
+        //     $period_plan->update(['counter' => $period_plan->counter - 1]);
+        //     $reservation = Reservation::create($campos);
+        //
+        //     return $this->showOne($reservation->clase, 200);
+        // }
+        // else {
+        //     $class_hour = Carbon::parse($clase->start_at);
+        //     $diff_mns = $class_hour->diffInMinutes(now()->format('H:i'));
+        //     // ??? SERA NECESARIO PONER LAS RESPUESTAS PERSONALIZADAS ???
+        //     if ((now()->format('H:i') > $class_hour) || (diff_mns < 40)) {
+        //         return $this->errorResponse('Ya no se puede tomar esta clase', 400);
+        //     }else{
+        //         $campos['user_id'] = Auth::id();
+        //         $campos['clase_id'] = $clase->id;
+        //         $campos['reservation_status_id'] = 1;
+        //         $period_plan->update(['counter' => $period_plan->counter - 1]);
+        //         $reservation = Reservation::create($campos);
+        //
+        //         return $this->showOne($reservation->clase, 200);
+        //     }
+        // }
 
-        foreach ($planusers as $planuser) {
-            foreach ($planuser->plan_user_periods as $pup) {
-                if ($date_class->between(Carbon::parse($pup->start_date), Carbon::parse($pup->finish_date))) {
-                    $period_plan = $pup;
-                }
-            }
-        }
 
-        if ($clase->date > toDay()->format('Y-m-d')) {
-            $campos['user_id'] = Auth::id();
-            $campos['clase_id'] = $clase->id;
-            $campos['reservation_status_id'] = 1;
-            $period_plan->update(['counter' => $period_plan->counter - 1]);
-            $reservation = Reservation::create($campos);
-
-            return $this->showOne($reservation->clase, 200);
-        }
-        else {
-            $class_hour = Carbon::parse($clase->start_at);
-            $diff_mns = $class_hour->diffInMinutes(now()->format('H:i'));
-            // ??? SERA NECESARIO PONER LAS RESPUESTAS PERSONALIZADAS ???
-            if ((now()->format('H:i') > $class_hour) || (diff_mns < 40)) {
-                return $this->errorResponse('Ya no se puede tomar esta clase', 400);
-            }else{
-                $campos['user_id'] = Auth::id();
-                $campos['clase_id'] = $clase->id;
-                $campos['reservation_status_id'] = 1;
-                $period_plan->update(['counter' => $period_plan->counter - 1]);
-                $reservation = Reservation::create($campos);
-
-                return $this->showOne($reservation->clase, 200);
-            }
-        }
     }
 
     public function confirm(Request $request, Clase $clase)
@@ -180,17 +204,17 @@ class ClaseController extends ApiController
     }
 
     public function canReserve($date)
-    {   
+    {
         $response = false;
         $planusers = PlanUser::whereIn('plan_status_id', [1,3])->where('user_id', Auth::id())->get();
         foreach ($planusers as $planuser) {
-            foreach ($planuser->plan_user_periods as $pup) {
-                if ($date->between(Carbon::parse($pup->start_date), Carbon::parse($pup->finish_date))) {
-                    if ($pup->counter > 0) {
-                        $response = true;
-                    }
-                }
-            }
+
+          if ($date->between(Carbon::parse($planuser->start_date), Carbon::parse($planuser->finish_date))) {
+              if ($planuser->counter > 0) {
+                  $response = true;
+              }
+          }
+
         }
         return $response;
     }
@@ -208,7 +232,7 @@ class ClaseController extends ApiController
         }
         elseif ($clase->date > toDay()->format('Y-m-d')) {
             if ($reservation->delete()) {
-                    $planuser->counter = $planuser->counter - 1;
+                    $planuser->counter = $planuser->counter + 1;
                     $planuser->save();
                     return $this->showOne($clase, 200);
                 }

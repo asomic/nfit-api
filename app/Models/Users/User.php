@@ -194,14 +194,24 @@ class User extends Authenticatable
     * @method reservations
     * @return [Model]       [description]
     */
-    public function coming_reservations()
+
+    public function reservations($status = null )
     {
-      return $this->hasMany(Reservation::class)->where('reservation_status_id','<=',2);
+      if($status!=null){
+        return $this->hasMany(Reservation::class)->where('reservation_status_id', $status);
+      } else {
+        return $this->hasMany(Reservation::class);
+      }
     }
 
-    public function historic_reservations()
+    public function assistence()
     {
-      return $this->hasMany(Reservation::class)->where('reservation_status_id','>=',3);
+      return $this->belongsToMany(
+          Clase::class,
+          'reservations',
+          'user_id',
+          'clase_id'
+      )->wherePivot('reservation_status_id', 3)->where('date','>=',date("Y").'-01-01');
     }
 
     /**
@@ -221,4 +231,10 @@ class User extends Authenticatable
     {
       return $this->belongsTo(StatusUser::class);
     }
+
+    // public function bills()
+    // {
+    //   return $this->belongsTo(StatusUser::class);
+    // }
+
 }

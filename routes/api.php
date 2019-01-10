@@ -12,6 +12,7 @@ Route::Apiresource('bills', 'Bills\BillController');
  */
 Route::Apiresource('clases', 'Clases\ClaseController');
 	Route::get('clases/{clase}/users', 'Clases\ClaseController@users')->name('clases.users');
+	Route::get('clases/{clase}/reservations', 'Clases\ClaseController@reservations')->name('clases.reservations');
 	Route::get('clases-historic/', 'Clases\ClaseController@historic')->name('clases.historic');
 	Route::get('clases-coming/', 'Clases\ClaseController@coming')->name('clases.coming');
 	Route::post('clases/{clase}/reserve', 'Clases\ClaseController@reserve');
@@ -34,7 +35,11 @@ Route::Apiresource('reservations', 'Clases\ReservationController');
  */
 Route::Apiresource('users', 'Users\UserController');
 	Route::get('profile', 'Users\UserController@profile');
+	Route::post('profile/image', 'Users\UserController@image');
+	Route::get('assistance', 'Users\UserController@assistance');
 	Route::get('logout', 'Users\UserController@logout');
+	Route::get('today', 'Users\UserController@today')->name('users.today');
+	Route::get('plans', 'Users\UserController@plans')->name('users.plans');
 
 
 

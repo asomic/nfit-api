@@ -15,6 +15,21 @@ class UserTransformer extends TransformerAbstract
      */
     public function transform(User $user)
     {
+
+       $userPlan = $user->active_planuser();
+       if($userPlan)
+       {
+         $plan = $userPlan->plan->plan;
+         $expiration = ucfirst($userPlan->finish_date->formatLocalized('%A %d')).' de '.ucfirst($userPlan->finish_date->formatLocalized('%B, %Y'));
+         $counter = $userPlan->counter;
+       } else {
+
+         $plan = 'no tiene activo';
+         $expiration = '---';
+         $counter = '--' ;
+
+       }
+
         return [
             'identificador' => (int)$user->id,
             'nombre' => (string)$user->first_name,
@@ -29,7 +44,7 @@ class UserTransformer extends TransformerAbstract
             'fechaCreacion' => (string)$user->created_at,
             'fechaActualizacion' => (string)$user->updated_at,
             'fechaEliminacion' => isset($user->deleted_at) ? (string) $user->deleted_at : null,
-            'avatar' => 'http://purasangre.asomic.com/storage/users/'.$user->avatar.'.jpg',
+            'avatar' => $user->avatar,
 
             'rels' => [
                 'self' => [
@@ -39,7 +54,15 @@ class UserTransformer extends TransformerAbstract
                     'href' => route('users.planusers.index', $user->id),
                 ],
                 'active_plan' => [
+                    'plan' => (string)$plan,
+                    'expiration' => (string)$expiration,
                     'href' => route('users.planusers.active', $user->id),
+                ],
+                'stats' => [
+                    'clases_consumed' => (int)$user->reservations(3)->count(),
+                    'clases_quantity' => (int)$counter,
+                    'clases_lost' => (int)$user->reservations(4)->count(),
+                    'assistance' => '',
                 ],
             ],
         ];

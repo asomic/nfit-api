@@ -2,7 +2,7 @@
 
 namespace App\Models\Plans;
 
-use App\Models\Bills\Installment;
+use App\Models\Bills\Bill;
 use App\Models\Plans\Discount;
 use App\Models\Plans\Plan;
 use App\Models\Plans\PlanUserPeriod;
@@ -101,5 +101,10 @@ class PlanUser extends Model
     public function plan_user_periods()
     {
         return $this->hasMany(PlanUserPeriod::class);
+    }
+
+    public function bill()
+    {
+        return $this->hasOne(Bill::class);
     }
 }
