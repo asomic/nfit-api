@@ -63,3 +63,10 @@ Route::post('oauth/token', '\Laravel\Passport\Http\Controllers\AccessTokenContro
 // Route::middleware('auth:api')->get('/user', function (Request $request) {
 //     return $request->user();
 // });
+
+/**
+ *  PASSWORD RESET REQUEST
+ */
+Route::group(['middleware' => 'api', 'prefix' => 'password'], function () {
+	Route::post('reset', 'Users\PasswordResetController@reset');
+});

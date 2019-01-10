@@ -14,6 +14,7 @@ use App\Models\Users\Millestone;
 use App\Models\Users\Role;
 use App\Models\Users\RoleUser;
 use App\Models\Users\StatusUser;
+use App\Notifications\MyResetPassword;
 use App\Transformers\UserTransformer;
 use Freshwork\ChileanBundle\Rut;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -39,15 +40,16 @@ class User extends Authenticatable
 
     public $transformer = UserTransformer::class;
 
-    // /**
-    //  * [getRutAttribute description]
-    //  * @param  [type] $value [description]
-    //  * @return [type]        [description]
-    //  */
-    // public function getRutAttribute($value)
-    // {
-    //   return Rut::set($value)->fix()->format();
-    // }
+    /**
+    * Send the password reset notification.
+    *
+    * @param  string  $token
+    * @return void
+    */
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new MyResetPassword($token));
+    }
 
      /**
      * [getFullNameAttribute description]
