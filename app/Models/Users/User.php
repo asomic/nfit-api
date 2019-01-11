@@ -107,7 +107,7 @@ class User extends Authenticatable
     public function clases()
     {
       //return $this->belongsToMany(Clase::Class)->using(Reservation::class);
-      return $this->belongsToMany(Clase::Class, 'reservations', 'user_id');
+      return $this->belongsToMany(Clase::Class, 'reservations', 'user_id')->withPivot('reservation_status_id');
       //return $this->hasManyThrough(Clase::Class, Reservation::class);
     }
 
