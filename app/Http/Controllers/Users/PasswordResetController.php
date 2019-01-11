@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Users;
 
 use App\Models\Users\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Password;
 
