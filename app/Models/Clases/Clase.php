@@ -51,13 +51,32 @@ class Clase extends Model
 
     public function auth_can_reserve()
     {
+      //maximo de 3 usuarios de prueba
+
+      if(Auth::user()->status_user_id == 3){
+
+        $pruebaCount = 0;
+        foreach ($this->users as $user) {
+          if($user->status_user_id == 3){
+            $pruebaCount++;
+          }
+        }
+        if($pruebaCount >= 3)
+        {
+          return false;
+        }
+      }
+
       $planUser = Auth::user()->plan_users()->where('start_date', '<=', $this->date)->where('finish_date', '>=', $this->date)->first();
+
       if($planUser)
       {
           $ids = $this->block->getPlansIdAttribute()->toArray();
           if((in_array($planUser->plan_id,$ids)) && ($planUser->counter > 0 ) )
           {
+
             return true;
+
           } else {
             return false;
           }
@@ -91,6 +110,8 @@ class Clase extends Model
       return $this->belongsToMany(User::Class, 'reservations','clase_id');
     }
 
+
+
     public function profresor()
     {
         return $this->morphMany('App\Models\Users\User', 'userable');
@@ -105,6 +126,19 @@ class Clase extends Model
     {
       return $this->belongsTo(Block::class);
     }
+
+    public function pruebaUsersCount()
+    {
+      $users = $this->belongsToMany(User::Class)->using(Reservation::class)->get();
+      $count = 0;
+      foreach ($users as  $user) {
+        $count++;
+      }
+      return $count;
+    }
+
+    //set y get
+
 
     public function getReservationCountAttribute()
     {

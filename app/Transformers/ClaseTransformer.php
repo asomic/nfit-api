@@ -23,6 +23,12 @@ class ClaseTransformer extends TransformerAbstract
 
         $dateTimeString = $clase->date->format('Y-m-d')." ".$start;
         $dateTime = Carbon::createFromFormat('Y-m-d H:i:s', $dateTimeString);
+        $pruebaCount = 0;
+        foreach ($clase->users as $user) {
+          if($user->status_user_id == 3){
+            $pruebaCount++;
+          }
+        }
 
         if($dateTime > Carbon::now())
         {
@@ -62,6 +68,7 @@ class ClaseTransformer extends TransformerAbstract
                 ],
                 'reservations' => [
                   'count' => (int)count($clase->users),
+                  'prueba_count' => $pruebaCount,
                   'href' => route('clases.reservations', ['clase' => (int)$clase->id])
                 ],
                 'auth_reservation' => [
