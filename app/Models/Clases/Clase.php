@@ -105,10 +105,10 @@ class Clase extends Model
      * [users description]
      * @return [type] [description]
      */
-    public function users()
-    {
-      return $this->belongsToMany(User::Class, 'reservations','clase_id');
-    }
+     public function users()
+     {
+     return $this->belongsToMany(User::Class)->using(Reservation::class);
+     }
 
 
 
