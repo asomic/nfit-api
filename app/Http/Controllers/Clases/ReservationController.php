@@ -40,8 +40,13 @@ class ReservationController extends ApiController
 
     public function details(Reservation $reservation, Request $request)
     {
-        $reservation->update($request->all());
-        return $this->showOne($reservation, 200);
+        $reservation->details = $request->details;
+        if($reservation->save()){
+          return $this->showOne($reservation, 200);
+        } else {
+          return response()->json('error al guardar nota', 401);
+        }
+
     }
 
     // public function week()
