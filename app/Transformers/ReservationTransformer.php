@@ -31,7 +31,7 @@ class ReservationTransformer extends TransformerAbstract
                   'href' => (string)route('clases.show', ['clase' => (int)$reservation->clase_id]),
                   'users' => [
                     'count' => (int)count($reservation->clase->users),
-                    'prueba_count' => (int)count($reservation->clase->pruebaUsersCount()),
+                    // 'prueba_count' => (int)count($reservation->clase->pruebaUsersCount()),
                     'href' => (string)route('clases.users', ['clase' => (int)$reservation->clase_id]),
                     ],
                   ],
