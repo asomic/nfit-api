@@ -59,6 +59,7 @@ Route::Apiresource('wods', 'Wods\WodController');
  *  Token for api
  */
 Route::post('oauth/token', '\Laravel\Passport\Http\Controllers\AccessTokenController@issueToken');
+Route::post('fcm/token', 'Users\UserController@fcmToken');
 
 // Route::middleware('auth:api')->get('/user', function (Request $request) {
 //     return $request->user();
