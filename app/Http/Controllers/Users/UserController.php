@@ -226,4 +226,16 @@ class UserController extends ApiController
 
     }
 
+    public function fcmTokenGet($token)
+    {
+
+      Auth::user()->fcm_token = $token;
+      if(Auth::user()->save()){
+        return response()->json('guardado'.Auth::user()->fcm_token, 200);
+      } else {
+        return response()->json('no guardado', 401);
+      }
+
+    }
+
 }
