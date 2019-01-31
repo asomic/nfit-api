@@ -42,7 +42,7 @@ class ReservationController extends ApiController
     {
         $reservation->details = $request->details;
         if($reservation->save()){
-          return response()->json('nota guardada', 200);
+          return response()->json('nota guardada reserva :'+$reservation->details, 200);
         } else {
           return response()->json('error al guardar nota', 401);
         }

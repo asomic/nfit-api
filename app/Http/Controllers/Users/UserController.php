@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Users;
 
 use Auth;
 use App\Models\Users\User;
+use App\Models\Users\Alert;
 use App\Models\Wods\Wod;
 use App\Models\Clases\Reservation;
 use Illuminate\Http\Request;
@@ -139,7 +140,10 @@ class UserController extends ApiController
       $alerts = [];
       $confirmation = [];
       $has_confirmation = (bool)false;
+      $backend_notification = [];
+      $has_backend_notification = (bool)false;
 
+      //has confirmation
       $clase = Auth::user()->clases->where('date',today())->first();
       if($clase)
       {
@@ -155,10 +159,16 @@ class UserController extends ApiController
         }
       }
 
+      $backend_notification = Alert::where('from','<=', today())->where('to','>=',today())->get();
+      if($backend_notification){
+        $has_backend_notification = (bool)true;
+      }
 
       $alerts = [
         'has_confirmation' => $has_confirmation,
         'confirmation' => $confirmation,
+        'has_backend_notification' =>  $has_backend_notification,
+        'backend_notification' =>  $backend_notification,
       ];
 
       return response()->json(['data' => $alerts ], 200);
