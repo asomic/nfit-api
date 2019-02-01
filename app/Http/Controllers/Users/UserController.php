@@ -160,7 +160,7 @@ class UserController extends ApiController
       }
 
       $backend_notification = Alert::where('from','<=', today())->where('to','>=',today())->get();
-      if($backend_notification){
+      if(count($backend_notification)>0){
         $has_backend_notification = (bool)true;
       }
 
