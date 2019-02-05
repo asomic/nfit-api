@@ -24,7 +24,7 @@ class UserTransformer extends TransformerAbstract
          $counter = $userPlan->counter;
        } else {
 
-         $plan = 'no tiene activo';
+         $plan = 'Sin plan activo';
          $expiration = '---';
          $counter = '--' ;
 
