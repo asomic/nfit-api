@@ -33,7 +33,7 @@ class User extends Authenticatable
       'rut', 'first_name', 'last_name',
       'birthdate', 'gender', 'email',
       'address', 'password', 'phone',
-      'emergency_id', 'status_user_id'];
+      'emergency_id', 'status_user_id', 'tutorial'];
     protected $hidden = ['password', 'remember_token'];
     protected $dates = ['deleted_at'];
     protected $appends = ['full_name'];

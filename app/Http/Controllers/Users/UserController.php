@@ -39,6 +39,12 @@ class UserController extends ApiController
         return $this->showOne($user, 200);
     }
 
+    public function tutorial()
+    {
+        Auth::user()->update(['tutorial' => true]);
+        return $this->successResponse('Seen', 200);
+    }
+
     public function image(Request $request)
     {
 

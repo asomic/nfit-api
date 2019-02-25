@@ -40,6 +40,7 @@ trait ApiResponser
 
 	protected function showOne(Model $instance, $code = 200)
 	{
+		// dd($instance->transformer);
 		$transformer = $instance->transformer;
 		$instance = $this->transformData($instance, $transformer);
 
@@ -112,6 +113,7 @@ trait ApiResponser
 
 	protected function transformData($data, $transformer)
 	{
+		// return fractal($data, new $transformer)->toArray();
 		$transformation = fractal($data, new $transformer);
 
 		return $transformation->toArray();

@@ -35,6 +35,7 @@ Route::Apiresource('reservations', 'Clases\ReservationController');
  */
 Route::Apiresource('users', 'Users\UserController');
 	Route::get('profile', 'Users\UserController@profile');
+	Route::get('profile/tutorial', 'Users\UserController@tutorial');
 	Route::post('profile/image', 'Users\UserController@image');
 	Route::get('assistance', 'Users\UserController@assistance');
 	Route::get('logout', 'Users\UserController@logout');
