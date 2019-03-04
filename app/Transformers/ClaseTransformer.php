@@ -29,7 +29,7 @@ class ClaseTransformer extends TransformerAbstract
             $pruebaCount++;
           }
         }
-        $reservation_count = $clase->users
+        //$reservation_count = $clase->users;
 
         if(($dateTime > Carbon::now()) && ($clase->quota > count($clase->users) ))
         {
