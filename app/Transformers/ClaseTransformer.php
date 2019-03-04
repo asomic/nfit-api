@@ -31,7 +31,7 @@ class ClaseTransformer extends TransformerAbstract
         }
         $reservation_count = $clase->users
 
-        if(($dateTime > Carbon::now()) && ($clase->quota > (int)count($clase->users) ))
+        if(($dateTime > Carbon::now()) && ($clase->quota > count($clase->users) ))
         {
           $active = true;
         } else {
