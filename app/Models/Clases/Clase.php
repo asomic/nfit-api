@@ -54,14 +54,14 @@ class Clase extends Model
     public function auth_can_reserve()
     {
       //maximo de 3 usuarios de prueba
-      $clases = Clase::where('date', $this->$date)->get();
+      $clases = Clase::where('date', $this->date)->get();
       foreach ($clases as $clase) {
           $reservations = Reservation::where('user_id', Auth::id())->where('clase_id', $clase->id)->get();
           if (count($reservations) != 0) {
               return false;
           }
       }
-    
+
       if(Auth::user()->status_user_id == 3){
 
         $pruebaCount = 0;
