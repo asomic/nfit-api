@@ -113,11 +113,13 @@ class ClaseController extends ApiController
      */
     public function reserve(Request $request, Clase $clase)
     {
+
       $planuser = PlanUser::where('plan_status_id', 1)->where('user_id', Auth::id())->first();
       $reservation = new Reservation;
       $reservation->user_id = Auth::user()->id;
       $reservation->clase_id = $clase->id;
       $reservation->by_god = false;
+      if($planuser) {$reservation->plan_user_id = $planuser->id;}
       $reservation->reservation_status_id = 1 ;
       if($reservation->save())
       {
@@ -127,42 +129,6 @@ class ClaseController extends ApiController
       } else {
         return $this->errorResponse('No se puede tomar la clase', 400);
       }
-        // $planusers = PlanUser::whereIn('plan_status_id', [1,3])->where('user_id', Auth::id())->get();
-        //
-        // foreach ($planusers as $planuser) {
-        //     foreach ($planuser->plan_user_periods as $pup) {
-        //         if ($date_class->between(Carbon::parse($pup->start_date), Carbon::parse($pup->finish_date))) {
-        //             $period_plan = $pup;
-        //         }
-        //     }
-        // }
-        //
-        // if ($clase->date > toDay()->format('Y-m-d')) {
-        //     $campos['user_id'] = Auth::id();
-        //     $campos['clase_id'] = $clase->id;
-        //     $campos['reservation_status_id'] = 1;
-        //     $period_plan->update(['counter' => $period_plan->counter - 1]);
-        //     $reservation = Reservation::create($campos);
-        //
-        //     return $this->showOne($reservation->clase, 200);
-        // }
-        // else {
-        //     $class_hour = Carbon::parse($clase->start_at);
-        //     $diff_mns = $class_hour->diffInMinutes(now()->format('H:i'));
-        //     // ??? SERA NECESARIO PONER LAS RESPUESTAS PERSONALIZADAS ???
-        //     if ((now()->format('H:i') > $class_hour) || (diff_mns < 40)) {
-        //         return $this->errorResponse('Ya no se puede tomar esta clase', 400);
-        //     }else{
-        //         $campos['user_id'] = Auth::id();
-        //         $campos['clase_id'] = $clase->id;
-        //         $campos['reservation_status_id'] = 1;
-        //         $period_plan->update(['counter' => $period_plan->counter - 1]);
-        //         $reservation = Reservation::create($campos);
-        //
-        //         return $this->showOne($reservation->clase, 200);
-        //     }
-        // }
-
 
     }
 
