@@ -42,4 +42,8 @@ class Plan extends Model
     return $this->belongsToMany(User::class)->using(PlanUser::class);
   }
 
+  public function blocks()
+  {
+    return $this->belongsToMany('App\Models\Clases\Block', 'block_plan');
+  }
 }

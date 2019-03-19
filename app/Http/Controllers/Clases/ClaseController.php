@@ -113,14 +113,18 @@ class ClaseController extends ApiController
      */
     public function reserve(Request $request, Clase $clase)
     {
-
       $planuser = PlanUser::where('plan_status_id', 1)->where('user_id', Auth::id())->first();
       $reservation = new Reservation;
       $reservation->user_id = Auth::user()->id;
       $reservation->clase_id = $clase->id;
       $reservation->by_god = false;
-      if($planuser) {$reservation->plan_user_id = $planuser->id;}
       $reservation->reservation_status_id = 1 ;
+      if($planuser){
+        $reservation->plan_user_id = $planuser->id;
+        if (!in_array($planuser->plan->id, $clase->block->plans->pluck('id')->toArray())) {
+          return $this->errorResponse('Tu plan no te deja tomar esta clase', 400);
+        }
+      }
       if($reservation->save())
       {
         $planuser->counter = $planuser->counter - 1;
