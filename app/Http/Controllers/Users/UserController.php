@@ -26,6 +26,7 @@ class UserController extends ApiController
     public function index()
     {
       $users = User::all();
+
       return $this->showAll($users);
     }
 
@@ -36,12 +37,14 @@ class UserController extends ApiController
     public function profile()
     {
         $user = Auth::user();
+
         return $this->showOne($user, 200);
     }
 
     public function tutorial()
     {
         Auth::user()->update(['tutorial' => true]);
+
         return $this->successResponse('Seen', 200);
     }
 
@@ -50,49 +53,49 @@ class UserController extends ApiController
 
       $user = Auth::user();
 
-      if ($request->hasFile('image')) {
+        if ($request->hasFile('image')) {
+          
+            request()->file('image')->storeAs('public/users', $user->id.$user->first_name.'.jpg');
+          
+            $user->avatar = url('/').'/storage/users/'.$user->id.$user->first_name.'.jpg';
+          
+            $user->save();
+          
+            return response()->json(['success' =>'Sesion finalizada'], 200);
+      
+        } else {
 
-          request()->file('image')->storeAs('public/users', $user->id.$user->first_name.'.jpg');
-          $user->avatar = url('/').'/storage/users/'.$user->id.$user->first_name.'.jpg';
-          $user->save();
-          return response()->json(['success' =>'Sesion finalizada'], 200);
-      }
-      else {
-        return response()->json(['error' =>'nooooooooooooooo'], 400);
-      }
-
+            return response()->json(['error' =>'nooooooooooooooo'], 400);
+        }
     }
 
+    /**
+     * [assistance description]
+     * @return [type] [description]
+     */
     public function assistance()
     {
-    //  $reservations = Auth::user()->reservations(3)->get();
-    $reservations = Auth::user()->assistence()->whereRaw('MONTH(date) = 2')->count();
-    //dd($reservations);
-
-      // foreach ($reservations as $key => $value) {
-      //   $year =
-      // }
-      return response()->json([
-        'label' => ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
-        'data'  => [
-          Auth::user()->assistence()->whereRaw('MONTH(date) = 1')->count(),
-          Auth::user()->assistence()->whereRaw('MONTH(date) = 2')->count(),
-          Auth::user()->assistence()->whereRaw('MONTH(date) = 3')->count(),
-          Auth::user()->assistence()->whereRaw('MONTH(date) = 4')->count(),
-          Auth::user()->assistence()->whereRaw('MONTH(date) = 5')->count(),
-          Auth::user()->assistence()->whereRaw('MONTH(date) = 6')->count(),
-          Auth::user()->assistence()->whereRaw('MONTH(date) = 7')->count(),
-          Auth::user()->assistence()->whereRaw('MONTH(date) = 8')->count(),
-          Auth::user()->assistence()->whereRaw('MONTH(date) = 9')->count(),
-          Auth::user()->assistence()->whereRaw('MONTH(date) = 10')->count(),
-          Auth::user()->assistence()->whereRaw('MONTH(date) = 11')->count(),
-          Auth::user()->assistence()->whereRaw('MONTH(date) = 12')->count(),
-         ],
-
-      ], 200);
+        $reservations = Auth::user()->assistence()->whereRaw('MONTH(date) = 2')->count();
+        
+        return response()->json([
+            'label' => ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
+            'data'  => [
+                Auth::user()->assistence()->whereRaw('MONTH(date) = 1')->count(),
+                Auth::user()->assistence()->whereRaw('MONTH(date) = 2')->count(),
+                Auth::user()->assistence()->whereRaw('MONTH(date) = 3')->count(),
+                Auth::user()->assistence()->whereRaw('MONTH(date) = 4')->count(),
+                Auth::user()->assistence()->whereRaw('MONTH(date) = 5')->count(),
+                Auth::user()->assistence()->whereRaw('MONTH(date) = 6')->count(),
+                Auth::user()->assistence()->whereRaw('MONTH(date) = 7')->count(),
+                Auth::user()->assistence()->whereRaw('MONTH(date) = 8')->count(),
+                Auth::user()->assistence()->whereRaw('MONTH(date) = 9')->count(),
+                Auth::user()->assistence()->whereRaw('MONTH(date) = 10')->count(),
+                Auth::user()->assistence()->whereRaw('MONTH(date) = 11')->count(),
+                Auth::user()->assistence()->whereRaw('MONTH(date) = 12')->count(),
+            ],
+        ], 200);
     }
 
-    // *
     //  * Display the specified resource.
     //  *
     //  * @param  \App\Models\Users\User  $user
@@ -105,6 +108,7 @@ class UserController extends ApiController
     public function plans()
     {
       $user_plans = Auth::user()->plan_users;
+
       return $this->showAll($user_plans, 200);
     }
 
@@ -117,8 +121,9 @@ class UserController extends ApiController
      */
     public function update(Request $request, User $user)
     {
-      $user->update($request->all());
-      return $this->showOne($user, 200);
+        $user->update($request->all());
+
+        return $this->showOne($user, 200);
     }
 
     /**
@@ -127,17 +132,19 @@ class UserController extends ApiController
      */
     public function logout()
     {
-      if (Auth::check()) {
-          Auth::user()->token()->revoke();
-          return response()->json(['success' =>'Sesion finalizada'], 200);
-      }else{
-          return response()->json(['error' =>'api.something_went_wrong'], 500);
-      }
+        if (Auth::check()) {
+            Auth::user()->token()->revoke();
+            
+            return response()->json(['success' =>'Sesion finalizada'], 200);
+        } else {
+            return response()->json(['error' =>'api.something_went_wrong'], 500);
+        }
     }
 
     public function clases()
     {
       $clases = Auth::user()->clases->where('date','<=',today());
+      
       return $this->showAll($clases);
     }
 
