@@ -13,59 +13,58 @@ use App\Http\Controllers\ApiController;
 class ClaseController extends ApiController
 {
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * Get all clases
+     * 
+     * @return Clase
      */
-    public function store(Request $request)
-    {
-        //
-    }
-
     public function index()
     {
         $clases = Clase::all();
+
         return $this->showAll($clases);
     }
 
+    /**
+     * Get all days of the week
+     * 
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function week()
     {
         $week = [];
-        $today = carbon::today();
+        $today = today();
         $date = $today;
         $day = [];
         for ($i=0; $i < 7; $i++) {
             $dow = $date->dayOfWeek;
-            if($i==0){
-                $isToday = (bool)true;
-            }else{
-                $isToday = (bool)false;
-            }
+            $isToday = $i == 0 ? true : false;
 
             $reservation_today = $this->hasClase($date);
             $can_reserve = $this->canReserve($date);
-            $day = ["date" => (string)$date->toDateString(),
-                    "day"=> (string)$date->format('d'),
-                    "dayName"=> (string)ucfirst($date->formatLocalized('%A' )),
-                    "today"=> $isToday,
-                    "hasClases"=> $reservation_today,
-                    "canReserve"=> $can_reserve,
-                   ];
+            $day = [
+                "date" => (string)$date->toDateString(),
+                "day" => (string)$date->format('d'),
+                "dayName" => (string)ucfirst($date->formatLocalized('%A' )),
+                "today" => $isToday,
+                "hasClases" => $reservation_today,
+                "canReserve" => $can_reserve,
+            ];
 
             $week = array_add($week, $dow, $day);
 
             $date = $date->addDay();
-      }
+        }
 
+        array_forget($week, '0');
 
-      array_forget($week, '0');
-
-
-      return response()->json(['data' => $week], 200);
-
+        return response()->json(['data' => $week], 200);
     }
 
+    /**
+     * [historic description]
+     * 
+     * @return [type] [description]
+     */
     public function historic()
     {
         $clases = Auth::user()->clases->where('date','<',today())
@@ -74,24 +73,41 @@ class ClaseController extends ApiController
         return $this->showAll($clases);
     }
 
+    /**
+     * [coming description]
+     * 
+     * @return [type] [description]
+     */
     public function coming()
     {
-        $clases = Auth::user()->clases->where('date','>=',today());
+        $clases = Auth::user()->clases->where('date', '>=', today());
                                       // ->where(now()->format('H:i'), '>=', 'finish_at');
         return $this->showAll($clases);
     }
 
+    /**
+     * [users description]
+     * 
+     * @param  Clase  $clase [description]
+     * @return [type]        [description]
+     */
     public function users(Clase $clase)
     {
         $users = $clase->users;
-        //dd($users);
+
         return $this->showAll($users, 200);
     }
 
+    /**
+     * [reservations description]
+     * 
+     * @param  Clase  $clase [description]
+     * @return [type]        [description]
+     */
     public function reservations(Clase $clase)
     {
         $reservations = $clase->reservations;
-        //dd($users);
+
         return $this->showAll($reservations, 200);
     }
 
@@ -113,7 +129,9 @@ class ClaseController extends ApiController
      */
     public function reserve(Request $request, Clase $clase)
     {
-      $planuser = PlanUser::where('plan_status_id', 1)->where('user_id', Auth::id())->first();
+        $planuser = PlanUser::where('plan_status_id', 1)
+                            ->where('user_id', Auth::id())
+                            ->first();
       $reservation = new Reservation;
       $reservation->user_id = Auth::user()->id;
       $reservation->clase_id = $clase->id;
@@ -136,6 +154,13 @@ class ClaseController extends ApiController
 
     }
 
+    /**
+     * [confirm description]
+     * 
+     * @param  Request $request [description]
+     * @param  Clase   $clase   [description]
+     * @return [type]           [description]
+     */
     public function confirm(Request $request, Clase $clase)
     {
       $reservation = Reservation::where('clase_id', $clase->id)->where('user_id', Auth::id())->first();
@@ -147,6 +172,12 @@ class ClaseController extends ApiController
       return $this->showOne($reservation->clase, 200);
     }
 
+    /**
+     * [hasReserve description]
+     * 
+     * @param  [type]  $clase [description]
+     * @return boolean        [description]
+     */
     private function hasReserve($clase)
     {
         $response = '';
@@ -160,6 +191,12 @@ class ClaseController extends ApiController
         return $response;
     }
 
+    /**
+     * [hasClase description]
+     * 
+     * @param  DateTimeZone|string|null  $date 
+     * @return boolean       [description]
+     */
     private function hasClase($date)
     {
         $response = false;
@@ -173,25 +210,41 @@ class ClaseController extends ApiController
         return $response;
     }
 
+    /**
+     * Check for the user not exceed the limit of day classes
+     * 
+     * @param  \DateTimeZone|string|null $date [description]
+     * @return boolean
+     */
     public function canReserve($date)
     {
         $response = false;
-        $planusers = PlanUser::whereIn('plan_status_id', [1,3])->where('user_id', Auth::id())->get();
+        $planusers = PlanUser::whereIn('plan_status_id', [1,3])
+                             ->where('user_id', Auth::id())
+                             ->get(['id', 'start_date', 'finish_date', 'counter']);
+
         foreach ($planusers as $planuser) {
-
-          if ($date->between(Carbon::parse($planuser->start_date), Carbon::parse($planuser->finish_date))) {
-              if ($planuser->counter > 0) {
-                  $response = true;
-              }
-          }
-
+            if ($date->between(Carbon::parse($planuser->start_date), Carbon::parse($planuser->finish_date))) {
+                if ($planuser->counter > 0) {
+                    $response = true;
+                }
+            }
         }
+
         return $response;
     }
 
+    /**
+     * [remove description]
+     * 
+     * @param  Request $request [description]
+     * @param  Clase   $clase   [description]
+     * @return [type]           [description]
+     */
     public function remove(Request $request, Clase $clase)
     {
         $reservation = Reservation::where('clase_id', $clase->id)->where('user_id', Auth::id())->first();
+        
         if ($reservation == null) {
             return $this->errorResponse('No puede votar una clase en la que no esta', 403);
         }
@@ -199,19 +252,17 @@ class ClaseController extends ApiController
 
         if ($clase->date < toDay()->format('Y-m-d')) {
             return $this->errorResponse('No puede votar una clase de un día anterior a hoy', 403);
-        }
-        elseif ($clase->date > toDay()->format('Y-m-d')) {
+        } elseif ($clase->date > toDay()->format('Y-m-d')) {
             if ($reservation->delete()) {
                     $planuser->counter = $planuser->counter + 1;
                     $planuser->save();
                     return $this->showOne($clase, 200);
                 }
-        }
-        else {
+        } else {
             $class_hour = Carbon::parse($clase->start_at);
             if ($class_hour->diffInMinutes(now()->format('H:i')) < 40) {
-            return $this->errorResponse('Ya no puede votar la clase', 400);
-            }else{
+                return $this->errorResponse('Ya no puede votar la clase', 400);
+            } else {
                 if ($reservation->delete()) {
                     $planuser->counter = $planuser->counter - 1;
                     $planuser->save();
@@ -220,24 +271,4 @@ class ClaseController extends ApiController
             }
         }
     }
-
-
 }
-    // private function hasTwelvePlan($planuser)
-    // {
-    //     $responseTwo = null;
-    //     if ($planuser->plan_id == 5 && $planuser->counter >= 12) {
-    //         $responseTwo = 'No puede reservar, ya ha ocupado o reservado sus 12 clases del plan 12 clases mensual';
-    //     }
-    //     elseif ($planuser->plan_id == 6 && $planuser->counter >= 12) {
-    //         $responseTwo = 'El plan de 12 clases trimestral no le permite tomar mas clases';
-    //     }
-    //     elseif ($planuser->plan_id == 7 && $planuser->counter >= 12) {
-    //         $responseTwo = 'El plan de 12 clases semestral no le permite tomar mas clases';
-    //     }
-    //     elseif ($planuser->plan_id == 8 && $planuser->counter >= 12) {
-    //         $responseTwo = 'El plan de 12 clases anual no le permite tomar mas clases';
-    //     }
-
-    //     return $responseTwo;
-    // }

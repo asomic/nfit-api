@@ -27,15 +27,18 @@ use Laravel\Passport\HasApiTokens;
  */
 class User extends Authenticatable
 {
-    use HasApiTokens, Notifiable, SoftDeletes;
+    use UsesTenantConnection, HasApiTokens, Notifiable, SoftDeletes;
 
     protected $fillable = [
       'rut', 'first_name', 'last_name',
       'birthdate', 'gender', 'email',
       'address', 'password', 'phone',
       'emergency_id', 'status_user_id', 'tutorial'];
+
     protected $hidden = ['password', 'remember_token'];
+
     protected $dates = ['deleted_at'];
+
     protected $appends = ['full_name'];
 
     public $transformer = UserTransformer::class;

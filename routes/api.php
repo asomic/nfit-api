@@ -59,17 +59,17 @@ Route::Apiresource('wods', 'Wods\WodController');
 /**
  *  Token for api
  */
-Route::post('oauth/token', '\Laravel\Passport\Http\Controllers\AccessTokenController@issueToken');
+// Route::post('oauth/token', '\Laravel\Passport\Http\Controllers\AccessTokenController@issueToken');
 Route::post('fcm/token', 'Users\UserController@fcmToken');
 Route::get('fcm/token/{token}', 'Users\UserController@fcmTokenGet');
-
-// Route::middleware('auth:api')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
 
 /**
  *  PASSWORD RESET REQUEST
  */
 Route::group(['middleware' => 'api', 'prefix' => 'password'], function () {
 	Route::post('reset', 'Users\PasswordResetController@reset')->name('password.reset');
+});
+
+Route::group(['middleware' => 'tenancy.enforce'], function () {
+    Route::post('oauth/token', '\Laravel\Passport\Http\Controllers\AccessTokenController@issueToken');
 });

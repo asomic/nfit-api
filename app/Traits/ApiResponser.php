@@ -21,6 +21,13 @@ trait ApiResponser
 		return response()->json(['error' => $message, 'code' => $code], $code);
 	}
 
+	/**
+	 * [showAll description]
+	 * 
+	 * @param  Collection $collection [description]
+	 * @param  integer    $code       [description]
+	 * @return [type]                 [description]
+	 */
 	protected function showAll(Collection $collection, $code = 200)
 	{
 		if ($collection->isEmpty()) {

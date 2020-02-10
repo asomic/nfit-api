@@ -32,6 +32,7 @@ class UserController extends ApiController
 
     /**
      * Request for the auth user profile
+     * 
      * @return [json] [return authenticated user]
      */
     public function profile()
@@ -41,6 +42,11 @@ class UserController extends ApiController
         return $this->showOne($user, 200);
     }
 
+    /**
+     * [tutorial description]
+     * 
+     * @return [type] [description]
+     */
     public function tutorial()
     {
         Auth::user()->update(['tutorial' => true]);
@@ -48,10 +54,15 @@ class UserController extends ApiController
         return $this->successResponse('Seen', 200);
     }
 
+    /**
+     * [image description]
+     * 
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
     public function image(Request $request)
     {
-
-      $user = Auth::user();
+        $user = Auth::user();
 
         if ($request->hasFile('image')) {
           
@@ -63,10 +74,9 @@ class UserController extends ApiController
           
             return response()->json(['success' =>'Sesion finalizada'], 200);
       
-        } else {
-
-            return response()->json(['error' =>'nooooooooooooooo'], 400);
         }
+
+        return response()->json(['error' =>'nooooooooooooooo'], 400);
     }
 
     /**
@@ -105,6 +115,11 @@ class UserController extends ApiController
       return $this->showOne($user, 200);
     }
 
+    /**
+     * [plans description]
+     * 
+     * @return [type] [description]
+     */
     public function plans()
     {
       $user_plans = Auth::user()->plan_users;
@@ -128,6 +143,7 @@ class UserController extends ApiController
 
     /**
      * Revoke the token to the auth user
+     * 
      * @return json with good or bad response
      */
     public function logout()
@@ -141,6 +157,11 @@ class UserController extends ApiController
         }
     }
 
+    /**
+     * [clases description]
+     * 
+     * @return [type] [description]
+     */
     public function clases()
     {
       $clases = Auth::user()->clases->where('date','<=',today());
@@ -148,6 +169,11 @@ class UserController extends ApiController
       return $this->showAll($clases);
     }
 
+    /**
+     * [alerts description]
+     * 
+     * @return [type] [description]
+     */
     public function alerts()
     {
       $alerts = [];
@@ -187,6 +213,11 @@ class UserController extends ApiController
       return response()->json(['data' => $alerts ], 200);
     }
 
+    /**
+     * [today description]
+     * 
+     * @return [type] [description]
+     */
     public function today()
     {
       $reservationHas = false;
