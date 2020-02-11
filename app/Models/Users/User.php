@@ -3,28 +3,25 @@
 namespace App\Models\Users;
 
 use App\Models\Bills\Bill;
-use App\Models\Bills\Installment;
+use App\Models\Plans\Plan;
+use App\Models\Users\Role;
 use App\Models\Clases\Block;
 use App\Models\Clases\Clase;
-use App\Models\Clases\Reservation;
-use App\Models\Plans\Plan;
 use App\Models\Plans\PlanUser;
+use App\Models\Users\RoleUser;
 use App\Models\Users\Emergency;
 use App\Models\Users\Millestone;
-use App\Models\Users\Role;
-use App\Models\Users\RoleUser;
 use App\Models\Users\StatusUser;
-use App\Notifications\MyResetPassword;
-use App\Transformers\UserTransformer;
 use Freshwork\ChileanBundle\Rut;
+use App\Models\Bills\Installment;
+use Laravel\Passport\HasApiTokens;
+use App\Models\Clases\Reservation;
+use App\Transformers\UserTransformer;
+use App\Notifications\MyResetPassword;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Passport\HasApiTokens;
 
-/**
- * [User description]
- */
 class User extends Authenticatable
 {
     use UsesTenantConnection, HasApiTokens, Notifiable, SoftDeletes;
@@ -35,18 +32,39 @@ class User extends Authenticatable
       'address', 'password', 'phone',
       'emergency_id', 'status_user_id', 'tutorial'];
 
+    /**
+     * [$hidden description]
+     *
+     * @var [type]
+     */
     protected $hidden = ['password', 'remember_token'];
 
+    /**
+     * [$dates description]
+     *
+     * @var [type]
+     */
     protected $dates = ['deleted_at'];
 
+    /**
+     * [$appends description]
+     *
+     * @var [type]
+     */
     protected $appends = ['full_name'];
 
+    /**
+     * [$transformer description]
+     *
+     * @var [type]
+     */
     public $transformer = UserTransformer::class;
 
     /**
     * Send the password reset notification.
     *
     * @param  string  $token
+
     * @return void
     */
     public function sendPasswordResetNotification($token)
@@ -56,6 +74,7 @@ class User extends Authenticatable
 
      /**
      * [getFullNameAttribute description]
+     *
      * @return [type] [description]
      */
     public function getFullNameAttribute()
@@ -65,19 +84,23 @@ class User extends Authenticatable
 
     /**
      * [hasRole description]
+     *
      * @param  [type]  $role [description]
+     *
      * @return boolean       [description]
      */
     public function hasRole($role)
     {
-      $role = RoleUser::where('role_id', $role)->where('user_id', $this->id)->get();
-      if (count($role) > 0) {
-        return true;
-      }
+        $role = RoleUser::where('role_id', $role)->where('user_id', $this->id)->get();
+
+        if (count($role) > 0) {
+            return true;
+        }
     }
 
     /**
      * [regular_users description]
+     *
      * @return [collection] [description]
      */
     public function regular_users()
@@ -87,6 +110,7 @@ class User extends Authenticatable
 
     /**
      * [active_users description]
+     *
      * @return [type] [description]
      */
     public function active_users()
@@ -96,6 +120,7 @@ class User extends Authenticatable
 
     /**
      * [blocks description]
+     *
      * @return [type] [description]
      */
     public function blocks()
@@ -109,14 +134,15 @@ class User extends Authenticatable
     */
     public function clases()
     {
-      //return $this->belongsToMany(Clase::Class)->using(Reservation::class);
-      return $this->belongsToMany(Clase::Class, 'reservations', 'user_id')->withPivot('reservation_status_id');
-      //return $this->hasManyThrough(Clase::Class, Reservation::class);
+        return $this->belongsToMany(Clase::Class, 'reservations', 'user_id')
+                    ->withPivot('reservation_status_id');
     }
 
     /**
      * [emergency description]
+     *
      * @method emergency
+     *
      * @return [Model]    [description]
      */
     public function emergency()
@@ -125,13 +151,8 @@ class User extends Authenticatable
     }
 
     /**
-    * [status_user description]
-    * @method status_user
-    * @return [Model]      [description]
-    */
-
-    /**
      * [installments description]
+     *
      * @return [type] [description]
      */
     public function installments()
@@ -144,6 +165,11 @@ class User extends Authenticatable
         );
     }
 
+    /**
+     * [bills description]
+     *
+     * @return  [type]  [return description]
+     */
     public function bills()
     {
         return $this->hasManyThrough(
@@ -156,7 +182,9 @@ class User extends Authenticatable
 
     /**
     * [millestones description]
+    *
     * @method millestones
+    *
     * @return [Model]      [description]
     */
     public function millestones()
@@ -166,6 +194,7 @@ class User extends Authenticatable
 
     /**
     * [plans description]
+    *
     * @return [type] [description]
     */
     public function plans()
@@ -175,6 +204,7 @@ class User extends Authenticatable
 
     /**
     * metodo  para obtener el plan activo del usuario
+    *
     * @return [type] [description]
     */
     public function active_planuser()
@@ -187,6 +217,7 @@ class User extends Authenticatable
 
     /**
     * [status_user description]
+    *
     * @return [model] [description]
     */
     public function plan_users()
@@ -196,50 +227,53 @@ class User extends Authenticatable
 
     /**
     * [reservations description]
+    *
     * @method reservations
+    *
     * @return [Model]       [description]
     */
-
     public function reservations($status = null )
     {
-      if($status!=null){
-        return $this->hasMany(Reservation::class)->where('reservation_status_id', $status);
-      } else {
+        if ($status) {
+            return $this->hasMany(Reservation::class)->where('reservation_status_id', $status);
+        }
+
         return $this->hasMany(Reservation::class);
-      }
     }
 
+    /**
+     * [assistence description]
+     *
+     * @return  [type]  [return description]
+     */
     public function assistence()
     {
-      return $this->belongsToMany(
-          Clase::class,
-          'reservations',
-          'user_id',
-          'clase_id'
-      )->wherePivot('reservation_status_id', 3)->where('date','>=',date("Y").'-01-01');
+        return $this->belongsToMany(
+            Clase::class,
+            'reservations',
+            'user_id',
+            'clase_id'
+        )->wherePivot('reservation_status_id', 3)
+         ->where('date', '>=', date("Y") . '-01-01');
     }
 
     /**
      * [roles description]
+     *
      * @return [type] [description]
      */
     public function roles()
     {
-      return $this->belongsToMany(Role::class, 'role_user', 'user_id', 'role_id');
+        return $this->belongsToMany(Role::class, 'role_user', 'user_id', 'role_id');
     }
 
     /**
      * [status_user description]
+     *
      * @return [type] [description]
      */
     public function status_user()
     {
-      return $this->belongsTo(StatusUser::class);
+        return $this->belongsTo(StatusUser::class);
     }
-
-    // public function bills()
-    // {
-    //   return $this->belongsTo(StatusUser::class);
-    // }
-
 }
