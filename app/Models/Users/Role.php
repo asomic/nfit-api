@@ -13,11 +13,13 @@ class Role extends Model
 
 	/**
     * [users description]
-	* @method users
+    *
+    * @method users
+    *
 	* @return [model] [description]
 	*/
 	public function users()
 	{
 		return $this->belongsToMany(User::class, 'role_user', 'role_id', 'user_id');
-	}	
+	}
 }

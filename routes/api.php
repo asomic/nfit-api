@@ -70,6 +70,7 @@ Route::group(['middleware' => 'api', 'prefix' => 'password'], function () {
 	Route::post('reset', 'Users\PasswordResetController@reset')->name('password.reset');
 });
 
-Route::group(['middleware' => 'tenancy.enforce'], function () {
-    Route::post('oauth/token', '\Laravel\Passport\Http\Controllers\AccessTokenController@issueToken');
-});
+Route::get('cn', 'HomeController@cn');
+
+// Route::post('oauth/token', 'Auth\AccessTokenController@issueToken');
+// Route::post('oauth/token', '\Laravel\Passport\Http\Controllers\AccessTokenController@issueToken');

@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @see https://tenancy.dev
+ * @see https://laravel-tenancy.com
  * @see https://github.com/hyn/multi-tenant
  */
 
@@ -228,9 +228,9 @@ return [
          *
          * @warn specify a valid fully qualified class name.
          */
-        'tenant-seed-class' => false,
-//      eg an admin seeder under `app/Seeders/AdminSeeder.php`:
-//        'tenant-seed-class' => App\Seeders\AdminSeeder::class,
+        'tenant-seed-class' => App\Seeders\DatabaseSeeder::class,
+        //  eg an admin seeder under `app/Seeders/AdminSeeder.php`:
+        // 'tenant-seed-class' => App\Seeders\AdminSeeder::class,
 
         /**
          * Automatically generate a tenant database based on the random id of the
@@ -317,7 +317,7 @@ return [
          *
          * @info Set to false or null to disable.
          */
-        'path' => base_path('routes/api.php'),
+        'path' => base_path('routes/tenants.php'),
 
         /**
          * Set to true to flush all global routes before setting the routes from the

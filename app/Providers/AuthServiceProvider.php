@@ -16,7 +16,7 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        User::class => UserPolicy::class,
+        // User::class => UserPolicy::class,
     ];
 
     /**
@@ -28,13 +28,7 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        Passport::routes(null, ['middleware' => 'tenancy.enforce']);
-
-        // $this->commands([
-        //     \Laravel\Passport\Console\InstallCommand::class,
-        //     \Laravel\Passport\Console\ClientCommand::class,
-        //     \Laravel\Passport\Console\KeysCommand::class,
-        // ]);
+        \Laravel\Passport\Passport::routes(null, ['middleware' => 'tenancy.enforce']);
 
         Passport::tokensExpireIn(now()->addDays(30));
 

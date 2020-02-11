@@ -9,6 +9,7 @@
         "facade/ignition": "^1.16",
         "barryvdh/laravel-cors": "^0.11.2",
         "fideloper/proxy": "^4.0",
+        "guzzlehttp/guzzle": "^6.5",
         "freshwork/chilean-bundle": "^2.1",
         "hyn/multi-tenant": "^5.5",
         "laminas/laminas-diactoros": "^2.2",
