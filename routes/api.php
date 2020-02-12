@@ -88,4 +88,5 @@ Route::middleware(['auth:api'])->group(function() {
     })->middleware('tenancy.enforce');
     Route::get('cn', 'HomeController@cn');
     Route::get('profile', 'Users\UserController@profile');
+    
 });
