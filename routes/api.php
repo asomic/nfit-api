@@ -77,9 +77,9 @@ Route::middleware('auth:api')->namespace('App\Http\Controllers')
     Route::get('cn', 'HomeController@cn');
 
     // Route::post('oauth/token', 'Auth\AccessTokenController@issueToken');
-    // Route::post('oauth/token', '\Laravel\Passport\Http\Controllers\AccessTokenController@issueToken');
 });
 
+Route::post('oauth/token', '\Laravel\Passport\Http\Controllers\AccessTokenController@issueToken');
 
 
 Route::middleware(['auth:api'])->group(function() {
@@ -88,5 +88,4 @@ Route::middleware(['auth:api'])->group(function() {
     })->middleware('tenancy.enforce');
     Route::get('cn', 'HomeController@cn');
     Route::get('profile', 'Users\UserController@profile');
-    
 });
