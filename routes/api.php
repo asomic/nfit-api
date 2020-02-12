@@ -79,7 +79,7 @@ Route::middleware('auth:api')->namespace('App\Http\Controllers')
     // Route::post('oauth/token', 'Auth\AccessTokenController@issueToken');
 });
 
-Route::post('oauth/token', '\Laravel\Passport\Http\Controllers\AccessTokenController@issueToken');
+// Route::post('oauth/token', '\Laravel\Passport\Http\Controllers\AccessTokenController@issueToken');
 
 
 Route::middleware(['auth:api'])->group(function() {
