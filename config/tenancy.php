@@ -174,6 +174,7 @@ return [
          * connection to - for instance - the tenant connection 'tenant'.
          */
         'default' => env('TENANCY_DEFAULT_CONNECTION'),
+
         /**
          * Used to give names to the system and tenant database connections. By
          * default we configure 'system' and 'tenant'. The tenant connection
