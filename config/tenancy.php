@@ -144,13 +144,13 @@ return [
          * A good use case is when you have set "tenant" as the default
          * database connection.
          */
-        'early-identification' => env('TENANCY_EARLY_IDENTIFICATION', true),
+        'early-identification' => env('TENANCY_EARLY_IDENTIFICATION', false),
 
         /**
          * Abort application execution in case no hostname was identified. This will throw a
          * 404 not found in case the tenant hostname was not resolved.
          */
-        'abort-without-identified-hostname' => env('TENANCY_ABORT_WITHOUT_HOSTNAME', false),
+        'abort-without-identified-hostname' => false,
 
         /**
          * Time to cache hostnames in minutes. Set to false to disable.
@@ -164,7 +164,7 @@ return [
          * This will resolve issues with password reset mails etc using the
          * correct domain.
          */
-        'update-app-url' => false,
+        'update-app-url' => true,
     ],
     'db' => [
         /**
@@ -229,8 +229,8 @@ return [
          * @warn specify a valid fully qualified class name.
          */
         'tenant-seed-class' => App\Seeders\DatabaseSeeder::class,
-        //  eg an admin seeder under `app/Seeders/AdminSeeder.php`:
-        // 'tenant-seed-class' => App\Seeders\AdminSeeder::class,
+//      eg an admin seeder under `app/Seeders/AdminSeeder.php`:
+//        'tenant-seed-class' => App\Seeders\AdminSeeder::class,
 
         /**
          * Automatically generate a tenant database based on the random id of the

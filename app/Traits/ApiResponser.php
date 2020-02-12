@@ -23,7 +23,7 @@ trait ApiResponser
 
 	/**
 	 * [showAll description]
-	 * 
+	 *
 	 * @param  Collection $collection [description]
 	 * @param  integer    $code       [description]
 	 * @return [type]                 [description]
@@ -48,7 +48,8 @@ trait ApiResponser
 	protected function showOne(Model $instance, $code = 200)
 	{
 		// dd($instance->transformer);
-		$transformer = $instance->transformer;
+        $transformer = $instance->transformer;
+        // dd($instance->transformer);
 		$instance = $this->transformData($instance, $transformer);
 
 		return $this->successResponse($instance, $code);
@@ -120,7 +121,7 @@ trait ApiResponser
 
 	protected function transformData($data, $transformer)
 	{
-		// return fractal($data, new $transformer)->toArray();
+        // return fractal($data, new $transformer)->toArray();
 		$transformation = fractal($data, new $transformer);
 
 		return $transformation->toArray();

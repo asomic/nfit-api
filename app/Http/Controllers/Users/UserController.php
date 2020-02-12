@@ -3,20 +3,22 @@
 namespace App\Http\Controllers\Users;
 
 use Auth;
+use App\Models\Wods\Wod;
 use App\Models\Users\User;
 use App\Models\Users\Alert;
-use App\Models\Wods\Wod;
-use App\Models\Clases\Reservation;
 use Illuminate\Http\Request;
+use App\Models\Clases\Reservation;
 use App\Http\Controllers\ApiController;
 
 class UserController extends ApiController
 {
+    
     /** [__construct description] */
     public function __construct()
     {
-      parent::__construct();
-      $this->middleware('can:view,user')->only('show');
+        parent::__construct();
+
+        $this->middleware('can:view,user')->only('show');
     }
 
     /**
@@ -32,19 +34,19 @@ class UserController extends ApiController
 
     /**
      * Request for the auth user profile
-     * 
-     * @return [json] [return authenticated user]
+     *
+     * @return  json return authenticated user
      */
     public function profile()
     {
-        $user = Auth::user();
+        $user = auth()->user();
 
         return $this->showOne($user, 200);
     }
 
     /**
      * [tutorial description]
-     * 
+     *
      * @return [type] [description]
      */
     public function tutorial()
@@ -56,7 +58,7 @@ class UserController extends ApiController
 
     /**
      * [image description]
-     * 
+     *
      * @param  Request $request [description]
      * @return [type]           [description]
      */
@@ -65,15 +67,15 @@ class UserController extends ApiController
         $user = Auth::user();
 
         if ($request->hasFile('image')) {
-          
+
             request()->file('image')->storeAs('public/users', $user->id.$user->first_name.'.jpg');
-          
+
             $user->avatar = url('/').'/storage/users/'.$user->id.$user->first_name.'.jpg';
-          
+
             $user->save();
-          
+
             return response()->json(['success' =>'Sesion finalizada'], 200);
-      
+
         }
 
         return response()->json(['error' =>'nooooooooooooooo'], 400);
@@ -86,7 +88,7 @@ class UserController extends ApiController
     public function assistance()
     {
         $reservations = Auth::user()->assistence()->whereRaw('MONTH(date) = 2')->count();
-        
+
         return response()->json([
             'label' => ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
             'data'  => [
@@ -112,12 +114,12 @@ class UserController extends ApiController
     //  * @return \Illuminate\Http\Response
     public function show(User $user)
     {
-      return $this->showOne($user, 200);
+        return $this->showOne($user, 200);
     }
 
     /**
      * [plans description]
-     * 
+     *
      * @return [type] [description]
      */
     public function plans()
@@ -143,14 +145,14 @@ class UserController extends ApiController
 
     /**
      * Revoke the token to the auth user
-     * 
+     *
      * @return json with good or bad response
      */
     public function logout()
     {
         if (Auth::check()) {
             Auth::user()->token()->revoke();
-            
+
             return response()->json(['success' =>'Sesion finalizada'], 200);
         } else {
             return response()->json(['error' =>'api.something_went_wrong'], 500);
@@ -159,19 +161,19 @@ class UserController extends ApiController
 
     /**
      * [clases description]
-     * 
+     *
      * @return [type] [description]
      */
     public function clases()
     {
       $clases = Auth::user()->clases->where('date','<=',today());
-      
+
       return $this->showAll($clases);
     }
 
     /**
      * [alerts description]
-     * 
+     *
      * @return [type] [description]
      */
     public function alerts()
@@ -215,7 +217,7 @@ class UserController extends ApiController
 
     /**
      * [today description]
-     * 
+     *
      * @return [type] [description]
      */
     public function today()

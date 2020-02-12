@@ -8,12 +8,12 @@ use Illuminate\Http\Request;
 /** [ApiController description] */
 class ApiController extends Controller
 {
-  use ApiResponser;
+    use ApiResponser;
 
-  /** [__construct description] */
-  public function __construct()
-  {
-    // usar el auth "api", que esta designado en 'config\auth'
-  	$this->middleware('auth:api');
-  }
+    /** [__construct description] */
+    public function __construct()
+    {
+        /** Use auth "api", appointed on config/auth */
+        $this->middleware('auth:api');
+    }
 }

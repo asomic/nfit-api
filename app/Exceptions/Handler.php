@@ -2,24 +2,25 @@
 
 namespace App\Exceptions;
 
+use Exception;
 use App\Traits\ApiResponser;
 use Asm89\Stack\CorsService;
-use Exception;
-use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Auth\AuthenticationException;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
-use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Session\TokenMismatchException;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
-use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
+use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 
 class Handler extends ExceptionHandler
 {
     use ApiResponser;
+
     /**
      * A list of the exception types that are not reported.
      *
@@ -43,6 +44,7 @@ class Handler extends ExceptionHandler
      * Report or log an exception.
      *
      * @param  \Exception  $exception
+     *
      * @return void
      */
     public function report(Exception $exception)
@@ -55,6 +57,7 @@ class Handler extends ExceptionHandler
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Exception  $exception
+     *
      * @return \Illuminate\Http\Response
      */
    public function render($request, Exception $exception)
@@ -66,6 +69,14 @@ class Handler extends ExceptionHandler
         return $response;
     }
 
+    /**
+     * [handleException description]
+     *
+     * @param   [type]     $request    [$request description]
+     * @param   Exception  $exception  [$exception description]
+     *
+     * @return  [type]                 [return description]
+     */
     public function handleException($request, Exception $exception)
     {
         if ($exception instanceof ValidationException) {
@@ -101,7 +112,11 @@ class Handler extends ExceptionHandler
             $codigo = $exception->errorInfo[1];
 
             if ($codigo == 1451) {
-                return $this->errorResponse('No se puede eliminar de forma permamente el recurso porque está relacionado con algun otro.', 409);
+                return $this->errorResponse(
+                    "No se puede eliminar de forma permamente el recurso
+                     porque está relacionado con algun otro.",
+                    409
+                );
             }
         }
 
@@ -121,6 +136,7 @@ class Handler extends ExceptionHandler
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Illuminate\Auth\AuthenticationException  $exception
+     *
      * @return \Illuminate\Http\Response
      */
     protected function unauthenticated($request, AuthenticationException $exception)
@@ -136,6 +152,7 @@ class Handler extends ExceptionHandler
      *
      * @param  \Illuminate\Validation\ValidationException  $e
      * @param  \Illuminate\Http\Request  $request
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     protected function convertValidationExceptionToResponse(ValidationException $e, $request)
@@ -152,6 +169,13 @@ class Handler extends ExceptionHandler
         return $this->errorResponse($errors, 422);
     }
 
+    /**
+     * [isFrontend description]
+     *
+     * @param   [type]  $request  [$request description]
+     *
+     * @return  [type]            [return description]
+     */
     private function isFrontend($request)
     {
         return $request->acceptsHtml() && collect($request->route()->middleware())->contains('web');
