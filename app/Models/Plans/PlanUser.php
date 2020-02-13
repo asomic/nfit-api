@@ -8,7 +8,7 @@ use App\Models\Plans\Plan;
 use App\Models\Plans\PlanStatus;
 use App\Models\Plans\PlanUserPeriod;
 use App\Models\Users\User;
-use App\Observers\Plans\PlanUserObserver;
+// use App\Observers\Plans\PlanUserObserver;
 use App\Transformers\PlanUserTransformer;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
