@@ -47,25 +47,25 @@ class UserTransformer extends TransformerAbstract
             'fechaEliminacion' => isset($user->deleted_at) ? (string) $user->deleted_at : null,
             'avatar' => $user->avatar,
 
-            'rels' => [
-                'self' => [
-                    'href' => route('users.show', $user->id),
-                ],
-                'plans' => [
-                    'href' => route('users.planusers.index', $user->id),
-                ],
-                'active_plan' => [
-                    'plan' => (string)$plan,
-                    'expiration' => (string)$expiration,
-                    'href' => route('users.planusers.active', $user->id),
-                ],
-                'stats' => [
-                    'clases_consumed' => (int)$user->reservations(3)->count(),
-                    'clases_quantity' => (int)$counter,
-                    'clases_lost' => (int)$user->reservations(4)->count(),
-                    'assistance' => '',
-                ],
-            ],
+            // 'rels' => [
+            //     'self' => [
+            //         'href' => route('users.show', $user->id),
+            //     ],
+            //     'plans' => [
+            //         'href' => route('users.planusers.index', $user->id),
+            //     ],
+            //     'active_plan' => [
+            //         'plan' => (string)$plan,
+            //         'expiration' => (string)$expiration,
+            //         'href' => route('users.planusers.active', $user->id),
+            //     ],
+            //     'stats' => [
+            //         'clases_consumed' => (int)$user->reservations(3)->count(),
+            //         'clases_quantity' => (int)$counter,
+            //         'clases_lost' => (int)$user->reservations(4)->count(),
+            //         'assistance' => '',
+            //     ],
+            // ],
         ];
     }
 
