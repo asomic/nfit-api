@@ -41,7 +41,7 @@ class Kernel extends HttpKernel
 
         'api' => [
             // 'tenancy.enforce',
-            'cors',
+            // 'cors',
             'throttle:60,1',
             'bindings',
         ],
