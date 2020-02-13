@@ -53,15 +53,62 @@ class Clase extends Model
 
     public function auth_can_reserve()
     {
-      //maximo de 3 usuarios de prueba
-      $clases = Clase::where('date', $this->date)->get();
-      foreach ($clases as $clase) {
-          $reservations = Reservation::where('user_id', Auth::id())->where('clase_id', $clase->id)->get();
-          if (count($reservations) != 0) {
-              return false;
-          }
-      }
 
+      // $clase_type = $this->claseType;
+      // $auth_reservations = Auth::user()->reservations()->whereHas(['clase' => function($query){
+      //   $query->where('date',(string)$this->date);
+      // }])->get();
+      // dd($auth_reservations);
+
+      // $auth_plan = Auth::user()->active_planuser;
+      // if(count($auth_reservations>=$auth_plan->daily_clases))
+      // {
+      //   return false;
+      // }
+      // $auth_reservations_clase_type = $auth_reservations->pluck('clase_type_id');
+      // if(in_array($clase_type->id,$auth_reservations_clase_type ))
+      // {
+      //   return false;
+      // }
+
+
+      $user = Auth::User();
+
+      $clase_type = $this->claseType;
+      $clases = Clase::where('date', $this->date)->pluck('id');
+      $auth_reservations = $user->reservations()->whereIn('clase_id',$clases)->get();
+      $auth_plan = Auth::user()->active_planuser();
+
+  
+
+      // dd($auth_reservations);
+      // dd($auth_reservations->pluck('clase_type_id')->toArray());
+      // if(in_array($clase_type->id,$auth_reservations->pluck('clase_type_id')->toArray() ))
+      // {
+      //   return false;
+      // }
+      foreach ($auth_reservations as $res) {
+        if($clase_type->id == $res->clase->clase_type_id )
+        {
+          return false;
+        }
+      }
+      // foreach ($clases as $clase) {
+      //     $reservations = Reservation::where('user_id', Auth::id())->where('clase_id', $clase->id)->get();
+      //     $reservations_clase_type = $reservations->pluck('clase_types');
+
+      //     $clase_count = $clase_count + count($reservations);
+      //     if($clase_count >= $auth_plan->daily_clases)
+      //     {
+      //       return false;
+      //     }
+      //     if(in_array($clase_type->id,$reservations_clase_type ))
+      //     {
+      //       return false;
+      //     }
+      // }
+
+      //maximo de 3 usuarios de prueba
       if(Auth::user()->status_user_id == 3){
 
         $pruebaCount = 0;
@@ -76,10 +123,19 @@ class Clase extends Model
         }
       }
 
-      $planUser = Auth::user()->plan_users()->where('start_date', '<=', $this->date)->where('finish_date', '>=', $this->date)->first();
+      
+
+      $planUser = Auth::user()->plan_users()->where('start_date', '<=', $this->date)->where('finish_date', '>=', $this->date) ->whereIn('plan_status_id', [1, 3])->first();
+      
+
 
       if($planUser)
       {
+          if(count($auth_reservations) >= $planUser->plan->daily_clases)
+          {
+            return false;
+          }
+
           $ids = $this->block->getPlansIdAttribute()->toArray();
           if((in_array($planUser->plan_id,$ids)) && ($planUser->counter > 0 ) )
           {
@@ -100,15 +156,26 @@ class Clase extends Model
     // {
     //   return  Reservation::where('user_id',Auth::user()->id)->where('clase_id',$this->id)->first();
     // }
-
     /**
      * [stages description]
      * @return [type] [description]
      */
     public function stages()
     {
-      return $this->belongsToMany(Stage::class);
+      return $this->belongsTo(Stage::class);
     }
+
+
+    /**
+     * [stages description]
+     * @return [type] [description]
+     */
+
+    public function claseType()
+    {
+      return $this->belongsTo('App\Models\Clases\ClaseType');
+    }
+ 
 
     /**
      * [users description]
@@ -121,14 +188,14 @@ class Clase extends Model
 
 
 
-    public function profresor()
-    {
-        return $this->morphMany('App\Models\Users\User', 'userable');
-    }
+    // public function profresor()
+    // {
+    //     return $this->morphMany('App\Models\Users\User', 'userable');
+    // }
 
     public function profesor()
     {
-    return $this->belongsToMany(User::Class)->using(Reservation::class);
+      return $this->belongsTo(User::Class, 'profesor_id');
     }
 
     public function block()

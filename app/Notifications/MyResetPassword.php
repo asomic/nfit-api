@@ -47,8 +47,10 @@ class MyResetPassword extends Notification
     {
         $url = 'https://admin.purasangrecrossfit.cl/password/reset/'.$this->token;
         if (static::$toMailCallback) {
+
             return call_user_func(static::$toMailCallback, $notifiable, $this->token);
         }
+
         return (new MailMessage)
             ->subject(Lang::getFromJson('Pura Sangre - Cambio de Contraseña!'))
             ->markdown('mail.passresets.resetpass', ['url' => $url]);

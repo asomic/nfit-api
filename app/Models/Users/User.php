@@ -3,74 +3,61 @@
 namespace App\Models\Users;
 
 use App\Models\Bills\Bill;
-use App\Models\Plans\Plan;
-use App\Models\Users\Role;
+use App\Models\Bills\Installment;
 use App\Models\Clases\Block;
 use App\Models\Clases\Clase;
-use App\Models\Plans\PlanUser;
-use App\Models\Plans\PlanStatus;
-use App\Models\Users\StatusUser;
 use App\Models\Clases\Reservation;
-use Laravel\Passport\HasApiTokens;
-use App\Transformers\UserTransformer;
+use App\Models\Plans\Plan;
+use App\Models\Plans\PlanUser;
+use App\Models\Users\Emergency;
+use App\Models\Users\Millestone;
+use App\Models\Users\Role;
+use App\Models\Users\RoleUser;
+use App\Models\Users\StatusUser;
 use App\Notifications\MyResetPassword;
-use Illuminate\Notifications\Notifiable;
-use Hyn\Tenancy\Traits\UsesTenantConnection;
+use App\Transformers\UserTransformer;
+use Freshwork\ChileanBundle\Rut;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Passport\HasApiTokens;
 
+/**
+ * [User description]
+ */
 class User extends Authenticatable
 {
-    use HasApiTokens, Notifiable, UsesTenantConnection, SoftDeletes;
+    use HasApiTokens, Notifiable, SoftDeletes;
 
-    /**
-     * [$transformer description]
-     *
-     * @var [type]
-     */
+    protected $fillable = [
+      'rut', 'first_name', 'last_name',
+      'birthdate', 'gender', 'email',
+      'address', 'password', 'phone',
+      'emergency_id', 'status_user_id', 'tutorial'];
+    protected $hidden = ['password', 'remember_token'];
+    protected $dates = ['deleted_at'];
+    protected $appends = ['full_name'];
+
     public $transformer = UserTransformer::class;
 
     /**
-     * [$dates description]
-     *
-     * @var [type]
-     */
-    protected $dates = ['birthdate', 'since', 'deleted_at'];
+    * Send the password reset notification.
+    *
+    * @param  string  $token
+    * @return void
+    */
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new MyResetPassword($token));
+    }
 
-    /**
-     * Massive Assignment for this Model
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'rut', 'first_name', 'last_name',
-        'email', 'password', 'avatar', 'phone',
-        'birthdate', 'gender', 'address',
-        'since', 'emergency_id', 'status_user'
-    ];
-
-    /**
-     * [$hidden description]
-     *
-     * @var [type]
-     */
-    protected $hidden = ['password', 'remember_token'];
-
-    /**
-     * [$appends description]
-     *
-     * @var array
-     */
-    protected $appends = ['full_name'];
-
-    /**
+     /**
      * [getFullNameAttribute description]
-     *
      * @return [type] [description]
      */
     public function getFullNameAttribute()
     {
-        return "{$this->first_name} {$this->last_name}";
+      return $this->first_name.' '.$this->last_name;
     }
 
     /**
@@ -80,12 +67,10 @@ class User extends Authenticatable
      */
     public function hasRole($role)
     {
-        $role = RoleUser::where('role_id', $role)->where('user_id', $this->id)->get();
-
-        if (count($role) > 0) {
-            return true;
-        }
-        return false;
+      $role = RoleUser::where('role_id', $role)->where('user_id', $this->id)->get();
+      if (count($role) > 0) {
+        return true;
+      }
     }
 
     /**
@@ -191,11 +176,10 @@ class User extends Authenticatable
     */
     public function active_planuser()
     {
-        $active = PlanUser::where('user_id', $this->id)
-                          ->where('plan_status_id', PlanStatus::ACTIVE)
+      $active = PlanUser::where('user_id', $this->id)
+                          ->where('plan_status_id', 1)
                           ->first();
-
-        return $active;
+      return $active;
     }
 
     // public function actual_planuser()
@@ -224,11 +208,11 @@ class User extends Authenticatable
 
     public function reservations($status = null )
     {
-        if ($status != null) {
-            return $this->hasMany(Reservation::class)->where('reservation_status_id', $status);
-        }
-
+      if($status!=null){
+        return $this->hasMany(Reservation::class)->where('reservation_status_id', $status);
+      } else {
         return $this->hasMany(Reservation::class);
+      }
     }
 
     public function assistence()
@@ -258,4 +242,12 @@ class User extends Authenticatable
     {
       return $this->belongsTo(StatusUser::class);
     }
+
+    // public function dateReservations($date)
+    // {
+      
+    //     return $this->hasMany(Reservation::class)->where('reservation_status_id', $status);
+
+    // }
+
 }

@@ -6,12 +6,14 @@ use App\Models\Users\User;
 use App\Models\Plans\PlanUser;
 use App\Models\Plans\PlanPeriod;
 use Illuminate\Database\Eloquent\Model;
+use App\Transformers\PlanTransformer;
 
 /**
  * [Plan description]
  */
 class Plan extends Model
 {
+  public $transformer = PlanTransformer::class;
   protected $fillable = ['plan', 'plan_period_id', 'class_numbers', 'amount'];
 
   /**

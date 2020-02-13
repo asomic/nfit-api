@@ -16,7 +16,7 @@ use App\Models\Clases\ReservationStatus;
 class Reservation extends Model
 {
 
-
+  protected $with = ['clase'];
   protected $dates = ['deleted_at'];
   protected $fillable = ['clase_id', 'reservation_status_id', 'user_id', 'details'];
 

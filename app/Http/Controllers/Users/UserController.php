@@ -3,22 +3,20 @@
 namespace App\Http\Controllers\Users;
 
 use Auth;
-use App\Models\Wods\Wod;
 use App\Models\Users\User;
 use App\Models\Users\Alert;
-use Illuminate\Http\Request;
+use App\Models\Wods\Wod;
 use App\Models\Clases\Reservation;
+use Illuminate\Http\Request;
 use App\Http\Controllers\ApiController;
 
 class UserController extends ApiController
 {
-    
     /** [__construct description] */
     public function __construct()
     {
-        parent::__construct();
-
-        $this->middleware('can:view,user')->only('show');
+      parent::__construct();
+      $this->middleware('can:view,user')->only('show');
     }
 
     /**
@@ -28,106 +26,94 @@ class UserController extends ApiController
     public function index()
     {
       $users = User::all();
-
       return $this->showAll($users);
     }
 
     /**
      * Request for the auth user profile
-     *
-     * @return  json return authenticated user
+     * @return [json] [return authenticated user]
      */
     public function profile()
     {
-        $user = auth()->user();
-
+        $user = Auth::user();
         return $this->showOne($user, 200);
     }
 
-    /**
-     * [tutorial description]
-     *
-     * @return [type] [description]
-     */
     public function tutorial()
     {
         Auth::user()->update(['tutorial' => true]);
-
         return $this->successResponse('Seen', 200);
     }
 
-    /**
-     * [image description]
-     *
-     * @param  Request $request [description]
-     * @return [type]           [description]
-     */
     public function image(Request $request)
     {
-        $user = Auth::user();
 
-        if ($request->hasFile('image')) {
+      $user = Auth::user();
 
-            request()->file('image')->storeAs('public/users', $user->id.$user->first_name.'.jpg');
-
-            $user->avatar = url('/').'/storage/users/'.$user->id.$user->first_name.'.jpg';
-
-            $user->save();
-
-            return response()->json(['success' =>'Sesion finalizada'], 200);
-
-        }
-
+      if ($request->hasFile('image')) {
+          request()->file('image')->storeAs('public/users', $user->id.$user->first_name.'.jpg');
+          $user->avatar = url('/').'/storage/users/'.$user->id.$user->first_name.'.jpg';
+          $user->save();
+          return response()->json(['success' =>'Sesion finalizada'], 200);
+      }
+      else {
         return response()->json(['error' =>'nooooooooooooooo'], 400);
+      }
+
     }
 
-    /**
-     * [assistance description]
-     * @return [type] [description]
-     */
     public function assistance()
     {
-        $reservations = Auth::user()->assistence()->whereRaw('MONTH(date) = 2')->count();
+    //  $reservations = Auth::user()->reservations(3)->get();
+    $reservations = Auth::user()->assistence()->whereRaw('MONTH(date) = 2')->count();
+    //dd($reservations);
 
-        return response()->json([
-            'label' => ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
-            'data'  => [
-                Auth::user()->assistence()->whereRaw('MONTH(date) = 1')->count(),
-                Auth::user()->assistence()->whereRaw('MONTH(date) = 2')->count(),
-                Auth::user()->assistence()->whereRaw('MONTH(date) = 3')->count(),
-                Auth::user()->assistence()->whereRaw('MONTH(date) = 4')->count(),
-                Auth::user()->assistence()->whereRaw('MONTH(date) = 5')->count(),
-                Auth::user()->assistence()->whereRaw('MONTH(date) = 6')->count(),
-                Auth::user()->assistence()->whereRaw('MONTH(date) = 7')->count(),
-                Auth::user()->assistence()->whereRaw('MONTH(date) = 8')->count(),
-                Auth::user()->assistence()->whereRaw('MONTH(date) = 9')->count(),
-                Auth::user()->assistence()->whereRaw('MONTH(date) = 10')->count(),
-                Auth::user()->assistence()->whereRaw('MONTH(date) = 11')->count(),
-                Auth::user()->assistence()->whereRaw('MONTH(date) = 12')->count(),
-            ],
-        ], 200);
+      // foreach ($reservations as $key => $value) {
+      //   $year =
+      // }
+      return response()->json([
+        'label' => ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
+        'data'  => [
+          Auth::user()->assistence()->whereRaw('MONTH(date) = 1')->count(),
+          Auth::user()->assistence()->whereRaw('MONTH(date) = 2')->count(),
+          Auth::user()->assistence()->whereRaw('MONTH(date) = 3')->count(),
+          Auth::user()->assistence()->whereRaw('MONTH(date) = 4')->count(),
+          Auth::user()->assistence()->whereRaw('MONTH(date) = 5')->count(),
+          Auth::user()->assistence()->whereRaw('MONTH(date) = 6')->count(),
+          Auth::user()->assistence()->whereRaw('MONTH(date) = 7')->count(),
+          Auth::user()->assistence()->whereRaw('MONTH(date) = 8')->count(),
+          Auth::user()->assistence()->whereRaw('MONTH(date) = 9')->count(),
+          Auth::user()->assistence()->whereRaw('MONTH(date) = 10')->count(),
+          Auth::user()->assistence()->whereRaw('MONTH(date) = 11')->count(),
+          Auth::user()->assistence()->whereRaw('MONTH(date) = 12')->count(),
+         ],
+
+      ], 200);
     }
 
+    // *
     //  * Display the specified resource.
     //  *
     //  * @param  \App\Models\Users\User  $user
     //  * @return \Illuminate\Http\Response
     public function show(User $user)
     {
-        return $this->showOne($user, 200);
+      return $this->showOne($user, 200);
     }
 
-    /**
-     * [plans description]
-     *
-     * @return [type] [description]
-     */
     public function plans()
     {
-      $user_plans = Auth::user()->plan_users;
-
+      $user_plans = Auth::user()->plan_users()->orderBy('finish_date', 'desc')->get();
       return $this->showAll($user_plans, 200);
     }
+
+    public function actualPlan()
+    {
+      $user_plan = Auth::user()->plan_users()->where('plan_status_id','!=',3)->orderBy('finish_date', 'desc')->first();
+      return $this->showOne($user_plan, 200);
+    }
+
+    
 
     /**
      * Update the specified resource in storage.
@@ -138,44 +124,30 @@ class UserController extends ApiController
      */
     public function update(Request $request, User $user)
     {
-        $user->update($request->all());
-
-        return $this->showOne($user, 200);
+      $user->update($request->all());
+      return $this->showOne($user, 200);
     }
 
     /**
      * Revoke the token to the auth user
-     *
      * @return json with good or bad response
      */
     public function logout()
     {
-        if (Auth::check()) {
-            Auth::user()->token()->revoke();
-
-            return response()->json(['success' =>'Sesion finalizada'], 200);
-        } else {
-            return response()->json(['error' =>'api.something_went_wrong'], 500);
-        }
+      if (Auth::check()) {
+          Auth::user()->token()->revoke();
+          return response()->json(['success' =>'Sesion finalizada'], 200);
+      }else{
+          return response()->json(['error' =>'api.something_went_wrong'], 500);
+      }
     }
 
-    /**
-     * [clases description]
-     *
-     * @return [type] [description]
-     */
     public function clases()
     {
       $clases = Auth::user()->clases->where('date','<=',today());
-
       return $this->showAll($clases);
     }
 
-    /**
-     * [alerts description]
-     *
-     * @return [type] [description]
-     */
     public function alerts()
     {
       $alerts = [];
@@ -215,11 +187,6 @@ class UserController extends ApiController
       return response()->json(['data' => $alerts ], 200);
     }
 
-    /**
-     * [today description]
-     *
-     * @return [type] [description]
-     */
     public function today()
     {
       $reservationHas = false;

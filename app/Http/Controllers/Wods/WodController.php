@@ -20,7 +20,13 @@ class WodController extends ApiController
 
   public function show(Wod $wod)
   {
-      return $this->showOne($wod, 200);
+    return $this->showOne($wod, 200);
+  }
+
+  public function stages(Wod $wod)
+  {
+    $stages = $wod->stages;
+    return $this->showAll($stages, 200);
   }
     //
 }

@@ -2,10 +2,11 @@
 
 namespace App\Models\Bills;
 
+use Carbon\Carbon;
 use App\Models\Users\User;
+use App\Models\Plans\PlanUser;
 use App\Models\Bills\Installment;
 use App\Models\Bills\PaymentType;
-use App\Transformers\BillTransformer;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -16,11 +17,14 @@ class Bill extends Model
 {
     use SoftDeletes;
 
-    protected $dates = ['deleted_at'];
-    protected $fillable = ['payment_type_id', 'user_id',
-    'date', 'detail', 'amount', 'sub_total', 'total'];
+    protected $dates = ['deleted_at','date'];
+    protected $fillable = ['payment_type_id', 'plan_user_id', 'date', 'start_date', 'finish_date', 'detail', 'amount'];
+    protected $appends = ['date_formated'];
 
-    public $transformer = BillTransformer::class;
+    public function getDateFormatedAttribute($value)
+    {
+        return Carbon::parse($value)->format('d-m-Y');
+    }
 
     /**
      * [installments description]
@@ -47,8 +51,15 @@ class Bill extends Model
      * @method user
      * @return [type] [description]
      */
-    public function user()
+    // public function user()
+    // {
+    //     return $this->hasManyThrough('App\Models\Users\User',
+    //                                  'App\Models\Plans\PlanUser', 'user_','user_id');
+    //     // return $this->belongsToMany(User::class);
+    // }
+
+    public function plan_user()
     {
-      return $this->belongsTo(User::class);
+        return $this->belongsTo('App\Models\Plans\PlanUser');
     }
 }

@@ -11,6 +11,7 @@ use Auth;
 
 class ClaseTransformer extends TransformerAbstract
 {
+  
     /**
      * A Fractal transformer.
      *
@@ -18,6 +19,7 @@ class ClaseTransformer extends TransformerAbstract
      */
     public function transform(Clase $clase)
     {
+        //dd($clase->auth_can_reserve(),$clase);
         $start = $clase->start_at;
         $end = $clase->finish_at;
 
@@ -30,6 +32,7 @@ class ClaseTransformer extends TransformerAbstract
           }
         }
         //$reservation_count = $clase->users;
+        //hola
 
         if(($dateTime > Carbon::now()) && ($clase->quota > count($clase->users) ))
         {
@@ -52,20 +55,24 @@ class ClaseTransformer extends TransformerAbstract
 
         return [
             'clase_id' => (int)$clase->id,
+            'type' => (int)$clase->clase_type_id,
+            'typeName' => (string)$clase->claseType->clase_type,
             'date' => (string)$clase->date->toDateString(),
-            'dateHuman' => (string)ucfirst($clase->date->formatLocalized('%A %d')).' de '.ucfirst($clase->date->formatLocalized('%B')) ,
-            'day' => (string)ucfirst($clase->date->formatLocalized('%A %d' )),
-            'month' =>(string)ucfirst($clase->date->formatLocalized('%B' )),
+            'dateHuman' => (string)ucfirst($clase->date->formatLocalized('%A %d')).' de '.ucfirst($clase->date->formatLocalized('%B')),
+            'day' => (string)$clase->date->format('d'),
+            'month' =>(string)substr($clase->date->formatLocalized('%b' ), 0, -1),
             'year' => (string)$clase->date->formatLocalized('%Y'),
             'start' => (string)date('H:i', strtotime($start)),
             'end' => (string)date('H:i', strtotime($end)),
             'quota' => (int)$clase->quota,
             'active' => (bool)$active,
+            'coach' => (string)$clase->profesor->full_name,
 
             'rels' => [
                 'wod' => [
                   'id' => (int)$clase->wod_id,
-                  'href' => route('wods.show', ['wod' => (int)$clase->wod_id])
+                  'href' => route('wods.show', ['wod' => (int)$clase->wod_id]),
+                  'stages' => route('wods.stages', ['wod' => (int)$clase->wod_id])
                 ],
                 'reservations' => [
                   'count' => (int)count($clase->users),
@@ -78,6 +85,12 @@ class ClaseTransformer extends TransformerAbstract
                   'reservation_id' => (int)$reservation_id,
                   'status' => (string)$reservation_status,
                   'details' => (string)$reservation_details,
+                ],
+                'claseType' => [
+                  'id' => (string)$clase->claseType->id,
+                  'name' => (string)$clase->claseType->clase_type,
+                  'icon' => (string) url('/').'/icon/clases/'.$clase->claseType->icon,
+                  'iconWhite' => (string) url('/').'/icon/clases/'.$clase->claseType->icon_white,
                 ]
 
             ],
@@ -94,6 +107,7 @@ class ClaseTransformer extends TransformerAbstract
     {
         $attributes = [
             'clase_id' => 'id',
+            'type' => 'clase_type_id',
             'date' => 'date',
             'start' => 'start_at',
             'end' => 'finish_at',
@@ -112,6 +126,7 @@ class ClaseTransformer extends TransformerAbstract
     {
         $attributes = [
             'id' => 'clase_id',
+            'clase_type_id' => 'type',
             'date' => 'date',
             'start_at' => 'start',
             'finish_at' => 'end',

@@ -4,6 +4,7 @@ namespace App\Transformers;
 
 use App\Models\Wods\Wod;
 use League\Fractal\TransformerAbstract;
+use Auth;
 
 class WodTransformer extends TransformerAbstract
 {
@@ -14,22 +15,72 @@ class WodTransformer extends TransformerAbstract
      */
     public function transform(Wod $wod)
     {
+        $reservationHas = false;
+        $reservation = Auth::User()->clases()->where('date',today())->where('clase_type_id',$wod->clase_type_id)->first();
+        $todayReservation = [];
+
+    
+        
+
+        if(count($wod->stages)>0)
+        {
+            $hasStages = true ;
+            $stages = $wod->stages;
+            $featuredStage = '';
+            foreach($stages as $stage )
+            {
+                if($stage->stage_type->featured == 1 )
+                {
+                    $featuredStage = $stage->description;
+                }
+            }
+
+        } else {
+            $hasStages = false;
+            $featuredStage = '';
+        }
+
+
+
+        if($reservation){
+          $reservationHas = true;
+          $todayReservation = [
+            'id' => (int)$reservation->id,
+            'status' => (int)$reservation->pivot->reservation_status_id,
+            'start' => (string)date('H:i', strtotime($reservation->start_at)),
+            'end' => (string)date('H:i', strtotime($reservation->finish_at)),
+            'href' => (string)route('clases.show', ['clase' => $reservation->id]),
+          ];
+        }
+
         return [
-            'identificador' => (int)$wod->id,
+            'id' => (int)$wod->id,
+            'claseTypeId' => (int)$wod->clase_type_id,
+            'claseType' => (string)$wod->claseType->clase_type,
             'fecha' => (string)$wod->date,
-            'fechaHuman' =>  (string)ucfirst($wod->date->formatLocalized('%A %d')).' de '.ucfirst($wod->date->formatLocalized('%B')) ,
+            'day' => (string)$wod->date->format('d'),
+            'month' => (string)strtoupper ( $wod->date->formatLocalized('%b')) ,
+            'dateHuman' =>  (string)ucfirst($wod->date->formatLocalized('%A %d')).' de '.ucfirst($wod->date->formatLocalized('%B')) ,
             'year' => (string)$wod->date->formatLocalized('%Y'),
-            'fechaCreacion' => (string)$wod->created_at,
-            'fechaActualizacion' => (string)$wod->updated_at,
-            'fechaEliminacion' => isset($wod->deleted_at) ? (string) $wod->deleted_at : null,
             'rels' => [
                 'self' => [
                     'href' => '',
                 ],
+                'claseType' => [
+                    'id' => (int)$wod->clase_type_id,
+                    'name' => (string)$wod->claseType->clase_type,
+                    'icon' => (string) url('/').'/icon/clases/'.$wod->claseType->icon,
+                    'iconWhite' => (string) url('/').'/icon/clases/'.$wod->claseType->icon_white,
+                ],
+                'auth' => [
+                    'reservationHas' => (boolean)$reservationHas,
+                    'todayReservation' => $todayReservation,
+                ],
                 'stages' => [
-                    'warmup' => (string)$wod->stage(1)->description,
-                    'skill' => (string)$wod->stage(2)->description,
-                    'wod' => (string)$wod->stage(3)->description,
+                    'has' => (boolean)$hasStages,
+                    'href' => route('wods.stages',['wod'=>$wod->id]),
+                    'featured' => (string)$featuredStage,
+                    'all' => (Array)$wod->stages->toArray(),
                 ],
             ],
 
@@ -45,12 +96,10 @@ class WodTransformer extends TransformerAbstract
     public static function originalAttribute($index)
     {
         $attributes = [
-            'identificador' => 'id',
+            'id' => 'id',
             'fecha' => 'date',
+            'claseTypeId' => 'clase_type_id',
 
-            'fechaCreacion' => 'created_at',
-            'fechaActualizacion' => 'updated_at',
-            'fechaEliminacion' => 'deleted_at',
         ];
 
         return isset($attributes[$index]) ? $attributes[$index] : null;
@@ -63,11 +112,9 @@ class WodTransformer extends TransformerAbstract
     public static function transformedAttribute($index)
     {
         $attributes = [
-            'id' => 'identificador',
+            'id' => 'id',
             'date' => 'fecha',
-            'created_at' => 'fechaCreacion',
-            'updated_at' => 'fechaActualizacion',
-            'deleted_at' => 'fechaEliminacion',
+            'clase_type_id' => 'claseTypeId',
         ];
 
         return isset($attributes[$index]) ? $attributes[$index] : null;

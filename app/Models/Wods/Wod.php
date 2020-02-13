@@ -4,6 +4,7 @@ namespace App\Models\Wods;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Clases\Clase;
+use App\Models\Clases\ClaseType;
 use App\Transformers\WodTransformer;
 
 class Wod extends Model
@@ -25,7 +26,10 @@ class Wod extends Model
   {
     return $this->hasMany(Stage::class);
   }
-
+  public function claseType()
+  {
+    return $this->belongsTo(ClaseType::class);
+  }
   //etapa por id
   public function stage($id)
   {
