@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Models\System\Clients;
+namespace App\Models\System;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 // use Freshwork\ChileanBundle\Rut;
-use App\Models\System\Clients\ClientStatus;
+use App\Models\System\ClientStatus;
 use Hyn\Tenancy\Traits\UsesSystemConnection;
 use Illuminate\Database\Eloquent\SoftDeletes;
 

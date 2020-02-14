@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\System\Clients;
+namespace App\Models\System;
 
 use Illuminate\Database\Eloquent\Model;
 use Hyn\Tenancy\Traits\UsesSystemConnection;
