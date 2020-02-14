@@ -8,6 +8,13 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::middleware(['web'])->domain('admin.' . env('TENANCY_DEFAULT_HOSTNAME'))
+                           ->namespace('System')
+                           ->group(function() {
+                            Route::get('/clients-json', 'System\Clients\ClientController@clientsJson')
+                            ->name('clients-json');
+
+});
 
 //flow
 Route::post('/flow/return','Flow\FlowController@returnFlow')->name('flow.return');
