@@ -19,7 +19,6 @@ class ClientController extends Controller
      */
     public function clientsJson()
     {
-        dd('peo');
         $clients = Client::all();
 
         return response()->json(['data' => $clients]);
