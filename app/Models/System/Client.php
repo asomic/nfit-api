@@ -4,7 +4,7 @@ namespace App\Models\System;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-// use Freshwork\ChileanBundle\Rut;
+use Freshwork\ChileanBundle\Rut;
 use App\Models\System\ClientStatus;
 use Hyn\Tenancy\Traits\UsesSystemConnection;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -58,20 +58,20 @@ class Client extends Model
      *
      * @param [type] $value [description]
      */
-    // public function setRutAttribute($value)
-    // {
-    //     $this->attributes['rut'] = Rut::parse($value)->number();
-    // }
+    public function setRutAttribute($value)
+    {
+        $this->attributes['rut'] = Rut::parse($value)->number();
+    }
 
     /**
      * getRutAttribute
      *
      * @return [type] [description]
      */
-    // public function getRutFormatedAttribute()
-    // {
-    //     return Rut::set($this->rut)->fix()->format();
-    // }
+    public function getRutFormatedAttribute()
+    {
+        return Rut::set($this->rut)->fix()->format();
+    }
 
     /**
      * Being called, it's return the full client name
