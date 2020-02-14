@@ -11,9 +11,8 @@ Route::get('/', function () {
 Route::middleware(['web'])->domain('admin.' . env('TENANCY_DEFAULT_HOSTNAME'))
                            ->namespace('System')
                            ->group(function() {
-                            // Route::get('/clients-json', 'System\ClientController@clientsJson')
-                            // ->name('clients-json');
-                            return view('welcome');
+                            Route::get('/clients-json', 'System\ClientController@clientsJson')->name('clients-json');
+                            // return view('welcome');
 
 });
 
