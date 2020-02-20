@@ -89,8 +89,8 @@ class ClaseTransformer extends TransformerAbstract
                 'claseType' => [
                   'id' => (string)$clase->claseType->id,
                   'name' => (string)$clase->claseType->clase_type,
-                  'icon' => (string) url('/').'/icon/clases/'.$clase->claseType->icon,
-                  'iconWhite' => (string) url('/').'/icon/clases/'.$clase->claseType->icon_white,
+                  'icon' => (string) $clase->claseType->icon,
+                  'iconWhite' => (string) $clase->claseType->icon_white,
                 ]
 
             ],
