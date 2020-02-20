@@ -45,8 +45,8 @@ class WodTransformer extends TransformerAbstract
                 'claseType' => [
                     'id' => (int)$wod->clase_type_id,
                     'name' => (string)$wod->claseType->clase_type,
-                    'icon' => (string) url('/').'/icon/clases/'.$wod->claseType->icon,
-                    'iconWhite' => (string) url('/').'/icon/clases/'.$wod->claseType->icon_white,
+                    'icon' => (string) $wod->claseType->icon,
+                    'iconWhite' => (string) $wod->claseType->icon_white,
                 ],
                 'stages' => [
                     'has' => (boolean)$hasStages,
