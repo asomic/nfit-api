@@ -45,13 +45,11 @@ class ClaseTransformer extends TransformerAbstract
         {
           $reservation = Reservation::where('user_id',Auth::user()->id)->where('clase_id',$clase->id)->first();
           $reservation_id = $reservation->id;
-          $reservation_status = $reservation->status->reservation_status;
-          $reservation_status_id = $reservation->status;
+          $reservation_status = $reservation->status;
           $reservation_details = $reservation->details;
         } else {
           $reservation_id = '';
-          $reservation_status = '';
-          $reservation_status_id = '';
+          $reservation_status = [];
           $reservation_details = '';
         }
 
@@ -85,8 +83,7 @@ class ClaseTransformer extends TransformerAbstract
                   'has' => (bool)$clase->auth_has_reservation(),
                   'can' => (bool)$clase->auth_can_reserve(),
                   'reservation_id' => (int)$reservation_id,
-                  'status' => (string)$reservation_status,
-                  'status_id' => (string)$reservation_status_id,
+                  'status' => (Array)$reservation_status,
                   'details' => (string)$reservation_details,
                 ],
                 'claseType' => [
