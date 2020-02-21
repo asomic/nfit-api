@@ -33,7 +33,7 @@ class User extends Authenticatable
       'rut', 'first_name', 'last_name',
       'birthdate', 'gender', 'email',
       'address', 'password', 'phone',
-      'emergency_id', 'status_user_id', 'tutorial'];
+      'emergency_id', 'status_user', 'tutorial'];
     protected $hidden = ['password', 'remember_token'];
     protected $dates = ['deleted_at'];
     protected $appends = ['full_name'];
@@ -88,7 +88,7 @@ class User extends Authenticatable
      */
     public function active_users()
     {
-      return $this->where('status_user_id', 1);
+      return $this->where('status_user', 1);
     }
 
     /**
