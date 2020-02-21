@@ -66,8 +66,12 @@ trait ApiResponser
 			$attribute = $transformer::originalAttribute($query);
 
 			if (isset($attribute, $value)) {
-
-				$collection = $collection->where($attribute, Carbon::parse($value));
+				if($attribute == 'date') {
+					$collection = $collection->where($attribute, Carbon::parse($value));
+				}
+				else {
+					$collection = $collection->where($attribute,$value );
+				}
 			}
 		}
 
