@@ -54,23 +54,6 @@ class Clase extends Model
     public function auth_can_reserve()
     {
 
-      // $clase_type = $this->claseType;
-      // $auth_reservations = Auth::user()->reservations()->whereHas(['clase' => function($query){
-      //   $query->where('date',(string)$this->date);
-      // }])->get();
-      // dd($auth_reservations);
-
-      // $auth_plan = Auth::user()->active_planuser;
-      // if(count($auth_reservations>=$auth_plan->daily_clases))
-      // {
-      //   return false;
-      // }
-      // $auth_reservations_clase_type = $auth_reservations->pluck('clase_type_id');
-      // if(in_array($clase_type->id,$auth_reservations_clase_type ))
-      // {
-      //   return false;
-      // }
-
 
       $user = Auth::User();
 
@@ -79,14 +62,6 @@ class Clase extends Model
       $auth_reservations = $user->reservations()->whereIn('clase_id',$clases)->get();
       $auth_plan = Auth::user()->active_planuser();
 
-  
-
-      // dd($auth_reservations);
-      // dd($auth_reservations->pluck('clase_type_id')->toArray());
-      // if(in_array($clase_type->id,$auth_reservations->pluck('clase_type_id')->toArray() ))
-      // {
-      //   return false;
-      // }
       foreach ($auth_reservations as $res) {
         if($clase_type->id == $res->clase->clase_type_id )
         {
