@@ -208,11 +208,11 @@ class PlanUserObserver
 
         if (today()->between(Carbon::parse($planUser->start_date), Carbon::parse($planUser->finish_date)) &&
             $planUser->plan_status_id === 1) {
-            $user->status_user_id = ($planUser->plan->id === 1) ? 3 : 1;
+            $user->status_user = ($planUser->plan->id === 1) ? 3 : 1;
         } elseif ($user->actual_plan && $user->actual_plan->id != $planUser->id) {
-            $user->status_user_id = $user->actual_plan->plan->id === 1 ? 3 : 1;
+            $user->status_user = $user->actual_plan->plan->id === 1 ? 3 : 1;
         } else {
-            $user->status_user_id = 2;
+            $user->status_user = 2;
         }
 
         $user->save();

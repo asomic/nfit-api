@@ -27,7 +27,7 @@ class ClaseTransformer extends TransformerAbstract
         $dateTime = Carbon::createFromFormat('Y-m-d H:i:s', $dateTimeString);
         $pruebaCount = 0;
         foreach ($clase->users as $user) {
-          if($user->status_user_id == 3){
+          if($user->status_user == 3){
             $pruebaCount++;
           }
         }

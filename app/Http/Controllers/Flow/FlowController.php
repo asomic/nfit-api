@@ -94,7 +94,7 @@ class FlowController extends Controller
           $planUser->plan_status_id = 3;
         } else {
           $planUser->plan_status_id = 1;
-          $user->status_user_id = 1;
+          $user->status_user = 1;
           $user->save();
         }
 
@@ -117,7 +117,7 @@ class FlowController extends Controller
 
             \DB::table('errors')->insert([
               'error' => 'entre returnFlow, userId: ' .  $user->id . ' - ' .
-                          $user->full_name. 'status_user_id: ' . $user->status_user_id .  ', con plan planUserflow: ' . $planUserflow->id,
+                          $user->full_name. 'status_user: ' . $user->status_user .  ', con plan planUserflow: ' . $planUserflow->id,
               'where' => 'FlowController',
               'created_at' => now(),
           ]);
@@ -168,7 +168,7 @@ class FlowController extends Controller
           $planUser->plan_status_id = 3;
         } else {
           $planUser->plan_status_id = 1;
-          $user->status_user_id = 1;
+          $user->status_user = 1;
           $user->save();
         }
 
@@ -192,7 +192,7 @@ class FlowController extends Controller
 
             \DB::table('errors')->insert([
               'error' => 'entre confirmFlow, userId: ' .  $user->id . ' - ' .
-                          $user->full_name. 'status_user_id: ' . $user->status_user_id .
+                          $user->full_name. 'status_user: ' . $user->status_user .
                           ', con plan planUserflow: ' . $planUserflow->id,
               'where' => 'FlowController',
               'created_at' => now(),
