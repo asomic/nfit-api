@@ -72,8 +72,6 @@ class ClaseController extends ApiController
 
     public function historic()
     {
-        // $clases = Auth::user()->clases->where('date', '<', today())
-        //     ->where(now()->format('H:i'), '<', 'finish_at');
         $clases = Auth::user()->clases()->where('date', '<=', today())->get();
         return $this->showAll($clases);
     }

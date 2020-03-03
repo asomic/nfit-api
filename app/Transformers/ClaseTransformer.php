@@ -66,7 +66,7 @@ class ClaseTransformer extends TransformerAbstract
             'end' => (string)date('H:i', strtotime($end)),
             'quota' => (int)$clase->quota,
             'active' => (bool)$active,
-            'coach' => (string)$clase->profesor->full_name,
+            'coach' => (string)$clase->profesor->full_name ?? 'Sin coach',
 
             'rels' => [
                 'wod' => [
