@@ -54,7 +54,7 @@ class ClaseTransformer extends TransformerAbstract
         }
 
         return [
-            'clase_id' => (int)$clase->id,
+            'id' => (int)$clase->id,
             'type' => (int)$clase->clase_type_id,
             'typeName' => (string)$clase->claseType->clase_type,
             'date' => (string)$clase->date->toDateString(),
@@ -106,7 +106,7 @@ class ClaseTransformer extends TransformerAbstract
     public static function originalAttribute($index)
     {
         $attributes = [
-            'clase_id' => 'id',
+            'id' => 'id',
             'type' => 'clase_type_id',
             'date' => 'date',
             'start' => 'start_at',
@@ -125,7 +125,7 @@ class ClaseTransformer extends TransformerAbstract
     public static function transformedAttribute($index)
     {
         $attributes = [
-            'id' => 'clase_id',
+            'id' => 'id',
             'clase_type_id' => 'type',
             'date' => 'date',
             'start_at' => 'start',
