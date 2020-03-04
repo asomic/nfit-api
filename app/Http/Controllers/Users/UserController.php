@@ -261,4 +261,9 @@ class UserController extends ApiController
 
     }
 
+    // public function che($token)
+    // {
+    //   return response()->json('ok', 200);
+    // }
+
 }
