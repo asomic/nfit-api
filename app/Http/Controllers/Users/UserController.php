@@ -54,10 +54,10 @@ class UserController extends ApiController
           request()->file('image')->storeAs('public/users', $user->id.$user->first_name.'.jpg');
           $user->avatar = url('/').'/storage/users/'.$user->id.$user->first_name.'.jpg';
           $user->save();
-          return response()->json(['success' =>'Sesion finalizada'], 200);
+          return response()->json(['success' =>'foto guardada'], 200);
       }
       else {
-        return response()->json(['error' =>'nooooooooooooooo'], 400);
+        return response()->json(['error' =>'erro en request'], 400);
       }
 
     }
@@ -261,7 +261,7 @@ class UserController extends ApiController
 
     }
 
-    // public function che($token)
+    // public function checkAuth($token)
     // {
     //   return response()->json('ok', 200);
     // }
