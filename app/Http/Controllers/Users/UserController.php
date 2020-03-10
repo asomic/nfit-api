@@ -51,10 +51,14 @@ class UserController extends ApiController
       $user = Auth::user();
 
       if ($request->hasFile('image')) {
-          request()->file('image')->storeAs('public/users', $user->id.$user->first_name.'.jpg');
-          $user->avatar = url('/').'/storage/users/'.$user->id.$user->first_name.'.jpg';
-          $user->save();
-          return response()->json(['success' =>'foto guardada'], 200);
+          request()->file('image')->storeAs('public/users', $user->id.$user->first_name.'jiji.jpg');
+          $user->avatar = url('/').'/storage/users/'.$user->id.$user->first_name.'jiji.jpg';
+          if($user->save()){
+            return response()->json(['success' =>'foto guardada'], 200);
+          } else {
+            return response()->json(['error' =>'error guardar foto'], 200);
+          }
+          
       }
       else {
         return response()->json(['error' =>'erro en request'], 400);
