@@ -55,7 +55,7 @@ class UserController extends ApiController
           Storage::delete('public/users/'.$user->id.$user->first_name.'.jpg');
           $path = request()->file('image')->storeAs('public/users', $user->id.$user->first_name.'.jpg');
 
-          $user->avatar = url('/').'/storage/users/'.$user->id.$user->first_name.'.jpg';
+          $user->avatar = url('/').'/storage/users/'.$user->id.$user->first_name.'.jpg?v='.Carbon::now()->toDateTimeLocalString();;
           if($user->save()){
             return response()->json(['success' =>'foto guardada en '.$user->avatar.' path: '.$path], 200);
           } else {
