@@ -9,6 +9,7 @@ use App\Models\Wods\Wod;
 use App\Models\Clases\Reservation;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ApiController;
+use Storage;
 
 class UserController extends ApiController
 {
@@ -51,9 +52,10 @@ class UserController extends ApiController
       $user = Auth::user();
 
       if ($request->hasFile('image')) {
-          $path = request()->file('image')->storeAs('public/users', $user->id.$user->first_name.'jiji.jpg');
+          Storage::delete('public/users/'.$user->id.$user->first_name.'.jpg');
+          $path = request()->file('image')->storeAs('public/users', $user->id.$user->first_name.'.jpg');
 
-          $user->avatar = url('/').'/storage/users/'.$user->id.$user->first_name.'jiji.jpg';
+          $user->avatar = url('/').'/storage/users/'.$user->id.$user->first_name.'.jpg';
           if($user->save()){
             return response()->json(['success' =>'foto guardada en '.$user->avatar.' path: '.$path], 200);
           } else {
