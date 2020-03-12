@@ -12,6 +12,7 @@
         "fruitcake/laravel-cors": "^1.0",
         "guzzlehttp/guzzle": "^6.5",
         "hyn/multi-tenant": "^5.5",
+        "intervention/image": "^2.5",
         "laminas/laminas-diactoros": "^2.2",
         "laravel/framework": "^6.0",
         "laravel/helpers": "^1.1",

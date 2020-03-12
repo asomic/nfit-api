@@ -2,15 +2,18 @@
 
 namespace App\Http\Controllers\Users;
 
-use Auth;
+
 use App\Models\Users\User;
 use App\Models\Users\Alert;
 use App\Models\Wods\Wod;
 use App\Models\Clases\Reservation;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ApiController;
-use Storage;
 use Carbon\Carbon;
+use Auth;
+use Storage;
+use Image;
+
 
 class UserController extends ApiController
 {
@@ -53,12 +56,15 @@ class UserController extends ApiController
       $user = Auth::user();
 
       if ($request->hasFile('image')) {
-          Storage::delete('public/users/'.$user->id.$user->first_name.'.jpg');
-          $path = request()->file('image')->storeAs('public/users', $user->id.$user->first_name.'.jpg');
+
+          $finalImage = Image::make(base64_decode($request->image));
+          $finalImage->fit(720)->encode('jpg');
+          Storage::put('/public/users/'.$user->id.$user->first_name.'.jpg', $finalImage);
+          //$path = request()->file('image')->storeAs('public/users', $user->id.$user->first_name.'.jpg');
 
           $user->avatar = url('/').'/storage/users/'.$user->id.$user->first_name.'.jpg?v='.Carbon::now()->toDateTimeLocalString();;
           if($user->save()){
-            return response()->json(['success' =>'foto guardada en '.$user->avatar.' path: '.$path], 200);
+            return response()->json(['success' =>'foto guardada en '.$user->avatar], 200);
           } else {
             return response()->json(['error' =>'error guardar foto'], 200);
           }
