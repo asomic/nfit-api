@@ -62,7 +62,7 @@ class UserController extends ApiController
           Storage::put('/public/users/'.$user->id.$user->first_name.'.jpg', $finalImage);
           //$path = request()->file('image')->storeAs('public/users', $user->id.$user->first_name.'.jpg');
 
-          $user->avatar = url('/').'/storage/users/'.$user->id.$user->first_name.'.jpg?v='.Carbon::now()->toDateTimeLocalString();;
+          $user->avatar = url('/').'/storage/users/'.$user->id.$user->first_name.'.jpg?v='.Carbon::now()->toDateTimeLocalString();
           if($user->save()){
             return response()->json(['success' =>'foto guardada en '.$user->avatar], 200);
           } else {
