@@ -57,7 +57,7 @@ class UserController extends ApiController
 
       if ($request->hasFile('image')) {
 
-          $finalImage = Image::make(base64_decode($request->image));
+          $finalImage = Image::make($request->image);
           $finalImage->fit(720)->encode('jpg');
           Storage::put('/public/users/'.$user->id.$user->first_name.'.jpg', $finalImage);
           //$path = request()->file('image')->storeAs('public/users', $user->id.$user->first_name.'.jpg');
