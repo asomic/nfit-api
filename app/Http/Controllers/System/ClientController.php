@@ -25,9 +25,9 @@ class ClientController extends Controller
         return response()->json(['data' => $clients]);
     }
 
-    public function getDomain(Request $request)
+    public function getDomain($email)
     {
-        $boxUser = DB::table('box_users')->where('email',$request->email)->first();
+        $boxUser = DB::table('box_users')->where('email',$email)->first();
 
         return response()->json(['domain' => $boxUser->domain ]);
     }
