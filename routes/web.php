@@ -11,6 +11,7 @@ Route::get('/', function () {
 Route::middleware(['web'])->domain('admin.' . env('TENANCY_DEFAULT_HOSTNAME'))
                            ->group(function() {
                             Route::get('/clients-json', 'System\ClientController@clientsJson')->name('clients-json');
+                            Route::post('/domain', 'System\ClientController@getDomain')->name('domain');
                             // return view('welcome');
 
 });
@@ -24,5 +25,8 @@ Route::get('/flow-return',function () {
 Route::get('/flow-error',function () {
     return view('flow.error');
 });
+
+//domain 
+
 
 
