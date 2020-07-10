@@ -18,21 +18,21 @@ use Image;
 class UserController extends ApiController
 {
     /** [__construct description] */
-    public function __construct()
-    {
-      parent::__construct();
-      $this->middleware('can:view,user')->only('show');
-    }
+    // public function __construct()
+    // {
+    //   parent::__construct();
+    //   $this->middleware('can:view,user')->only('show');
+    // }
 
     /**
      * Display a listing of the resource.
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-      $users = User::all();
-      return $this->showAll($users);
-    }
+    // public function index()
+    // {
+    //   $users = User::all();
+    //   return $this->showAll($users);
+    // }
 
     /**
      * Request for the auth user profile
@@ -76,34 +76,34 @@ class UserController extends ApiController
 
     }
 
-    public function assistance()
-    {
-    //  $reservations = Auth::user()->reservations(3)->get();
-    $reservations = Auth::user()->assistence()->whereRaw('MONTH(date) = 2')->count();
-    //dd($reservations);
+    // public function assistance()
+    // {
+    // //  $reservations = Auth::user()->reservations(3)->get();
+    // $reservations = Auth::user()->assistence()->whereRaw('MONTH(date) = 2')->count();
+    // //dd($reservations);
 
-      // foreach ($reservations as $key => $value) {
-      //   $year =
-      // }
-      return response()->json([
-        'label' => ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
-        'data'  => [
-          Auth::user()->assistence()->whereRaw('MONTH(date) = 1')->count(),
-          Auth::user()->assistence()->whereRaw('MONTH(date) = 2')->count(),
-          Auth::user()->assistence()->whereRaw('MONTH(date) = 3')->count(),
-          Auth::user()->assistence()->whereRaw('MONTH(date) = 4')->count(),
-          Auth::user()->assistence()->whereRaw('MONTH(date) = 5')->count(),
-          Auth::user()->assistence()->whereRaw('MONTH(date) = 6')->count(),
-          Auth::user()->assistence()->whereRaw('MONTH(date) = 7')->count(),
-          Auth::user()->assistence()->whereRaw('MONTH(date) = 8')->count(),
-          Auth::user()->assistence()->whereRaw('MONTH(date) = 9')->count(),
-          Auth::user()->assistence()->whereRaw('MONTH(date) = 10')->count(),
-          Auth::user()->assistence()->whereRaw('MONTH(date) = 11')->count(),
-          Auth::user()->assistence()->whereRaw('MONTH(date) = 12')->count(),
-         ],
+    //   // foreach ($reservations as $key => $value) {
+    //   //   $year =
+    //   // }
+    //   return response()->json([
+    //     'label' => ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
+    //     'data'  => [
+    //       Auth::user()->assistence()->whereRaw('MONTH(date) = 1')->count(),
+    //       Auth::user()->assistence()->whereRaw('MONTH(date) = 2')->count(),
+    //       Auth::user()->assistence()->whereRaw('MONTH(date) = 3')->count(),
+    //       Auth::user()->assistence()->whereRaw('MONTH(date) = 4')->count(),
+    //       Auth::user()->assistence()->whereRaw('MONTH(date) = 5')->count(),
+    //       Auth::user()->assistence()->whereRaw('MONTH(date) = 6')->count(),
+    //       Auth::user()->assistence()->whereRaw('MONTH(date) = 7')->count(),
+    //       Auth::user()->assistence()->whereRaw('MONTH(date) = 8')->count(),
+    //       Auth::user()->assistence()->whereRaw('MONTH(date) = 9')->count(),
+    //       Auth::user()->assistence()->whereRaw('MONTH(date) = 10')->count(),
+    //       Auth::user()->assistence()->whereRaw('MONTH(date) = 11')->count(),
+    //       Auth::user()->assistence()->whereRaw('MONTH(date) = 12')->count(),
+    //      ],
 
-      ], 200);
-    }
+    //   ], 200);
+    // }
 
     // *
     //  * Display the specified resource.
