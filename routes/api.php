@@ -48,8 +48,8 @@ Route::middleware(['auth:api'])->group(function() {
 
         Route::Apiresource('users.emergencies', 'Users\UserEmergencyController');
         Route::Apiresource('users.planusers', 'Users\PlanUserController');
-            Route::get('users/{user}/planusers-active', 'Users\PlanUserController@active')->name('users.planusers.active');
-            Route::get('users-alerts', 'Users\UserController@alerts')->name('users.alerts');
+        Route::get('users/{user}/planusers-active', 'Users\PlanUserController@active')->name('users.planusers.active');
+        Route::get('users-alerts', 'Users\UserController@alerts')->name('users.alerts');
         
 
     /**
