@@ -167,8 +167,8 @@ class UserController extends ApiController
       $alerts = [];
       $confirmation = [];
       $has_confirmation = (bool)false;
-      $backend_notification = [];
-      $has_backend_notification = (bool)false;
+      $inapp_notification = [];
+      $has_inapp_notification = (bool)false;
 
       //has confirmation
       $clase = Auth::user()->clases->where('date',today())->first();
@@ -186,16 +186,16 @@ class UserController extends ApiController
         }
       }
 
-      $backend_notification = Alert::where('from','<=', today())->where('to','>=',today())->get();
-      if(count($backend_notification)>0){
-        $has_backend_notification = (bool)true;
+      $inapp_notification = Alert::where('from','<=', today())->where('to','>=',today())->get();
+      if(count($inapp_notification)>0){
+        $has_inapp_notification = (bool)true;
       }
 
       $alerts = [
         'has_confirmation' => $has_confirmation,
         'confirmation' => $confirmation,
-        'has_backend_notification' =>  $has_backend_notification,
-        'backend_notification' =>  $backend_notification,
+        'has_inapp_notification' =>  $has_inapp_notification,
+        'inapp_notification' =>  $inapp_notification,
       ];
 
       return response()->json(['data' => $alerts ], 200);
