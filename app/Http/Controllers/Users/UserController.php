@@ -165,26 +165,26 @@ class UserController extends ApiController
     public function alerts()
     {
       $alerts = [];
-      $confirmation = [];
-      $has_confirmation = (bool)false;
+      // $confirmation = [];
+      // $has_confirmation = (bool)false;
       $inapp_notification = [];
       $has_inapp_notification = (bool)false;
 
       //has confirmation
-      $clase = Auth::user()->clases->where('date',today())->first();
-      if($clase)
-      {
-        $reservation = Reservation::where('user_id',Auth::user()->id)->where('clase_id',$clase->id)->where('reservation_status_id',1)->first();
-        if($reservation) {
-          $confirmation = [
-            'start' => (string)date('H:i', strtotime($clase->start_at)),
-            'end' => (string)date('H:i', strtotime($clase->finish_at)),
-            'clase_id' => (string)$clase->id
+      // $clase = Auth::user()->clases->where('date',today())->first();
+      // if($clase)
+      // {
+      //   $reservation = Reservation::where('user_id',Auth::user()->id)->where('clase_id',$clase->id)->where('reservation_status_id',1)->first();
+      //   if($reservation) {
+      //     $confirmation = [
+      //       'start' => (string)date('H:i', strtotime($clase->start_at)),
+      //       'end' => (string)date('H:i', strtotime($clase->finish_at)),
+      //       'clase_id' => (string)$clase->id
 
-          ];
-          $has_confirmation = (bool)true;
-        }
-      }
+      //     ];
+      //     $has_confirmation = (bool)true;
+      //   }
+      // }
 
       $inapp_notification = Alert::where('from','<=', today())->where('to','>=',today())->get();
       if(count($inapp_notification)>0){
@@ -192,8 +192,8 @@ class UserController extends ApiController
       }
 
       $alerts = [
-        'has_confirmation' => $has_confirmation,
-        'confirmation' => $confirmation,
+        // 'has_confirmation' => $has_confirmation,
+        // 'confirmation' => $confirmation,
         'has_inapp_notification' =>  $has_inapp_notification,
         'inapp_notification' =>  $inapp_notification,
       ];
