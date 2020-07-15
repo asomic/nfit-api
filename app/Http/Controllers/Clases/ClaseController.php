@@ -269,6 +269,19 @@ class ClaseController extends ApiController
             }
         }
     }
+    // por mientras 
+    private function getZoom(Clase $clase) {
+        $can_zoom = false;
+        $zoom_link = null;
+        if(($clase->zoom_link) && ($clase->start <= now()) && ($clase->end >= now()) && auth_has_reservation() ) {
+            $can_zoom = true;
+            $zoom_link = $clase->zoom_link;
+        }
+        return response()->json([
+            'can_zoom' => $can_zoom,
+            'zoom_link' => $zoom_link,
+        ]);
+    }
 
 }
 // private function hasTwelvePlan($planuser)
