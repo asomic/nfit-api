@@ -19,7 +19,10 @@ class WodController extends ApiController
       $wods = Wod::where('date',today())->get();
       return $this->showAll($wods);
     } else {
-      return response()->json(['data2'=>[]]);
+      return response()->json([
+        'data'=>[],
+        'status'=>Auth::user()->status_user 
+      ]);
     }
     
   }
