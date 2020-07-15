@@ -284,6 +284,7 @@ class ClaseController extends ApiController
         }
         //test
         return response()->json([
+            'now' => Carbon::now(),
             'start' => $start,
             'end' => $end,
             'has' => $clase->auth_has_reservation(),
