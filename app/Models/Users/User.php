@@ -238,10 +238,10 @@ class User extends Authenticatable
      * [status_user description]
      * @return [type] [description]
      */
-    public function status_user()
-    {
-      return $this->belongsTo(StatusUser::class);
-    }
+    // public function status_user()
+    // {
+    //   return $this->belongsTo(StatusUser::class);
+    // }
 
     // public function dateReservations($date)
     // {
