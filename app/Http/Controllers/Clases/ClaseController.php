@@ -277,7 +277,7 @@ class ClaseController extends ApiController
         $start = Carbon::createFromFormat('Y-m-d H:i:s', $stringStart);
         $stringEnd = $clase->date->format('Y-m-d')." ".$clase->finish_at;
         $end = Carbon::createFromFormat('Y-m-d H:i:s', $stringEnd);
-        $end->addDay();
+
         $ifzoom = false;
         if($clase->zoom_link != null) {
             $ifzoom = true;
