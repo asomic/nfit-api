@@ -277,6 +277,7 @@ class ClaseController extends ApiController
             $can_zoom = true;
             $zoom_link = $clase->zoom_link;
         }
+        //test
         return response()->json([
             'start' => $clase->start_at,
             'end' => $clase->finish_at,
