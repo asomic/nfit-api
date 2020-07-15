@@ -278,7 +278,9 @@ class ClaseController extends ApiController
             $zoom_link = $clase->zoom_link;
         }
         return response()->json([
-            'clase' => $clase->toArray(),
+            'start' => $clase->start_at,
+            'end' => $clase->finish_at,
+            'has' => $clase->auth_has_reservation(),
             'can_zoom' => $can_zoom,
             'zoom_link' => $zoom_link,
         ]);
