@@ -284,8 +284,8 @@ class ClaseController extends ApiController
         }
         //test
         return response()->json([
-            'start' => $clase->start_at,
-            'end' => $clase->finish_at,
+            'start' => $start,
+            'end' => $end,
             'has' => $clase->auth_has_reservation(),
             'can_zoom' => $can_zoom,
             'zoom_link' => $clase->zoom_link,
