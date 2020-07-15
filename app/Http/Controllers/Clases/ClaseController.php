@@ -278,7 +278,7 @@ class ClaseController extends ApiController
         $stringEnd = $clase->date->format('Y-m-d')." ".$clase->finish_at;
         $end = Carbon::createFromFormat('Y-m-d H:i:s', $stringEnd);
 
-        if(($clase->zoom_link) && ($start <= Carbon::now()) && ($end >= Carbon::now()) && $clase->auth_has_reservation() ) {
+        if(($clase->zoom_link != null) && ($start <= Carbon::now()) && ($end >= Carbon::now()) && $clase->auth_has_reservation() ) {
             $can_zoom = true;
             $zoom_link = $clase->zoom_link;
         }
