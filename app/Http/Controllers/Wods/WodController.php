@@ -15,7 +15,7 @@ class WodController extends ApiController
   //wods de hoy
   public function today()
   {
-    if (Auth::user()->active_planuser) {
+    if (count(Auth::user()->active_planuser()) > 0) {
       $wods = Wod::where('date',today())->get();
       return $this->showAll($wods);
     } else {
