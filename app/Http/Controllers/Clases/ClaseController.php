@@ -288,7 +288,7 @@ class ClaseController extends ApiController
             'end' => $clase->finish_at,
             'has' => $clase->auth_has_reservation(),
             'can_zoom' => $can_zoom,
-            'zoom_link' => $clase->zoom_link,
+            'zoom_link' => $zoom_link,
         ]);
     }
 
