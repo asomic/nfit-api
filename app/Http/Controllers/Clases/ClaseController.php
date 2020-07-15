@@ -270,7 +270,7 @@ class ClaseController extends ApiController
         }
     }
     // por mientras 
-    private function getZoom(Clase $clase) {
+    public function getZoom(Clase $clase) {
         $can_zoom = false;
         $zoom_link = null;
         if(($clase->zoom_link) && ($clase->start <= now()) && ($clase->end >= now()) && $clase->auth_has_reservation() ) {
