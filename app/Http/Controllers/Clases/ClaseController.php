@@ -273,7 +273,7 @@ class ClaseController extends ApiController
     private function getZoom(Clase $clase) {
         $can_zoom = false;
         $zoom_link = null;
-        if(($clase->zoom_link) && ($clase->start <= now()) && ($clase->end >= now()) && auth_has_reservation() ) {
+        if(($clase->zoom_link) && ($clase->start <= now()) && ($clase->end >= now()) && $clase->auth_has_reservation() ) {
             $can_zoom = true;
             $zoom_link = $clase->zoom_link;
         }
@@ -284,21 +284,4 @@ class ClaseController extends ApiController
     }
 
 }
-// private function hasTwelvePlan($planuser)
-// {
-//     $responseTwo = null;
-//     if ($planuser->plan_id == 5 && $planuser->counter >= 12) {
-//         $responseTwo = 'No puede reservar, ya ha ocupado o reservado sus 12 clases del plan 12 clases mensual';
-//     }
-//     elseif ($planuser->plan_id == 6 && $planuser->counter >= 12) {
-//         $responseTwo = 'El plan de 12 clases trimestral no le permite tomar mas clases';
-//     }
-//     elseif ($planuser->plan_id == 7 && $planuser->counter >= 12) {
-//         $responseTwo = 'El plan de 12 clases semestral no le permite tomar mas clases';
-//     }
-//     elseif ($planuser->plan_id == 8 && $planuser->counter >= 12) {
-//         $responseTwo = 'El plan de 12 clases anual no le permite tomar mas clases';
-//     }
 
-//     return $responseTwo;
-// }
