@@ -70,7 +70,7 @@ class UserController extends ApiController
             "crop"=>"lfill"
           ]); 
 
-          $user->avatar = $response['url'];
+          $user->avatar = $response['secure_url'];
           if($user->save()){
             return response()->json(['success' =>'foto guardada en '.$user->avatar], 200);
           } else {
