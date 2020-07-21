@@ -12,7 +12,7 @@ use App\Http\Controllers\ApiController;
 use Carbon\Carbon;
 use Auth;
 use Storage;
-use Image;
+//use Image;
 
 
 class UserController extends ApiController
@@ -57,8 +57,6 @@ class UserController extends ApiController
 
       if ($request->hasFile('image')) {
 
-          $finalImage = Image::make($request->image);
-          $finalImage->fit(720)->encode('jpg');
           \Cloudinary::config(array( 
             "cloud_name" => "asomic", 
             "api_key" => "848272583179274", 
@@ -66,11 +64,12 @@ class UserController extends ApiController
             "secure" => true
           ));
 
-          $response = \Cloudinary\Uploader::upload($request->file('image')); 
-          // Storage::put('/public/users/'.$user->id.$user->first_name.'.jpg', $finalImage);
-          // Storage::disk('public')->put('users/')
-          //$path = request()->file('image')->storeAs('public/users', $user->id.$user->first_name.'.jpg');
-          
+          $response = \Cloudinary\Uploader::upload($request->file('image'),[
+            "width"=>750, 
+            "height"=>750, 
+            "crop"=>"fit"
+          ]); 
+
           $user->avatar = $response['url'];
           if($user->save()){
             return response()->json(['success' =>'foto guardada en '.$user->avatar], 200);
