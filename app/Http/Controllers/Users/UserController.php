@@ -67,7 +67,7 @@ class UserController extends ApiController
           
           //$path = request()->file('image')->storeAs('public/users', $user->id.$user->first_name.'.jpg');
 
-          $user->avatar = Storage::disk('tenant')->url($filename);
+          $user->avatar = Storage::disk('tenant')->path($filename);
           if($user->save()){
             return response()->json(['success' =>'foto guardada en '.$user->avatar], 200);
           } else {
