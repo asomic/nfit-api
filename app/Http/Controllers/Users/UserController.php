@@ -63,7 +63,7 @@ class UserController extends ApiController
           $finalImage = Image::make($request->image);
           $finalImage->fit(720)->encode('jpg');
           $filename = Str::random().'.jpg';
-          Storage::disk('tenant')->put($filename, $finalImage);
+          Storage::disk('tenant')->put($filename, $finalImage, 'public');
           
           //$path = request()->file('image')->storeAs('public/users', $user->id.$user->first_name.'.jpg');
 
