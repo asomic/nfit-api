@@ -66,7 +66,7 @@ class UserController extends ApiController
             "secure" => true
           ));
 
-          $response = \Cloudinary\Uploader::upload($finalImage); 
+          $response = \Cloudinary\Uploader::upload($request->file('image')); 
           // Storage::put('/public/users/'.$user->id.$user->first_name.'.jpg', $finalImage);
           // Storage::disk('public')->put('users/')
           //$path = request()->file('image')->storeAs('public/users', $user->id.$user->first_name.'.jpg');
