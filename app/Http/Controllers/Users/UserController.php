@@ -65,9 +65,9 @@ class UserController extends ApiController
           ));
 
           $response = \Cloudinary\Uploader::upload($request->file('image'),[
-            "width"=>750, 
-            "height"=>750, 
-            "crop"=>"fit"
+            "width"=>450, 
+            "height"=>450, 
+            "crop"=>"fill"
           ]); 
 
           $user->avatar = $response['url'];
