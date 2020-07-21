@@ -2,14 +2,17 @@
 
 namespace App\Http\Controllers\Users;
 
-
+// Models
 use App\Models\Users\User;
 use App\Models\Users\Alert;
 use App\Models\Wods\Wod;
 use App\Models\Clases\Reservation;
+
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use App\Http\Controllers\ApiController;
 use Carbon\Carbon;
+
 use Auth;
 use Storage;
 use Image;
@@ -59,10 +62,12 @@ class UserController extends ApiController
 
           $finalImage = Image::make($request->image);
           $finalImage->fit(720)->encode('jpg');
-          Storage::put('/public/users/'.$user->id.$user->first_name.'.jpg', $finalImage);
+          $filename = Str::random().'.jpg';
+          Storage::disk('tenant')->put($filename, $finalImage);
+          
           //$path = request()->file('image')->storeAs('public/users', $user->id.$user->first_name.'.jpg');
 
-          $user->avatar = url('/').'/storage/users/'.$user->id.$user->first_name.'.jpg?v='.Carbon::now()->toDateTimeLocalString();
+          $user->avatar = Storage::disk('tenant')->url($filename);
           if($user->save()){
             return response()->json(['success' =>'foto guardada en '.$user->avatar], 200);
           } else {
@@ -71,7 +76,7 @@ class UserController extends ApiController
           
       }
       else {
-        return response()->json(['error' =>'erro en request'], 400);
+        return response()->json(['error' =>'erro en subir la imagen'], 400);
       }
 
     }
