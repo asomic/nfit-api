@@ -2,17 +2,14 @@
 
 namespace App\Http\Controllers\Users;
 
-// Models
+
 use App\Models\Users\User;
 use App\Models\Users\Alert;
 use App\Models\Wods\Wod;
 use App\Models\Clases\Reservation;
-
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use App\Http\Controllers\ApiController;
 use Carbon\Carbon;
-
 use Auth;
 use Storage;
 use Image;
@@ -62,12 +59,19 @@ class UserController extends ApiController
 
           $finalImage = Image::make($request->image);
           $finalImage->fit(720)->encode('jpg');
-          $filename = Str::random().'.jpg';
-          Storage::disk('tenant')->put($filename, $finalImage, 'public');
-          
+          \Cloudinary::config(array( 
+            "cloud_name" => "asomic", 
+            "api_key" => "848272583179274", 
+            "api_secret" => "nmfb2gvEoKogFn3yza9briK4Yg4", 
+            "secure" => true
+          ));
+
+          $response = \Cloudinary\Uploader::upload($finalImage); 
+          // Storage::put('/public/users/'.$user->id.$user->first_name.'.jpg', $finalImage);
+          // Storage::disk('public')->put('users/')
           //$path = request()->file('image')->storeAs('public/users', $user->id.$user->first_name.'.jpg');
 
-          $user->avatar = Storage::disk('tenant')->path($filename);
+          $user->avatar = 'si';
           if($user->save()){
             return response()->json(['success' =>'foto guardada en '.$user->avatar], 200);
           } else {
@@ -76,7 +80,7 @@ class UserController extends ApiController
           
       }
       else {
-        return response()->json(['error' =>'erro en subir la imagen'], 400);
+        return response()->json(['error' =>'erro en request'], 400);
       }
 
     }
