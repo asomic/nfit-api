@@ -8,7 +8,8 @@ trait AdminActions
 {
 	public function before($user, $ability)
     {
-    	$admin = RoleUser::where('role_id', 1)->where('user_id', $user->id)->get();
+        $admin = RoleUser::where('role_id', 1)->where('user_id', $user->id)->get();
+        
         if (count($admin) != 0) {
             return true;
         }

@@ -7,16 +7,41 @@ use Illuminate\Database\Eloquent\Model;
 
 class Alert extends Model
 {
-	protected $dates = ['from','to'];
+    /**
+     * Undocumented variable
+     *
+     * @var array
+     */
+    protected $dates = ['from','to'];
+    
+    /**
+     * Undocumented variable
+     *
+     * @var array
+     */
     protected $fillable = ['message', 'from', 'to'];
 
-    public function setFromAttribute($value)
+    /**
+     *  Convert from UTC to user timezone and get it with a "human date format" 
+     *
+     *  @param   String  $value
+     * 
+     *  @return  Carbon\Carbon
+     */
+    public function getFromAttribute($value)
     {
-        $this->attributes['from'] = Carbon::parse($value)->format('Y-m-d');
+        return NfitTimeZone::adjustToTimeZoneDate($value)->format('d-m-Y');
     }
 
-    public function setToAttribute($value)
+    /**
+     *  Convert from UTC to user timezone and get it with a "human date format" 
+     *
+     *  @param   String  $value
+     * 
+     *  @return  Carbon\Carbon
+     */
+    public function getToAttribute($value)
     {
-        $this->attributes['to'] = Carbon::parse($value)->format('Y-m-d');
+        return NfitTimeZone::adjustToTimeZoneDate($value)->format('d-m-Y');
     }
 }
