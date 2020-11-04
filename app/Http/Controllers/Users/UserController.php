@@ -123,60 +123,78 @@ class UserController extends ApiController
       return $this->showOne($user, 200);
     }
 
+    /**
+	*   Get all the plan users for the authenticated user
+	*/
     public function plans()
     {
-      $user_plans = Auth::user()->plan_users()->orderBy('finish_date', 'desc')->get();
-      return $this->showAll($user_plans, 200);
+        $user_plans = Auth::user()->plan_users()->orderBy('finish_date', 'desc')->get();
+        
+        return $this->showAll($user_plans, 200);
     }
-
-    public function actualPlan()
-    {
-      $user_plan = Auth::user()->plan_users()->where('plan_status_id','!=',3)->orderBy('finish_date', 'desc')->first();
-      return $this->showOne($user_plan, 200);
-    }
-
-    
 
     /**
-     * Update the specified resource in storage.
+     *  Undocumented function
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Users\User  $user
-     * @return \Illuminate\Http\Response
+     *  @return  void
+     */
+    public function actualPlan()
+    {
+        $user_plan = Auth::user()->plan_users()->where('plan_status_id','!=',3)->orderBy('finish_date', 'desc')->first();
+
+        return $this->showOne($user_plan, 200);
+    }
+
+    /**
+     *  Update the specified resource in storage.
+     *
+     *  @param   \Illuminate\Http\Request  $request
+     *  @param   \App\Models\Users\User  $user
+     * 
+     *  @return  \Illuminate\Http\Response
      */
     public function update(Request $request, User $user)
     {
-      $user->update($request->all());
-      return $this->showOne($user, 200);
+        $user->update($request->all());
+        
+        return $this->showOne($user, 200);
     }
 
     /**
-     * Revoke the token to the auth user
-     * @return json with good or bad response
+     *  Revoke the token to the auth user
+     * 
+     *  @return  json  with good or bad response
      */
     public function logout()
     {
-      if (Auth::check()) {
-          Auth::user()->token()->revoke();
-          return response()->json(['success' =>'Sesion finalizada'], 200);
-      }else{
-          return response()->json(['error' =>'api.something_went_wrong'], 500);
-      }
+        if (Auth::check()) {
+            Auth::user()->token()->revoke();
+            
+            return response()->json(['success' =>'Sesion finalizada'], 200);
+        } else {
+            return response()->json(['error' =>'api.something_went_wrong'], 500);
+        }
     }
 
+    /**
+     *  Undocumented function
+     *
+     *  @return  clases
+     */
     public function clases()
     {
-      $clases = Auth::user()->clases->where('date','<=',today());
-      return $this->showAll($clases);
+        $clases = Auth::user()->clases->where('date', '<=', today());
+        
+        return $this->showAll($clases);
     }
 
     public function alerts()
     {
-      $alerts = [];
-      // $confirmation = [];
-      // $has_confirmation = (bool)false;
-      $inapp_notification = [];
-      $has_inapp_notification = (bool)false;
+        $alerts = [];
+        // $confirmation = [];
+        // $has_confirmation = (bool)false;
+        $inapp_notification = [];
+        $has_inapp_notification = (bool)false;
 
       //has confirmation
       // $clase = Auth::user()->clases->where('date',today())->first();
@@ -194,98 +212,98 @@ class UserController extends ApiController
       //   }
       // }
 
-      $inapp_notification = Alert::where('from','<=', today())->where('to','>=',today())->get();
-      if(count($inapp_notification)>0){
-        $has_inapp_notification = (bool)true;
-      }
+        $inapp_notification = Alert::where('from','<=', today())->where('to','>=',today())->get();
+        if(count($inapp_notification)>0){
+            $has_inapp_notification = (bool)true;
+        }
 
-      $alerts = [
-        // 'has_confirmation' => $has_confirmation,
-        // 'confirmation' => $confirmation,
-        'has_inapp_notification' =>  $has_inapp_notification,
-        'inapp_notification' =>  $inapp_notification,
-      ];
+        $alerts = [
+            // 'has_confirmation' => $has_confirmation,
+            // 'confirmation' => $confirmation,
+            'has_inapp_notification' =>  $has_inapp_notification,
+            'inapp_notification' =>  $inapp_notification,
+        ];
 
-      return response()->json(['data' => $alerts ], 200);
+        return response()->json(['data' => $alerts ], 200);
     }
 
+    /**
+     * Undocumented function
+     *
+     * @return void
+     */
     public function today()
     {
-      $reservationHas = false;
-      $reservation = Auth::User()->clases()->where('date',today())->first();
-      $todayReservation = [];
+        $reservationHas = false;
+        $reservation = Auth::User()->clases()->where('date',today())->first();
+        $todayReservation = [];
 
-      $wodHas = false;
-      $wod = Wod::where('date',today())->first();
-      $todayWod = [];
+        $wodHas = false;
+        $wod = Wod::where('date',today())->first();
+        $todayWod = [];
 
 
-      if($reservation){
-        $reservationHas = true;
-        $todayReservation = [
-          'id' => (int)$reservation->id,
-          'status' => (int)$reservation->pivot->reservation_status_id,
-          'start' => (string)date('H:i', strtotime($reservation->start_at)),
-          'end' => (string)date('H:i', strtotime($reservation->finish_at)),
-          'href' => (string)route('clases.show', ['clase' => $reservation->id]),
+        if($reservation) {
+            $reservationHas = true;
+            $todayReservation = [
+            'id' => (int)$reservation->id,
+            'status' => (int)$reservation->pivot->reservation_status_id,
+            'start' => (string)date('H:i', strtotime($reservation->start_at)),
+            'end' => (string)date('H:i', strtotime($reservation->finish_at)),
+            'href' => (string)route('clases.show', ['clase' => $reservation->id]),
+            ];
+        }
+
+
+        if($wod) {
+            $wodHas = true;
+            $todayWod = [
+                'warmup' => (string)$wod->stage(1)->description,
+                'skill' => (string)$wod->stage(2)->description,
+                'wod' => (string)$wod->stage(3)->description,
+            ];
+        }
+
+        $today = [
+            'date' => today()->format('Y-m-d'),
+            'dateHuman' =>  (string) ucfirst(today()->formatLocalized('%A %d')).' de '. ucfirst(today()->formatLocalized('%B')) ,
+            'wod' => [
+                'has' => (bool)$wodHas,
+                'stages' => $todayWod,
+            ],
+            'auth_reservation' => [
+                'has' => (bool)$reservationHas,
+                'reservation' => $todayReservation
+            ]
         ];
-      }
 
-
-      if($wod)
-      {
-        $wodHas = true;
-        $todayWod = [
-            'warmup' => (string)$wod->stage(1)->description,
-            'skill' => (string)$wod->stage(2)->description,
-            'wod' => (string)$wod->stage(3)->description,
-        ];
-      }
-
-      $today = [
-        'date' => today()->format('Y-m-d'),
-        'dateHuman' =>  (string) ucfirst(today()->formatLocalized('%A %d')).' de '. ucfirst(today()->formatLocalized('%B')) ,
-        'wod' => [
-          'has' => (bool)$wodHas,
-          'stages' => $todayWod,
-        ],
-        'auth_reservation' => [
-          'has' => (bool)$reservationHas,
-          'reservation' => $todayReservation ,
-        ]
-      ];
-
-      return response()->json(['data' => $today ], 200);
-
+        return response()->json(['data' => $today ], 200);
     }
 
+    /**
+     *  Undocumented function
+     *  
+     *  @param  Request  $request
+     * 
+     *  @return  void
+     */
     public function fcmToken(Request $request)
     {
-
-      Auth::user()->fcm_token = $request->fcmtoken;
-      if(Auth::user()->save()){
-        return response()->json('guardado-'.Auth::user()->fcm_token.' enviado:'.$request->fcmtoken.'request:'.$request->toJson(), 200);
-      } else {
-        return response()->json('no guardado', 401);
-      }
-
+        Auth::user()->fcm_token = $request->fcmtoken;
+        if(Auth::user()->save()) {
+            return response()->json('guardado-'.Auth::user()->fcm_token.' enviado:'.$request->fcmtoken.'request:'.$request->toJson(), 200);
+        } else {
+            return response()->json('no guardado', 401);
+        }
     }
 
     public function fcmTokenGet($token)
     {
-
-      Auth::user()->fcm_token = $token;
-      if(Auth::user()->save()){
-        return response()->json('guardado'.Auth::user()->fcm_token, 200);
-      } else {
+        Auth::user()->fcm_token = $token;
+        if(Auth::user()->save()) {
+            return response()->json('guardado'.Auth::user()->fcm_token, 200);
+        }
+        
         return response()->json('no guardado', 401);
-      }
-
     }
-
-    // public function checkAuth($token)
-    // {
-    //   return response()->json('ok', 200);
-    // }
-
 }

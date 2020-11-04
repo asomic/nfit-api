@@ -75,6 +75,7 @@ class ClaseController extends ApiController
         $clases = Auth::user()->clases()->where('date', '<=', today())->get();
         return $this->showAll($clases);
     }
+    
     public function types()
     {
         $types = Clasetype::all();

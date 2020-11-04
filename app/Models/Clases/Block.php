@@ -25,29 +25,29 @@ class Block extends Model
     // protected $with = array('plans');
 
     
-    /**
-     *  Adjust from UTC time to user local timezone
-     *
-     *  @return  Carbon\Carbon
-     */
-    public function getDateAttribute($value)
-    {
-        if ($value) {
-            return NfitTimeZone::adjustToTimeZoneDate($value)->format('Y-m-d');
-        }
-    }
+    // /**
+    //  *  Adjust from UTC time to user local timezone
+    //  *
+    //  *  @return  Carbon\Carbon
+    //  */
+    // public function getDateAttribute($value)
+    // {
+    //     if ($value) {
+    //         return NfitTimeZone::adjustToTimeZoneDate($value)->format('Y-m-d');
+    //     }
+    // }
 
-    /**
-     *  Calculate the user timezone and parse to UTC time to storage in the database 
-     *
-     *  @param   string|Carbon
-     * 
-     *  @return  void
-     */
-    public function setDateAttribute($value)
-    {
-        $this->attributes['date'] = NfitTimeZone::adjustDateToUTC($value);
-    }
+    // /**
+    //  *  Calculate the user timezone and parse to UTC time to storage in the database 
+    //  *
+    //  *  @param   string|Carbon
+    //  * 
+    //  *  @return  void
+    //  */
+    // public function setDateAttribute($value)
+    // {
+    //     $this->attributes['date'] = NfitTimeZone::adjustDateToUTC($value);
+    // }
     
     /**
      *  Transformamos el valor de dow a un arreglo para fullcalendar

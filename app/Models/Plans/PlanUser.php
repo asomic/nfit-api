@@ -58,34 +58,35 @@ class PlanUser extends Model
     public static function boot()
     {
         parent::boot();
+
         PlanUser::observe(PlanUserObserver::class);
     }
 
-    /**
-     *  Convert from UTC to user timezone
-     *
-     *  @param   String  $value
-     * 
-     *  @return  Carbon\Carbon
-     */
-    public function getStartDateAttribute($value)
-    {
-        if ($value) {
-            return NfitTimeZone::adjustToTimeZoneDate($value);
-        }
-    }
+    // /**
+    //  *  Convert from UTC to user timezone
+    //  *
+    //  *  @param   String  $value
+    //  * 
+    //  *  @return  Carbon\Carbon
+    //  */
+    // public function getStartDateAttribute($value)
+    // {
+    //     if ($value) {
+    //         return NfitTimeZone::adjustToTimeZoneDate($value);
+    //     }
+    // }
 
-    /**
-     *  Convert from UTC to user timezone
-     *
-     *  @param   String  $value
-     * 
-     *  @return  Carbon\Carbon
-     */
-    public function getFinishDateAttribute($value)
-    {
-        return Carbon::parse($value);
-    }
+    // /**
+    //  *  Convert from UTC to user timezone
+    //  *
+    //  *  @param   String  $value
+    //  * 
+    //  *  @return  Carbon\Carbon
+    //  */
+    // public function getFinishDateAttribute($value)
+    // {
+    //     return Carbon::parse($value);
+    // }
 
     /**
      * [discount description]
@@ -137,7 +138,7 @@ class PlanUser extends Model
     }
 
     /**
-     * Bill relationship
+     *  Bill relationship
      *
      *  @return  App\Models\Bill
      */

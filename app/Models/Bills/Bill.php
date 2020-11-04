@@ -53,31 +53,31 @@ class Bill extends Model
         return Carbon::parse($value)->format('d-m-Y');
     }
 
-    /**
-     *  Convert from UTC to user timezone
-     *
-     *  @param   string|null  $value
-     * 
-     *  @return  Carbon\Carbon
-     */
-    public function getDateAttribute($value)
-    {
-        if ($value) {
-            return NfitTimeZone::adjustToTimeZoneDate($value)->format('Y-m-d');
-        }
-    }
+    // /**
+    //  *  Convert from UTC to user timezone
+    //  *
+    //  *  @param   string|null  $value
+    //  * 
+    //  *  @return  Carbon\Carbon
+    //  */
+    // public function getDateAttribute($value)
+    // {
+    //     if ($value) {
+    //         return NfitTimeZone::adjustToTimeZoneDate($value)->format('Y-m-d');
+    //     }
+    // }
 
-    /**
-     *  Calculate the user timezone and parse to UTC time to storage in the database 
-     *
-     *  @param   string|Carbon
-     * 
-     *  @return  void
-     */
-    public function setDateAttribute($value)
-    {
-        $this->attributes['date'] = NfitTimeZone::adjustDateToUTC($value);
-    }
+    // /**
+    //  *  Calculate the user timezone and parse to UTC time to storage in the database 
+    //  *
+    //  *  @param   string|Carbon
+    //  * 
+    //  *  @return  void
+    //  */
+    // public function setDateAttribute($value)
+    // {
+    //     $this->attributes['date'] = NfitTimeZone::adjustDateToUTC($value);
+    // }
 
     /**
      *  Convert from UTC to user timezone and get it with a "human date format" 

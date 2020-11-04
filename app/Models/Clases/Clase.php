@@ -64,29 +64,29 @@ class Clase extends Model
         parent::boot();
     }
 
-    /**
-     *  Convert from UTC to user timezone
-     *
-     *  @param   string|null  $value
-     * 
-     *  @return  Carbon\Carbon
-     */
-    public function getDateAttribute($value)
-    {
-        return NfitTimeZone::adjustToTimeZoneDate($value);
-    }
+    // /**
+    //  *  Convert from UTC to user timezone
+    //  *
+    //  *  @param   string|null  $value
+    //  * 
+    //  *  @return  Carbon\Carbon
+    //  */
+    // public function getDateAttribute($value)
+    // {
+    //     return NfitTimeZone::adjustToTimeZoneDate($value);
+    // }
 
-    /**
-     *  Calculate the user timezone and parse to UTC time to storage in the database 
-     *
-     *  @param   string|Carbon
-     * 
-     *  @return  void
-     */
-    public function setDateAttribute($value)
-    {
-        $this->attributes['date'] = NfitTimeZone::adjustDateToUTC($value);
-    }
+    // /**
+    //  *  Calculate the user timezone and parse to UTC time to storage in the database 
+    //  *
+    //  *  @param   string|Carbon
+    //  * 
+    //  *  @return  void
+    //  */
+    // public function setDateAttribute($value)
+    // {
+    //     $this->attributes['date'] = NfitTimeZone::adjustDateToUTC($value);
+    // }
 
     /**
      *  Convert from UTC to user timezone and display to hour and minute format

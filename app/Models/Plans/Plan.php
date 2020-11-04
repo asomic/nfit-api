@@ -13,39 +13,59 @@ use App\Transformers\PlanTransformer;
  */
 class Plan extends Model
 {
-  public $transformer = PlanTransformer::class;
-  protected $fillable = ['plan', 'plan_period_id', 'class_numbers', 'amount'];
+    /**
+     * Undocumented variable
+     *
+     * @var [type]
+     */
+    public $transformer = PlanTransformer::class;
+    
+    /**
+     * Undocumented variable
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'plan', 'plan_period_id', 'class_numbers', 'amount'
+    ];
 
-  /**
-   * [plan_period description]
-   * @return [type] [description]
-   */
-  public function plan_period()
-  {
-      return $this->belongsTo(PlanPeriod::class);
-  }
+    /**
+     * Undocumented function
+     *
+     * @return void
+     */
+    public function plan_period()
+    {
+        return $this->belongsTo(PlanPeriod::class);
+    }
 
-  /**
-   * [installments description]
-   * @method installments
-   * @return [type]       [description]
-   */
-  public function plan_users()
-  {
-    return $this->hasMany(PlanUser::class);
-  }
+    /**
+     *  Undocumented function
+     *
+     *  @return  void
+     */
+    public function plan_users()
+    {
+        return $this->hasMany(PlanUser::class);
+    }
 
-  /**
-   * [users description]
-   * @return [type] [description]
-   */
-  public function users()
-  {
-    return $this->belongsToMany(User::class)->using(PlanUser::class);
-  }
+    /**
+     *  Get all the users related to this Model
+     *
+     *  @return  App\Models\Tenant\Users\User
+     */
+    public function users()
+    {
+        return $this->belongsToMany(User::class)->using(PlanUser::class);
+    }
 
-  public function blocks()
-  {
-    return $this->belongsToMany('App\Models\Clases\Block', 'block_plan');
-  }
+    /**
+     *  Get blocks related to this model
+     *
+     * @return App\Models\Clases\Block
+     */
+    public function blocks()
+    {
+        return $this->belongsToMany('App\Models\Clases\Block', 'block_plan');
+    }
 }
