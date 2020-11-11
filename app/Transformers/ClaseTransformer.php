@@ -24,7 +24,10 @@ class ClaseTransformer extends TransformerAbstract
         $end = $clase->finish_at;
 
         $dateTimeStringStart = $clase->date->format('Y-m-d')." ".$start;
+        $dateTimeStringEnd = $clase->date->format('Y-m-d')." ".$end;
         $dateTimeStart = Carbon::createFromFormat('Y-m-d H:i:s', $dateTimeStringStart);
+        $dateTimeEnd = Carbon::createFromFormat('Y-m-d H:i:s', $dateTimeStringEnd);
+
         $pruebaCount = 0;
         foreach ($clase->users as $user) {
           if($user->status_user == 3){
@@ -33,6 +36,15 @@ class ClaseTransformer extends TransformerAbstract
         }
         //$reservation_count = $clase->users;
         //hola
+
+        if($dateTimeEnd < Carbon::now())
+        { 
+          $finished = true;
+        } else {
+          $finished = false;
+        }
+
+
 
         if(($dateTimeStart > Carbon::now()) && ($clase->quota > count($clase->users) ))
         {
@@ -66,6 +78,7 @@ class ClaseTransformer extends TransformerAbstract
             'end' => (string)date('H:i', strtotime($end)),
             'quota' => (int)$clase->quota,
             'active' => (bool)$active,
+            'finished' => (bool)$finished,
             'coach' => (string) isset($clase->profesor) ? $clase->profesor->full_name : null,
 
             'rels' => [
