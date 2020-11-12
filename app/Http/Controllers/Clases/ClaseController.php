@@ -274,9 +274,9 @@ class ClaseController extends ApiController
     public function getZoom(Clase $clase) {
         $can_zoom = false;
         $zoom_link = null;
-        $stringStart = $clase->date->format('Y-m-d')." ".$clase->start_at;
+        $stringStart = $clase->date->format('Y-m-d') ." ". $clase->start_at->format('H:i');
         $start = Carbon::createFromFormat('Y-m-d H:i', $stringStart)->subMinutes(10);
-        $stringEnd = $clase->date->format('Y-m-d')." ".$clase->finish_at;
+        $stringEnd = $clase->date->format('Y-m-d')." ".$clase->finish_at->format('H:i');
         $end = Carbon::createFromFormat('Y-m-d H:i', $stringEnd);
 
         // $ifzoom = false;
