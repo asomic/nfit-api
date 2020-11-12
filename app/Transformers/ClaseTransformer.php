@@ -22,10 +22,10 @@ class ClaseTransformer extends TransformerAbstract
         $start = $clase->start_at;
         $end = $clase->finish_at;
 
-        $dateTimeStringStart = $clase->date->format('Y-m-d')." ".$start;
-        $dateTimeStringEnd = $clase->date->format('Y-m-d')." ".$end;
-        $dateTimeStart = Carbon::createFromFormat('Y-m-d H:i', $dateTimeStringStart);
-        $dateTimeEnd = Carbon::createFromFormat('Y-m-d H:i', $dateTimeStringEnd);
+        $dateTimeStringStart = "{$clase->date->format('Y-m-d')} {$start}";
+        $dateTimeStringEnd = $clase->date->format('Y-m-d') . " " . $end;
+        $dateTimeStart = Carbon::createFromFormat('Y-m-d H:i:s', $dateTimeStringStart);
+        $dateTimeEnd = Carbon::createFromFormat('Y-m-d H:i:s', $dateTimeStringEnd);
 
         $pruebaCount = 0;
         foreach ($clase->users as $user) {
