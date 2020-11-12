@@ -97,7 +97,7 @@ class Clase extends Model
      */
     public function getStartAtAttribute($value)
     {
-        return NfitTimeZone::adjustToTimeZoneDate($value)->format('H:i');
+        return NfitTimeZone::adjustToTimeZoneDate($value)->format('H:i:s');
     }
 
     /**
@@ -121,7 +121,7 @@ class Clase extends Model
      */
     public function getFinishAtAttribute($value)
     {
-        return NfitTimeZone::adjustToTimeZoneDate($value)->format('H:i');
+        return NfitTimeZone::adjustToTimeZoneDate($value)->format('H:i:s');
     }
 
     /**

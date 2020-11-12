@@ -43,10 +43,10 @@ class WodTransformer extends TransformerAbstract
                     'iconWhite' => (string) $wod->claseType->icon_white,
                 ],
                 'stages' => [
-                    'has' => (boolean)$hasStages,
-                    'href' => route('wods.stages',['wod'=>$wod->id]),
-                    'featured' => (string)$featuredStage,
-                    'all' => (Array)$wod->stages->toArray(),
+                    'has' => (boolean) $hasStages,
+                    'href' => route('wods.stages', ['wod' => $wod->id]),
+                    'featured' => (string) $featuredStage,
+                    'all' => (Array) $wod->stages->toArray(),
                 ],
             ],
         ];
