@@ -53,6 +53,13 @@ Route::middleware(['auth:api'])->group(function() {
         
 
     /**
+     *  Videos
+     */       
+    
+    Route::get('video', 'Videos\VideoController@index')->name('video.index');
+    Route::get('video/{video}', 'Videos\VideoController@show')->name('video.show');
+
+    /**
      *  Plans
      */
 

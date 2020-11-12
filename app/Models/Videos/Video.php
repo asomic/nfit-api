@@ -7,10 +7,13 @@ use App\Models\Comments\Comment;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\System\Users\NfitTimeZone;
 use Vimeo\Exceptions\VimeoUploadException;
+use App\Transformers\VideoTransformer;
+
 
 class Video extends Model
 {
-    use UsesTenantConnection;
+
+    public $transformer = VideoTransformer::class;
 
     /**
      * Indicates if the IDs are auto-incrementing.
