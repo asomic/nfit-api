@@ -2,72 +2,180 @@
 
 namespace App\Models\Clases;
 
+use Auth;
 use App\Models\Users\User;
+use App\Models\Clases\Clase;
 use App\Models\Exercises\Stage;
 use App\Models\Clases\Reservation;
-use App\Models\Clases\Clase;
+use App\Models\System\NfitTimeZone;
 use App\Transformers\ClaseTransformer;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Auth;
 
-/**
- * [Clase description]
- */
 class Clase extends Model
 {
     use SoftDeletes;
-
+    
+    /**
+     *  Table name on Database
+     *
+     *  @var  string
+     */
     protected $table = 'clases';
-    protected $dates = ['date','deleted_at'];
-    protected $fillable = ['date', 'start_at', 'finish_at', 'room', 'profesor_id', 'quota' ,'block_id'];
+
+    /**
+     *  Massive Assignment for this Model
+     *
+     *  @var  array
+     */
+    protected $fillable = [
+        'date', 'start_at', 'finish_at',
+        'room', 'profesor_id', 'quota',
+        'block_id', 'clase_type_id', 'zoom_link'
+    ];
+
+    /**
+     *  [$dates description]
+     *
+     *  @var  array
+     */
+    protected $dates = ['date', 'deleted_at'];
+
+    /**
+     *  values to append on querys
+     *
+     *  @var  array
+     */
     protected $appends = ['start','end','url','reservation_count'];
 
+    /**
+     *  Undocumented variable
+     *
+     *  @var  [type]
+     */
     public $transformer = ClaseTransformer::class;
 
+    /**
+     *  Undocumented function
+     *
+     *  @return  void
+     */
     protected static function boot() {
-      parent::boot();
+        parent::boot();
+    }
+
+    // /**
+    //  *  Convert from UTC to user timezone
+    //  *
+    //  *  @param   string|null  $value
+    //  * 
+    //  *  @return  Carbon\Carbon
+    //  */
+    // public function getDateAttribute($value)
+    // {
+    //     return NfitTimeZone::adjustToTimeZoneDate($value);
+    // }
+
+    // /**
+    //  *  Calculate the user timezone and parse to UTC time to storage in the database 
+    //  *
+    //  *  @param   string|Carbon
+    //  * 
+    //  *  @return  void
+    //  */
+    // public function setDateAttribute($value)
+    // {
+    //     $this->attributes['date'] = NfitTimeZone::adjustDateToUTC($value);
+    // }
+
+    /**
+     *  Convert from UTC to user timezone and display to hour and minute format
+     *
+     *  @param   string|null  $value
+     * 
+     *  @return  Carbon\Carbon
+     */
+    public function getStartAtAttribute($value)
+    {
+        return NfitTimeZone::adjustToTimeZoneDate($value)->format('H:i');
     }
 
     /**
-     * [reservations description]
-     * @return [type] [description]
+     *  Calculate the user timezone and parse to UTC time to storage in the database 
+     *
+     *  @param   string|Carbon
+     * 
+     *  @return  void
+     */
+    public function setStartAtAttribute($value)
+    {
+        $this->attributes['start_at'] = NfitTimeZone::adjustDateToUTC($value);
+    }
+
+    /**
+     *  Convert from UTC to user timezone and display to hour and minute format
+     *
+     *  @param   string|null  $value
+     * 
+     *  @return  Carbon\Carbon
+     */
+    public function getFinishAtAttribute($value)
+    {
+        return NfitTimeZone::adjustToTimeZoneDate($value)->format('H:i');
+    }
+
+    /**
+     *  Calculate the user timezone and parse to UTC time to storage in the database 
+     *
+     *  @param   string|Carbon
+     * 
+     *  @return  void
+     */
+    public function setFinishAtAttribute($value)
+    {
+        $this->attributes['start_at'] = NfitTimeZone::adjustDateToUTC($value);
+    }
+
+    /**
+     *  Reservation relation to this model
+     *
+     *  @return  App\Models\Clases\Reservation
      */
     public function reservations()
     {
-      return $this->hasMany(Reservation::class);
+        return $this->hasMany(Reservation::class);
     }
 
+    /**
+     *  Check for the authenticated user a reservation of this Clase
+     *
+     *  @return  boolean
+     */
     public function auth_has_reservation()
     {
-      $exist = Reservation::where('user_id',Auth::user()->id)->where('clase_id',$this->id)->first();
-      if($exist)
-      {
-        return true;
-      } else {
-        return false;
-      }
+        return Reservation::where('user_id', Auth::user()->id)->where('clase_id', $this->id)
+                                                                ->exists('id');
     }
 
-
-
+    /**
+     * Undocumented function
+     *
+     * @return void
+     */
     public function auth_can_reserve()
     {
+        $user = Auth::User();
 
+        $clase_type = $this->claseType;
+        $clases = Clase::where('date', $this->date)->pluck('id');
+        $auth_reservations = $user->reservations()->whereIn('clase_id',$clases)->get();
+        $auth_plan = Auth::user()->active_planuser();
 
-      $user = Auth::User();
-
-      $clase_type = $this->claseType;
-      $clases = Clase::where('date', $this->date)->pluck('id');
-      $auth_reservations = $user->reservations()->whereIn('clase_id',$clases)->get();
-      $auth_plan = Auth::user()->active_planuser();
-
-      foreach ($auth_reservations as $res) {
-        if($clase_type->id == $res->clase->clase_type_id )
-        {
-          return false;
+        foreach ($auth_reservations as $res) {
+            if($clase_type->id == $res->clase->clase_type_id ) {
+                return false;
+            }
         }
-      }
       // foreach ($clases as $clase) {
       //     $reservations = Reservation::where('user_id', Auth::id())->where('clase_id', $clase->id)->get();
       //     $reservations_clase_type = $reservations->pluck('clase_types');
@@ -84,130 +192,142 @@ class Clase extends Model
       // }
 
       //maximo de 3 usuarios de prueba
-      if(Auth::user()->status_user == 3){
-
-        $pruebaCount = 0;
-        foreach ($this->users as $user) {
-          if($user->status_user == 3){
-            $pruebaCount++;
-          }
+        if(Auth::user()->status_user == 3) {
+            $pruebaCount = 0;
+            foreach ($this->users as $user) {
+                if($user->status_user == 3) {
+                    $pruebaCount++;
+                }
+            }
+            if ($pruebaCount >= 3) {
+                return false;
+            }
         }
-        if($pruebaCount >= 3)
-        {
-          return false;
+
+        $planUser = Auth::user()->plan_users()->where('start_date', '<=', $this->date)
+                                                ->where('finish_date', '>=', $this->date)
+                                                ->whereIn('plan_status_id', [1, 3])
+                                                ->first();
+
+        if ($planUser) {
+            if(count($auth_reservations) >= $planUser->plan->daily_clases) {
+                return false;
+            }
+
+            $ids = $this->block->getPlansIdAttribute()->toArray();
+            if((in_array($planUser->plan_id,$ids)) && ($planUser->counter > 0 ) ) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
         }
-      }
-
-      
-
-      $planUser = Auth::user()->plan_users()->where('start_date', '<=', $this->date)->where('finish_date', '>=', $this->date) ->whereIn('plan_status_id', [1, 3])->first();
-      
-
-
-      if($planUser)
-      {
-          if(count($auth_reservations) >= $planUser->plan->daily_clases)
-          {
-            return false;
-          }
-
-          $ids = $this->block->getPlansIdAttribute()->toArray();
-          if((in_array($planUser->plan_id,$ids)) && ($planUser->counter > 0 ) )
-          {
-
-            return true;
-
-          } else {
-            return false;
-          }
-      } else {
-        return false;
-      }
-
     }
 
-
-    // public function auth_get_reservation()
-    // {
-    //   return  Reservation::where('user_id',Auth::user()->id)->where('clase_id',$this->id)->first();
-    // }
     /**
-     * [stages description]
-     * @return [type] [description]
+     *  Staege relation to this model
+     *
+     *  @return  App\Models\Excercises\Stage
      */
     public function stages()
     {
-      return $this->belongsTo(Stage::class);
+        return $this->belongsTo(Stage::class);
     }
 
-
     /**
-     * [stages description]
-     * @return [type] [description]
+     *  ClaseType relation to this model
+     *
+     *  @return  App\Models\Clases\ClaseType
      */
-
     public function claseType()
     {
-      return $this->belongsTo('App\Models\Clases\ClaseType');
+        return $this->belongsTo('App\Models\Clases\ClaseType');
     }
- 
 
     /**
-     * [users description]
-     * @return [type] [description]
+     *  User relation to this model
+     *
+     *  @return  App\Models\Users\User
      */
     public function users()
     {
-      return $this->belongsToMany(User::Class, 'reservations','clase_id');
+        return $this->belongsToMany(User::Class, 'reservations', 'clase_id');
     }
 
-
-
-    // public function profresor()
-    // {
-    //     return $this->morphMany('App\Models\Users\User', 'userable');
-    // }
-
+    /**
+     *  Undocumented function
+     *
+     *  @return  void
+     */
     public function profesor()
     {
-      return $this->belongsTo(User::Class, 'profesor_id');
+        return $this->belongsTo(User::Class, 'profesor_id');
     }
 
+    /**
+     *  Undocumented function
+     *
+     *  @return  void
+     */
     public function block()
     {
-      return $this->belongsTo(Block::class);
+        return $this->belongsTo(Block::class);
     }
 
+    /**
+     *  Undocumented function
+     *
+     *  @return  void
+     */
     public function pruebaUsersCount()
     {
-      $users = $this->belongsToMany(User::Class)->using(Reservation::class)->get();
-      $count = 0;
-      foreach ($users as  $user) {
-        $count++;
-      }
-      return $count;
+        $users = $this->belongsToMany(User::Class)->using(Reservation::class)->get();
+        $count = 0;
+        foreach ($users as  $user) {
+            $count++;
+        }
+
+        return $count;
     }
 
-    //set y get
-
-
+    /**
+     *  Undocumented function
+     *
+     *  @return  void
+     */
     public function getReservationCountAttribute()
     {
-      return $this->hasMany(Reservation::class)->count();
+        return $this->hasMany(Reservation::class)->count();
     }
 
+    /**
+     *  Undocumented function
+     *
+     *  @return void
+     */
     public function getStartAttribute()
     {
-      return $this->date.' '.$this->block->start;
+        return "{$this->date} {$this->block->start}";
     }
 
+    /**
+     *  Undocumented function
+     *
+     *  @return  string
+     */
     public function getEndAttribute()
     {
-      return $this->date.' '.$this->block->end;
+        return "{$this->date} {$this->block->end}";
     }
 
+    /**
+     *  Undocumented function
+     *
+     *  @return  string
+     */
     public function getUrlAttribute()
     {
-      return url('clases/'.$this->id);
+        return url("clases/{$this->id}");
     }
 }

@@ -10,7 +10,7 @@
         "facade/ignition": "^1.16",
         "fideloper/proxy": "^4.0",
         "freshwork/chilean-bundle": "^2.1",
-        "fruitcake/laravel-cors": "^1.0",
+        "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^6.5",
         "hyn/multi-tenant": "^5.5",
         "intervention/image": "^2.5",

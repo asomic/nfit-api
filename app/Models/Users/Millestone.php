@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 /** [Millestone description] */
 class Millestone extends Model
 {
+    
   protected $fillable = ['millestone'];
 
   /**

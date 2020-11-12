@@ -6,20 +6,22 @@ Use App\Models\Exercises\Exercise;
 use App\Models\Exercises\ExerciseStage;
 use Illuminate\Database\Eloquent\Model;
 
-/**
- * [Stage description]
- */
 class Stage extends Model
 {
-  protected $fillable = ['stage'];
+    /**
+     *  Massive fillable data
+     *
+     *  @var  array
+     */
+    protected $fillable = ['stage'];
 
-  /**
-   * [exercises description]
-   * @method exercises
-   * @return [model]    [description]
-   */
-  public function exercises()
-  {
-    return $this->belongsToMany(Exercise::class)->using(ExerciseStage::class);
-  }
+    /**
+     *  Excercise relationship to this model
+     *
+     *  @return  Excercise
+     */
+    public function exercises()
+    {
+        return $this->belongsToMany(Exercise::class)->using(ExerciseStage::class);
+    }
 }

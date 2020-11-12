@@ -65,7 +65,7 @@ return [
     |
     */
 
-    'timezone' => 'America/Santiago',
+    'timezone' => 'utc',
 
     /*
     |--------------------------------------------------------------------------
@@ -162,7 +162,7 @@ return [
         App\Providers\RouteServiceProvider::class,
 
         // Custom Service Providers...
-        Intervention\Image\ImageServiceProvider::class
+        // Intervention\Image\ImageServiceProvider::class
         
 
     ],

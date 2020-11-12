@@ -51,26 +51,25 @@ class User extends Authenticatable
         $this->notify(new MyResetPassword($token));
     }
 
-     /**
+    /**
      * [getFullNameAttribute description]
      * @return [type] [description]
      */
     public function getFullNameAttribute()
     {
-      return $this->first_name.' '.$this->last_name;
+        return $this->first_name.' '.$this->last_name;
     }
 
     /**
-     * [hasRole description]
-     * @param  [type]  $role [description]
-     * @return boolean       [description]
+     *  Check if user has the specific Role
+     *
+     *  @param   int      $role
+     * 
+     *  @return  boolean  
      */
     public function hasRole($role)
     {
-      $role = RoleUser::where('role_id', $role)->where('user_id', $this->id)->get();
-      if (count($role) > 0) {
-        return true;
-      }
+        return $this->role === role;
     }
 
     /**
@@ -79,7 +78,7 @@ class User extends Authenticatable
      */
     public function regular_users()
     {
-      return User::all()->where('admin', 'false')->orderBy('name');
+        return User::all()->where('admin', 'false')->orderBy('name');
     }
 
     /**
@@ -88,7 +87,7 @@ class User extends Authenticatable
      */
     public function active_users()
     {
-      return $this->where('status_user', 1);
+        return $this->where('status_user', 1);
     }
 
     /**

@@ -40,6 +40,7 @@ class UserTransformer extends TransformerAbstract
             'gender' => (string)$user->gender,
             'phone' => (int)$user->phone,
             'address' => (string)$user->address,
+            'timezone' => (string)$user->timezone ?? 'utc',
             // 'emergency_contact' => (int)$user->emergency_id,
             'status' => (int)$user->status_user,
             'tutorial' => (boolean)$user->tutorial,
