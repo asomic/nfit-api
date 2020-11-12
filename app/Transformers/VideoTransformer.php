@@ -3,7 +3,7 @@
 namespace App\Transformers;
 
 
-use App\Models\Videos\VIdeo;
+use App\Models\Videos\Video;
 use League\Fractal\TransformerAbstract;
 use Carbon\Carbon;
 use Auth;

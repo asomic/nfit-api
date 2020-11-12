@@ -13,7 +13,7 @@ class VideoController extends ApiController
 
     public function index()
     {
-        $videos = Videos::all();
+        $videos = Video::all();
         return $this->showAll($videos);
     }
 
