@@ -15,36 +15,30 @@ class WodTransformer extends TransformerAbstract
      */
     public function transform(Wod $wod)
     {
-
-        if(count($wod->stages)>0)
-        {
+        if( count($wod->stages) > 0 ) {
             $hasStages = true ;
             $stages = $wod->stages;
             $featuredStage = $stages[0]->description;
-            foreach($stages as $stage )
-            {
-                if($stage->stage_type->featured == 1 )
-                {
+            foreach($stages as $stage ) {
+                if($stage->stage_type->featured == 1 ) {
                     $featuredStage = $stage->description;
                 }
             }
-
         } else {
             $hasStages = false;
             $featuredStage = '';
         }
 
-
         return [
-            'id' => (int)$wod->id,
-            'day' => (string)$wod->date->format('d'),
-            'month' => (string)strtoupper ( $wod->date->formatLocalized('%b')) ,
-            'year' => (string)$wod->date->formatLocalized('%Y'),
-            'dateHuman' =>  (string)ucfirst($wod->date->formatLocalized('%A %d')).' de '.ucfirst($wod->date->formatLocalized('%B')) ,
+            'id' => (int) $wod->id,
+            'day' => (string) $wod->date->format('d'),
+            'month' => (string) strtoupper($wod->date->formatLocalized('%b')),
+            'year' => (string) $wod->date->formatLocalized('%Y'),
+            'dateHuman' =>  (string) ucfirst($wod->date->formatLocalized('%A %d')).' de '.ucfirst($wod->date->formatLocalized('%B')) ,
             'rels' => [
                 'claseType' => [
-                    'id' => (int)$wod->clase_type_id,
-                    'name' => (string)$wod->claseType->clase_type,
+                    'id' => (int) $wod->clase_type_id,
+                    'name' => (string) $wod->claseType->clase_type,
                     'icon' => (string) $wod->claseType->icon,
                     'iconWhite' => (string) $wod->claseType->icon_white,
                 ],
@@ -55,8 +49,6 @@ class WodTransformer extends TransformerAbstract
                     'all' => (Array)$wod->stages->toArray(),
                 ],
             ],
-
-
         ];
     }
 
@@ -71,15 +63,15 @@ class WodTransformer extends TransformerAbstract
             'id' => 'id',
             'fecha' => 'date',
             'claseTypeId' => 'clase_type_id',
-
         ];
 
         return isset($attributes[$index]) ? $attributes[$index] : null;
     }
 
     /**
-     * [transformedAttribute changes the original attributes to the faced]
-     * @return [type]        [description]
+     *  [transformedAttribute changes the original attributes to the faced]
+     * 
+     *  @return  [type]        [description]
      */
     public static function transformedAttribute($index)
     {

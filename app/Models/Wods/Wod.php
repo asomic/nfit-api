@@ -35,7 +35,7 @@ class Wod extends Model
      *
      * @var array
      */
-    protected $appends = ['start','allDay','title','url'];
+    protected $appends = ['start', 'allDay', 'title', 'url'];
 
     /**
      * Undocumented function

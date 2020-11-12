@@ -32,9 +32,8 @@ trait ApiResponser
 	{
 		if ($collection->isEmpty()) {
 			return $this->successResponse(['data' => $collection], $code);
-		}
+        }
 		$transformer = $collection->first()->transformer;
-
 		$collection = $this->filterData($collection, $transformer);
 		$collection = $this->sortData($collection, $transformer);
 		// $collection = $this->paginate($collection);
