@@ -14,7 +14,7 @@ use App\Http\Controllers\ApiController;
 class WodController extends ApiController
 {
     /**
-     *  Get today wods only if the auth user is Active or Prueba into the system
+     *  Get today wods only if the auth user is activeor test in the system
      *
      *  @return  json
      */
@@ -22,22 +22,33 @@ class WodController extends ApiController
     {
         if ((int) Auth::user()->status_user !== StatusUser::INACTIVO) {
             $wods = Wod::where('date', today())->get();
-
             return $this->showAll($wods);
         }
-        
-        return $this->showAll([]);
+        return $this->showAll(collect());
     }
 
-  public function show(Wod $wod)
-  {
-    return $this->showOne($wod, 200);
-  }
+    /**
+     *  Undocumented function
+     *
+     *  @param  Wod  $wod
+     * 
+     *  @return  void
+     */
+    public function show(Wod $wod)
+    {
+        return $this->showOne($wod, 200);
+    }
 
-  public function stages(Wod $wod)
-  {
-    $stages = $wod->stages;
-    return $this->showAll($stages, 200);
-  }
-    //
+    /**
+     *  Undocumented function
+     *
+     *  @param Wod $wod
+     * 
+     *  @return void
+     */
+    public function stages(Wod $wod)
+    {
+        $stages = $wod->stages;
+        return $this->showAll($stages, 200);
+    }
 }
