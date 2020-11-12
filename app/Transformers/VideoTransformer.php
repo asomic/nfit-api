@@ -8,7 +8,7 @@ use League\Fractal\TransformerAbstract;
 use Carbon\Carbon;
 use Auth;
 
-class ClaseTransformer extends TransformerAbstract
+class VideoTransformer extends TransformerAbstract
 {
     /**
      * A Fractal transformer.
