@@ -26,7 +26,7 @@ class VideoTransformer extends TransformerAbstract
             'duration_minutes' => (int) ($video->duration)/60,
             'thumbnail_path' => (string) $video->thumbnail_path,
             'release_raw' => (string) $video->release_at,
-            'release_human' => (string)ucfirst($clase->date->formatLocalized('%A %d')).' de '.ucfirst($clase->date->formatLocalized('%B')),
+            'release_human' => (string)ucfirst($video->release_at->formatLocalized('%A %d')).' de '.ucfirst($video->release_at->formatLocalized('%B')),
         ];
     }
 
