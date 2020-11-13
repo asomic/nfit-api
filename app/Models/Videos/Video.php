@@ -165,7 +165,7 @@ class Video extends Model
      *
      *  @return  returnType
      */
-comment shit    // public function getComments()
+   // public function getComments()
     // {
     //     return $this->comments()->with([
     //             'user:id,first_name,last_name,avatar',
