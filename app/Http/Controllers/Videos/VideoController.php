@@ -32,6 +32,8 @@ class VideoController extends ApiController
 
     public function videoComments(Video $video, Request $request)
     {
+        return response()->json(['status' => true, 'comments' => $video],200);
+
         $comments = $video->comments->map( function ($comment) {
                         $user = $comment->user;
                         return [
