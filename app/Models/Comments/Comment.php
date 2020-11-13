@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Comment extends Model
 {
-    use UsesTenantConnection;
+    // use UsesTenantConnection;
 
     /**
      * Massive assignment for this model
