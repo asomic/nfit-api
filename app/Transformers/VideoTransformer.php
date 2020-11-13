@@ -22,9 +22,10 @@ class VideoTransformer extends TransformerAbstract
             'id' => (int)$video->id,
             'title' => (string)$video->title,
             'description' => (string)$video->description,
-            'duration' => (int)$video->duration,
+            'duration_raw' => (int)$video->duration, 
+            'duration_minutes' => (string) secondsToTime($video->duration);
             'thumbnail_path' => (string) $video->thumbnail_path,
-            'release_at' => (string) $video->release_at,
+            'release_raw' => (string) $video->release_at,
             'release_human' => (string)ucfirst($clase->date->formatLocalized('%A %d')).' de '.ucfirst($clase->date->formatLocalized('%B')),
         ];
     }
