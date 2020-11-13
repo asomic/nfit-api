@@ -17,6 +17,11 @@ class VideoController extends ApiController
         return $this->showAll($videos);
     }
 
+    public function lastest()
+    {
+        $video = Video::where('release_at', '<', now())->first();
+        return $this->showOne($video);
+    }
 
 }
 
