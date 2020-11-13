@@ -25,6 +25,7 @@ class VideoTransformer extends TransformerAbstract
             'duration' => (int)$video->duration, 
             // 'duration_minutes' => (int) ($video->duration)/60,
             'thumbnail_path' => (string) $video->thumbnail_path,
+            'url' => (string) 'https://player.vimeo.com/video/' + $video->id,
             'release_raw' => (string) $video->release_at,
             'release_human' => (string)ucfirst($video->release_at->formatLocalized('%A %d')).' de '.ucfirst($video->release_at->formatLocalized('%B')),
         ];
