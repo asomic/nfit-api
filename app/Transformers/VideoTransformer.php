@@ -23,7 +23,7 @@ class VideoTransformer extends TransformerAbstract
             'title' => (string)$video->title,
             'description' => (string)$video->description,
             'duration_raw' => (int)$video->duration, 
-            'duration_minutes' => (string) gmdate("H:i:s", (int)$video->duration),
+            'duration_minutes' => (string) ($video->duration)/60,
             'thumbnail_path' => (string) $video->thumbnail_path,
             'release_raw' => (string) $video->release_at,
             'release_human' => (string)ucfirst($clase->date->formatLocalized('%A %d')).' de '.ucfirst($clase->date->formatLocalized('%B')),
