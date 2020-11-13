@@ -30,20 +30,21 @@ class VideoController extends ApiController
         return $this->showOne($video);
     }
 
-    public function comments(Video $video)
+    public function videoComments(Video $video, Request $request)
     {
         $comments = $video->comments->map( function ($comment) {
-            $user = $comment->user;
-            return [
-                'id' => (int) $comment->id,
-                'user_avatar' => (string) $user->avatar,
-                'body' => (string) $comment->body,
-                'created_at' => (string) $comment->created_at,
-                'since' => (string) $comment->created_at->diffForHumans(),
-            ];
-        });
-        return response()->json(['status' => true, 'comments' => $comments],200);   
-     }
+                        $user = $comment->user;
+                        return [
+                            'id' => (int) $comment->id,
+                            'user_avatar' => (string) $user->avatar,
+                            'body' => (string) $comment->body,
+                            'created_at' => (string) $comment->created_at,
+                            'since' => (string) $comment->created_at->diffForHumans(),
+                        ];
+                    }
+        );
+        return response()->json(['status' => true, 'comments' => $comments],200);
+    }
 
 }
 
