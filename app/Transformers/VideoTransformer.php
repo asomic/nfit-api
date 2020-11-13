@@ -20,7 +20,11 @@ class VideoTransformer extends TransformerAbstract
 
         return [
             'id' => (int)$video->id,
-
+            'title' => (string)$video->title,
+            'description' => (string)$video->description,
+            'duration' => (int)$video->duration,
+            'thumbnail_path' => (string) $video->thumbnail_path,
+            'release_at' => (string) $video->release_at,
         ];
     }
 
