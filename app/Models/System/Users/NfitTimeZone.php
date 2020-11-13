@@ -4,7 +4,7 @@ namespace App\Models\System\Users;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Tenant\Settings\Parameter;
+// use App\Models\Tenant\Settings\Parameter;
 // use PhpOffice\PhpSpreadsheet\Shared\TimeZone;
 
 /**
@@ -38,7 +38,7 @@ use App\Models\Tenant\Settings\Parameter;
  *      ['name' => 'America/Argentina/La_Rioja', 'human_name' => 'Argentina/La Rioja'],
  *      ['name' => 'America/Bahia_Banderas', 'human_name' => 'Mexico/Bahia Banderas'],
  */
-class NfitTimeZone extends TimeZone
+class NfitTimeZone 
 {
     /**
      *  Default Timezone used for date/time conversions.
