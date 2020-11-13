@@ -30,7 +30,7 @@ class VideoController extends ApiController
         return $this->showOne($video);
     }
 
-    public function commments(Video $video)
+    public function comments(Video $video)
     {
         $comments = $video->comments->map( function ($comment) {
             $user = $comment->user;
