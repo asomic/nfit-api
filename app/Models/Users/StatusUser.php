@@ -10,14 +10,21 @@ use Illuminate\Database\Eloquent\Model;
  */
 class StatusUser extends Model
 {
-  protected $fillable = ['status_user'];
+    /**  Status User  */
+    const ACTIVO = 1;
+    
+    /**  Status User  */
+    const INACTIVO = 2;
+    
+    protected $fillable = ['status_user'];
 
-  /**
-   * [users description]
-   * @return [type] [description]
-   */
-  public function users()
-  {
-    return $this->hasMany(User::class);
-  }
+    /**
+     *  [users description]
+     *  
+     *  @return [type] [description]
+     */
+    public function users()
+    {
+        return $this->hasMany(User::class);
+    }
 }
