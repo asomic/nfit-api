@@ -165,15 +165,15 @@ class Video extends Model
      *
      *  @return  returnType
      */
-    public function getComments()
-    {
-        return $this->comments()->with([
-                'user:id,first_name,last_name,avatar',
-                'replies' => function($reply) {
-                    $reply->with(['user:id,first_name,last_name,avatar']);
-                }
-            ])
-            ->orderByDesc('created_at')
-            ->get(['id', 'body', 'user_id', 'created_at']);
-    }
+comment shit    // public function getComments()
+    // {
+    //     return $this->comments()->with([
+    //             'user:id,first_name,last_name,avatar',
+    //             'replies' => function($reply) {
+    //                 $reply->with(['user:id,first_name,last_name,avatar']);
+    //             }
+    //         ])
+    //         ->orderByDesc('created_at')
+    //         ->get(['id', 'body', 'user_id', 'created_at']);
+    // }
 }
