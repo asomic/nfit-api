@@ -23,5 +23,10 @@ class VideoController extends ApiController
         return $this->showOne($video);
     }
 
+    public function show(Video $video)
+    {
+        return $this->showOne($video);
+    }
+
 }
 

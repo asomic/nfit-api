@@ -53,7 +53,6 @@ class NfitTimeZone
     public function __construct()
     {
         $timezone = Auth::user()->timezone ?? 'UTC';
-
         self::setTimeZone($timezone);
     }
 
