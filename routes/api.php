@@ -59,7 +59,7 @@ Route::middleware(['auth:api'])->group(function() {
     Route::get('video', 'Videos\VideoController@index')->name('video.index');
     Route::get('video/lastest', 'Videos\VideoController@lastest')->name('video.lastest');
     Route::get('video/{video}', 'Videos\VideoController@show')->name('video.show');
-    Route::get('video/{video}/comments', 'Videos\VideoController@comments')->name('video.comments');
+    Route::get('video/{video}/comments', 'Videos\VideoController@videoComments')->name('video.comments');
 
 
     /**
