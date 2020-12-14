@@ -84,19 +84,19 @@ class Clase extends Model
       // }
 
       //maximo de 3 usuarios de prueba
-      if(Auth::user()->status_user == 3){
+    //   if(Auth::user()->status_user == 3){
 
-        $pruebaCount = 0;
-        foreach ($this->users as $user) {
-          if($user->status_user == 3){
-            $pruebaCount++;
-          }
-        }
-        if($pruebaCount >= 3)
-        {
-          return false;
-        }
-      }
+    //     $pruebaCount = 0;
+    //     foreach ($this->users as $user) {
+    //       if($user->status_user == 3){
+    //         $pruebaCount++;
+    //       }
+    //     }
+    //     if($pruebaCount >= 3)
+    //     {
+    //       return false;
+    //     }
+    //   }
 
       
 
