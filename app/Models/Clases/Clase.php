@@ -192,17 +192,21 @@ class Clase extends Model
       // }
 
       //maximo de 3 usuarios de prueba
-        if(Auth::user()->status_user == 3) {
-            $pruebaCount = 0;
-            foreach ($this->users as $user) {
-                if($user->status_user == 3) {
-                    $pruebaCount++;
-                }
-            }
-            if ($pruebaCount >= 3) {
-                return false;
-            }
-        }
+    //   if(Auth::user()->status_user == 3){
+
+    //     $pruebaCount = 0;
+    //     foreach ($this->users as $user) {
+    //       if($user->status_user == 3){
+    //         $pruebaCount++;
+    //       }
+    //     }
+    //     if($pruebaCount >= 3)
+    //     {
+    //       return false;
+    //     }
+    //   }
+
+      
 
         $planUser = Auth::user()->plan_users()->where('start_date', '<=', $this->date)
                                                 ->where('finish_date', '>=', $this->date)
