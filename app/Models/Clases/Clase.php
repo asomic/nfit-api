@@ -133,7 +133,7 @@ class Clase extends Model
      */
     public function setFinishAtAttribute($value)
     {
-        $this->attributes['start_at'] = NfitTimeZone::adjustDateToUTC($value);
+        $this->attributes['finish_at'] = NfitTimeZone::adjustDateToUTC($value);
     }
 
     /**
