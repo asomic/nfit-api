@@ -4,6 +4,7 @@ namespace App\Models\Users;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\System\NfitTimeZone;
 
 class Alert extends Model
 {
