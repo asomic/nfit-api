@@ -312,7 +312,7 @@ class Clase extends Model
      */
     public function getStartAttribute()
     {
-        return "{$this->date} {$this->block->start}";
+        return "{$this->date} {$this->start_at}";
     }
 
     /**
@@ -322,7 +322,7 @@ class Clase extends Model
      */
     public function getEndAttribute()
     {
-        return "{$this->date} {$this->block->end}";
+        return "{$this->date} {$this->finish_at}";
     }
 
     /**
