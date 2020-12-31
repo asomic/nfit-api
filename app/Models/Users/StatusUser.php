@@ -15,6 +15,9 @@ class StatusUser extends Model
     
     /**  Status User  */
     const INACTIVO = 2;
+
+    /**  Status User  */
+    const PRUEBA = 3;
     
     protected $fillable = ['status_user'];
 

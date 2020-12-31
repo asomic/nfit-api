@@ -334,4 +334,28 @@ class Clase extends Model
     {
         return url("clases/{$this->id}");
     }
+
+    /**
+     *  If database start at class is after than right now 
+     *  and the total students numbes allowed in the class,
+     *  is greater than the total of user reserved in the class yet,
+     *  the class can still recieve students
+     * 
+     *  @return  boolean
+     */
+    public function stillActive()
+    {
+        return $this->getOriginal('start_at') > now()->copy()->format('H:i:s') &&
+                $this->quota > count($this->users);
+    }
+
+    /**
+     *  Check if right now is after than the end class hour
+     *
+     *  @return  boolean
+     */
+    public function hasFinished()
+    {
+        return $this->getOriginal('finish_at') < now()->copy()->format('H:i:s');
+    }
 }

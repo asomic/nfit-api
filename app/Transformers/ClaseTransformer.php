@@ -2,12 +2,12 @@
 
 namespace App\Transformers;
 
-
+use Auth;
+use Carbon\Carbon;
 use App\Models\Clases\Clase;
+use App\Models\Users\StatusUser;
 use App\Models\Clases\Reservation;
 use League\Fractal\TransformerAbstract;
-use Carbon\Carbon;
-use Auth;
 
 class ClaseTransformer extends TransformerAbstract
 {
@@ -18,10 +18,9 @@ class ClaseTransformer extends TransformerAbstract
      */
     public function transform(Clase $clase)
     {
-        //dd($clase->auth_can_reserve(),$clase);
-        $start = $clase->start_at;
-        $end = $clase->finish_at;
-
+        $start = $clase->getOriginal('start_at');
+        $end = $clase->getOriginal('finish_at');
+        
         $dateTimeStringStart = $clase->date->format('Y-m-d')." ".$start;
         $dateTimeStringEnd = $clase->date->format('Y-m-d')." ".$end;
         $dateTimeStart = Carbon::createFromFormat('Y-m-d H:i:s', $dateTimeStringStart);
@@ -29,25 +28,9 @@ class ClaseTransformer extends TransformerAbstract
 
         $pruebaCount = 0;
         foreach ($clase->users as $user) {
-          if($user->status_user == 3){
-            $pruebaCount++;
-          }
-        }
-
-        if($dateTimeEnd < Carbon::now())
-        { 
-          $finished = true;
-        } else {
-          $finished = false;
-        }
-
-
-
-        if(($dateTimeStart > Carbon::now()) && ($clase->quota > count($clase->users) ))
-        {
-          $active = true;
-        } else {
-            $active = false;
+            if($user->status_user == StatusUser::PRUEBA) {
+                $pruebaCount++;
+            }
         }
 
         if($clase->auth_has_reservation()) {
@@ -62,19 +45,19 @@ class ClaseTransformer extends TransformerAbstract
         }
 
         return [
-            'id' => (int)$clase->id,
-            'type' => (int)$clase->clase_type_id,
-            'typeName' => (string)$clase->claseType->clase_type,
-            'date' => (string)$clase->date->toDateString(),
-            'dateHuman' => (string)ucfirst($clase->date->formatLocalized('%A %d')).' de '.ucfirst($clase->date->formatLocalized('%B')),
-            'day' => (string)$clase->date->format('d'),
+            'id' => (int) $clase->id,
+            'type' => (int) $clase->clase_type_id,
+            'typeName' => (string) $clase->claseType->clase_type,
+            'date' => (string) $clase->date->toDateString(),
+            'dateHuman' => (string) ucfirst($clase->date->formatLocalized('%A %d')).' de '.ucfirst($clase->date->formatLocalized('%B')),
+            'day' => (string) $clase->date->format('d'),
             'month' =>(string)$clase->date->formatLocalized('%b'),
             'year' => (string)$clase->date->formatLocalized('%Y'),
-            'start' => (string)date('H:i', strtotime($start)),
-            'end' => (string)date('H:i', strtotime($end)),
+            'start' => (string) date('H:i', strtotime($start)),
+            'end' => (string) date('H:i', strtotime($end)),
             'quota' => (int)$clase->quota,
-            'active' => (bool)$active,
-            'finished' => (bool)$finished,
+            'active' => (bool) $clase->stillActive(),
+            'finished' => (bool)$clase->hasFinished(),
             'coach' => (string) isset($clase->profesor) ? $clase->profesor->full_name : null,
 
             'rels' => [

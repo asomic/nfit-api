@@ -34,7 +34,6 @@ class ClaseController extends ApiController
 
     public function week(ClaseType $clase_type)
     {
-        
         $week = [];
         $today = carbon::today();
         $date = $today;

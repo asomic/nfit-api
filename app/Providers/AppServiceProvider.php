@@ -14,8 +14,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        // Carbon::setLocale(LC_ALL, "es_CL.UTF-8");
-        setlocale(LC_ALL, "es_CL.UTF-8");
+        Carbon::setLocale(LC_ALL, "es_ES");
+        setlocale(LC_ALL, "es_ES");
 
         \URL::forceScheme('https');
     }
