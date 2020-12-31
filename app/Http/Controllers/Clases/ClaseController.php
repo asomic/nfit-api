@@ -74,7 +74,7 @@ class ClaseController extends ApiController
         $clases = Auth::user()->clases()->where('date', '<=', today())->get();
         return $this->showAll($clases);
     }
-    
+
     public function types()
     {
         $types = Clasetype::all();
@@ -214,7 +214,7 @@ class ClaseController extends ApiController
         // if(!$response){
         //     dd($date,$clase_type,$response, $clases);
         // }
-        
+
 
         return $response;
     }
@@ -232,7 +232,7 @@ class ClaseController extends ApiController
             }
 
         }
-        
+
         return $response;
     }
 
@@ -270,7 +270,7 @@ class ClaseController extends ApiController
         }
     }
 
-    // por mientras 
+    // por mientras
     public function getZoom(Clase $clase)
     {
         $can_zoom = false;
@@ -283,23 +283,23 @@ class ClaseController extends ApiController
         // $ifzoom = false;
         // if($clase->zoom_link != null) {
         //     $ifzoom = true;
-        // } 
+        // }
 
         // $ifStart = false;
         // if($start->lte(Carbon::now())) {
         //     $ifStart = true;
-        // } 
+        // }
 
         // $ifEnd = false;
         // if($end->gte(Carbon::now())) {
         //     $ifEnd = true;
-        // } 
+        // }
         // $ifclase = false;
-        // if($clase->auth_has_reservation()) {
+        // if($clase->authReservedThis()) {
         //     $ifclase = true;
-        // }   
+        // }
 
-        if(($clase->zoom_link != null) && ($start->lte(Carbon::now()))  && ($end->gte(Carbon::now()))  && $clase->auth_has_reservation() ) {
+        if(($clase->zoom_link != null) && ($start->lte(Carbon::now()))  && ($end->gte(Carbon::now()))  && $clase->authReservedThis() ) {
             $can_zoom = true;
             $zoom_link = $clase->zoom_link;
         }
@@ -315,7 +315,7 @@ class ClaseController extends ApiController
             'now' => Carbon::now(),
             'start' => $start,
             'end' => $end,
-            'has' => $clase->auth_has_reservation(),
+            'has' => $clase->authReservedThis(),
             'can_zoom' => $can_zoom,
             'zoom_link' => $zoom_link,
         ]);

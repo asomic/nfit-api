@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Clase extends Model
 {
     use SoftDeletes;
-    
+
     /**
      *  Table name on Database
      *
@@ -68,7 +68,7 @@ class Clase extends Model
     //  *  Convert from UTC to user timezone
     //  *
     //  *  @param   string|null  $value
-    //  * 
+    //  *
     //  *  @return  Carbon\Carbon
     //  */
     // public function getDateAttribute($value)
@@ -77,10 +77,10 @@ class Clase extends Model
     // }
 
     // /**
-    //  *  Calculate the user timezone and parse to UTC time to storage in the database 
+    //  *  Calculate the user timezone and parse to UTC time to storage in the database
     //  *
     //  *  @param   string|Carbon
-    //  * 
+    //  *
     //  *  @return  void
     //  */
     // public function setDateAttribute($value)
@@ -92,7 +92,7 @@ class Clase extends Model
      *  Convert from UTC to user timezone and display to hour and minute format
      *
      *  @param   string|null  $value
-     * 
+     *
      *  @return  Carbon\Carbon
      */
     public function getStartAtAttribute($value)
@@ -101,10 +101,10 @@ class Clase extends Model
     }
 
     /**
-     *  Calculate the user timezone and parse to UTC time to storage in the database 
+     *  Calculate the user timezone and parse to UTC time to storage in the database
      *
      *  @param   string|Carbon
-     * 
+     *
      *  @return  void
      */
     public function setStartAtAttribute($value)
@@ -116,7 +116,7 @@ class Clase extends Model
      *  Convert from UTC to user timezone and display to hour and minute format
      *
      *  @param   string|null  $value
-     * 
+     *
      *  @return  Carbon\Carbon
      */
     public function getFinishAtAttribute($value)
@@ -125,10 +125,10 @@ class Clase extends Model
     }
 
     /**
-     *  Calculate the user timezone and parse to UTC time to storage in the database 
+     *  Calculate the user timezone and parse to UTC time to storage in the database
      *
      *  @param   string|Carbon
-     * 
+     *
      *  @return  void
      */
     public function setFinishAtAttribute($value)
@@ -147,28 +147,29 @@ class Clase extends Model
     }
 
     /**
-     *  Check for the authenticated user a reservation of this Clase
+     *  Check if the authenticated user took this class
      *
      *  @return  boolean
      */
-    public function auth_has_reservation()
+    public function authReservedThis()
     {
-        return Reservation::where('user_id', Auth::user()->id)->where('clase_id', $this->id)
-                                                                ->exists('id');
+        return Reservation::where('user_id', Auth::user()->id)
+                            ->where('clase_id', $this->id)
+                            ->exists('id');
     }
 
     /**
-     * Undocumented function
+     *  Check plans and reservations for the authenticated user if he can reserve this Clase
      *
-     * @return void
+     *  @return  boolean
      */
     public function auth_can_reserve()
     {
         $user = Auth::User();
-
         $clase_type = $this->claseType;
+
         $clases = Clase::where('date', $this->date)->pluck('id');
-        $auth_reservations = $user->reservations()->whereIn('clase_id',$clases)->get();
+        $auth_reservations = $user->reservations()->whereIn('clase_id', $clases)->get();
         $auth_plan = Auth::user()->active_planuser();
 
         foreach ($auth_reservations as $res) {
@@ -206,7 +207,7 @@ class Clase extends Model
     //     }
     //   }
 
-      
+
 
         $planUser = Auth::user()->plan_users()->where('start_date', '<=', $this->date)
                                                 ->where('finish_date', '>=', $this->date)
@@ -336,11 +337,11 @@ class Clase extends Model
     }
 
     /**
-     *  If database start at class is after than right now 
+     *  If database start at class is after than right now
      *  and the total students numbes allowed in the class,
      *  is greater than the total of user reserved in the class yet,
      *  the class can still recieve students
-     * 
+     *
      *  @return  boolean
      */
     public function stillActive()

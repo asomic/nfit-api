@@ -20,21 +20,25 @@ class ClaseTransformer extends TransformerAbstract
     {
         $start = $clase->getOriginal('start_at');
         $end = $clase->getOriginal('finish_at');
-        
+
         $dateTimeStringStart = $clase->date->format('Y-m-d')." ".$start;
         $dateTimeStringEnd = $clase->date->format('Y-m-d')." ".$end;
         $dateTimeStart = Carbon::createFromFormat('Y-m-d H:i:s', $dateTimeStringStart);
         $dateTimeEnd = Carbon::createFromFormat('Y-m-d H:i:s', $dateTimeStringEnd);
 
-        $pruebaCount = 0;
-        foreach ($clase->users as $user) {
-            if($user->status_user == StatusUser::PRUEBA) {
-                $pruebaCount++;
-            }
-        }
+        // $pruebaCount = 0;
+        // foreach ($clase->users as $user) {
+        //     if($user->status_user == StatusUser::PRUEBA) {
+        //         $pruebaCount++;
+        //     }
 
-        if($clase->auth_has_reservation()) {
-            $reservation = Reservation::where('user_id',Auth::user()->id)->where('clase_id',$clase->id)->first();
+
+        // }
+
+        if ($clase->authReservedThis()) {
+            $reservation = Reservation::where('user_id', Auth::user()->id)
+                                        ->where('clase_id',$clase->id)
+                                        ->first();
             $reservation_id = $reservation->id;
             $reservation_status = $reservation->status->toArray();
             $reservation_details = $reservation->details;
@@ -72,7 +76,7 @@ class ClaseTransformer extends TransformerAbstract
                     'href' => route('clases.reservations', ['clase' => (int)$clase->id])
                 ],
                 'auth_reservation' => [
-                    'has' => (bool)$clase->auth_has_reservation(),
+                    'has' => (bool)$clase->authReservedThis(),
                     'can' => (bool)$clase->auth_can_reserve(),
                     'reservation_id' => (int)$reservation_id,
                     'status' => (Array)$reservation_status,
@@ -92,7 +96,7 @@ class ClaseTransformer extends TransformerAbstract
      *  Undocumented function
      *
      *  @param   [type] $index
-     * 
+     *
      *  @return  array|null
      */
     public static function originalAttribute($index)
@@ -113,7 +117,7 @@ class ClaseTransformer extends TransformerAbstract
      *  Undocumented function
      *
      *  @param  [type] $index
-     *  
+     *
      *  @return  array|null
      */
     public static function transformedAttribute($index)
