@@ -3,6 +3,7 @@
 namespace App\Models\Clases;
 
 use Auth;
+use Carbon\Carbon;
 use App\Models\Users\User;
 use App\Models\Clases\Clase;
 use App\Models\Exercises\Stage;
@@ -346,8 +347,18 @@ class Clase extends Model
      */
     public function stillActive()
     {
-        return $this->getOriginal('start_at') > now()->copy()->format('H:i:s') &&
+        $dateTimeStartClase = $this->dateTimeThisHour($this->getOriginal('start_at'));
+
+        return $dateTimeStartClase > now()->copy()->format('Y-m-d H:i:s') &&
                 $this->quota > count($this->users);
+    }
+
+    public function dateTimeThisHour($hour)
+    {
+        return Carbon::createFromFormat(
+            'Y-m-d H:i:s',
+            $this->date->format('Y-m-d') . ' ' . $hour
+        );
     }
 
     /**
@@ -357,6 +368,8 @@ class Clase extends Model
      */
     public function hasFinished()
     {
-        return $this->getOriginal('finish_at') < now()->copy()->format('H:i:s');
+        $dateTimeFinishClase = $this->dateTimeThisHour($this->getOriginal('finish_at'));
+
+        return $dateTimeFinishClase < now()->copy()->format('Y-m-d H:i:s');
     }
 }

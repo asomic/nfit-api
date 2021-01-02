@@ -24,11 +24,19 @@ class ClaseController extends ApiController
         //
     }
 
-
+    /**
+     *  Undocumented function
+     *
+     *  @param   Request  $request
+     *  
+     *  @return  void
+     */
     public function index(Request $request)
     {
         $request->request->add(['sort_by_asc' => 'start','per_page' => 15]); //por ahora despues este request debe estar en la app cliente
+
         $clases = Clase::all();
+
         return $this->showAll($clases);
     }
 
