@@ -64,8 +64,8 @@ class User extends Authenticatable
      *  Check if user has the specific Role
      *
      *  @param   int      $role
-     * 
-     *  @return  boolean  
+     *
+     *  @return  boolean
      */
     public function hasRole($role)
     {
@@ -106,7 +106,7 @@ class User extends Authenticatable
     public function clases()
     {
       //return $this->belongsToMany(Clase::Class)->using(Reservation::class);
-      return $this->belongsToMany(Clase::Class, 'reservations', 'user_id')->withPivot('reservation_status_id');
+        return $this->belongsToMany(Clase::Class, 'reservations', 'user_id')->withPivot('reservation_status_id');
       //return $this->hasManyThrough(Clase::Class, Reservation::class);
     }
 
@@ -244,7 +244,7 @@ class User extends Authenticatable
 
     // public function dateReservations($date)
     // {
-      
+
     //     return $this->hasMany(Reservation::class)->where('reservation_status_id', $status);
 
     // }

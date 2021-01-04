@@ -28,7 +28,7 @@ class ClaseController extends ApiController
      *  Undocumented function
      *
      *  @param   Request  $request
-     *  
+     *
      *  @return  void
      */
     public function index(Request $request)
@@ -93,7 +93,7 @@ class ClaseController extends ApiController
     public function coming()
     {
         $clases = Auth::user()->clases->where('date', '>=', today());
-        // ->where(now()->format('H:i'), '>=', 'finish_at');
+
         return $this->showAll($clases);
     }
 

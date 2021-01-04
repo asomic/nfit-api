@@ -349,8 +349,7 @@ class Clase extends Model
     {
         $dateTimeStartClase = $this->dateTimeThisHour($this->getOriginal('start_at'));
 
-        return $dateTimeStartClase > now()->copy()->format('Y-m-d H:i:s') &&
-                $this->quota > count($this->users);
+        return $dateTimeStartClase > now()->copy()->format('Y-m-d H:i:s');
     }
 
     public function dateTimeThisHour($hour)
