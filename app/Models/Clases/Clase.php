@@ -178,35 +178,35 @@ class Clase extends Model
                 return false;
             }
         }
-      // foreach ($clases as $clase) {
-      //     $reservations = Reservation::where('user_id', Auth::id())->where('clase_id', $clase->id)->get();
-      //     $reservations_clase_type = $reservations->pluck('clase_types');
+        // foreach ($clases as $clase) {
+        //     $reservations = Reservation::where('user_id', Auth::id())->where('clase_id', $clase->id)->get();
+        //     $reservations_clase_type = $reservations->pluck('clase_types');
 
-      //     $clase_count = $clase_count + count($reservations);
-      //     if($clase_count >= $auth_plan->daily_clases)
-      //     {
-      //       return false;
-      //     }
-      //     if(in_array($clase_type->id,$reservations_clase_type ))
-      //     {
-      //       return false;
-      //     }
-      // }
+        //     $clase_count = $clase_count + count($reservations);
+        //     if($clase_count >= $auth_plan->daily_clases)
+        //     {
+        //       return false;
+        //     }
+        //     if(in_array($clase_type->id,$reservations_clase_type ))
+        //     {
+        //       return false;
+        //     }
+        // }
 
-      //maximo de 3 usuarios de prueba
-    //   if(Auth::user()->status_user == 3){
+        //maximo de 3 usuarios de prueba
+        //   if(Auth::user()->status_user == 3){
 
-    //     $pruebaCount = 0;
-    //     foreach ($this->users as $user) {
-    //       if($user->status_user == 3){
-    //         $pruebaCount++;
-    //       }
-    //     }
-    //     if($pruebaCount >= 3)
-    //     {
-    //       return false;
-    //     }
-    //   }
+        //     $pruebaCount = 0;
+        //     foreach ($this->users as $user) {
+        //       if($user->status_user == 3){
+        //         $pruebaCount++;
+        //       }
+        //     }
+        //     if($pruebaCount >= 3)
+        //     {
+        //       return false;
+        //     }
+        //   }
 
 
 
