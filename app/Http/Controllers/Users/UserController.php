@@ -57,18 +57,18 @@ class UserController extends ApiController
 
       if ($request->hasFile('image')) {
 
-          \Cloudinary::config(array( 
-            "cloud_name" => "asomic", 
-            "api_key" => "848272583179274", 
-            "api_secret" => "nmfb2gvEoKogFn3yza9briK4Yg4", 
+          \Cloudinary::config(array(
+            "cloud_name" => "asomic",
+            "api_key" => "848272583179274",
+            "api_secret" => "nmfb2gvEoKogFn3yza9briK4Yg4",
             "secure" => true
           ));
 
           $response = \Cloudinary\Uploader::upload($request->file('image'),[
-            "width"=>450, 
-            "height"=>450, 
+            "width"=>450,
+            "height"=>450,
             "crop"=>"lfill"
-          ]); 
+          ]);
 
           $user->avatar = $response['secure_url'];
           if($user->save()){
@@ -76,7 +76,7 @@ class UserController extends ApiController
           } else {
             return response()->json(['error' =>'error guardar foto'], 200);
           }
-          
+
       }
       else {
         return response()->json(['error' =>'erro en request'], 400);
@@ -129,7 +129,7 @@ class UserController extends ApiController
     public function plans()
     {
         $user_plans = Auth::user()->plan_users()->orderBy('finish_date', 'desc')->get();
-        
+
         return $this->showAll($user_plans, 200);
     }
 
@@ -150,26 +150,26 @@ class UserController extends ApiController
      *
      *  @param   \Illuminate\Http\Request  $request
      *  @param   \App\Models\Users\User  $user
-     * 
+     *
      *  @return  \Illuminate\Http\Response
      */
     public function update(Request $request, User $user)
     {
         $user->update($request->all());
-        
+
         return $this->showOne($user, 200);
     }
 
     /**
      *  Revoke the token to the auth user
-     * 
+     *
      *  @return  json  with good or bad response
      */
     public function logout()
     {
         if (Auth::check()) {
             Auth::user()->token()->revoke();
-            
+
             return response()->json(['success' =>'Sesion finalizada'], 200);
         } else {
             return response()->json(['error' =>'api.something_went_wrong'], 500);
@@ -184,7 +184,7 @@ class UserController extends ApiController
     public function clases()
     {
         $clases = Auth::user()->clases->where('date', '<=', today());
-        
+
         return $this->showAll($clases);
     }
 
@@ -228,14 +228,14 @@ class UserController extends ApiController
     }
 
     /**
-     * Undocumented function
+     *  Undocumented function
      *
-     * @return void
+     *  @return  void
      */
     public function today()
     {
         $reservationHas = false;
-        $reservation = Auth::User()->clases()->where('date',today())->first();
+        $reservation = Auth::User()->clases()->where('date', today())->first();
         $todayReservation = [];
 
         $wodHas = false;
@@ -266,7 +266,8 @@ class UserController extends ApiController
 
         $today = [
             'date' => today()->format('Y-m-d'),
-            'dateHuman' =>  (string) ucfirst(today()->formatLocalized('%A %d')).' de '. ucfirst(today()->formatLocalized('%B')) ,
+            'date_human' => (string) strftime('%A %d de %B', today()->timestamp),
+            // 'dateHuman' =>  (string) ucfirst(today()->formatLocalized('%A %d')).' de '. ucfirst(today()->formatLocalized('%B')) ,
             'wod' => [
                 'has' => (bool)$wodHas,
                 'stages' => $todayWod,
@@ -282,9 +283,9 @@ class UserController extends ApiController
 
     /**
      *  Undocumented function
-     *  
+     *
      *  @param  Request  $request
-     * 
+     *
      *  @return  void
      */
     public function fcmToken(Request $request)
@@ -303,7 +304,7 @@ class UserController extends ApiController
         if(Auth::user()->save()) {
             return response()->json('guardado'.Auth::user()->fcm_token, 200);
         }
-        
+
         return response()->json('no guardado', 401);
     }
 }

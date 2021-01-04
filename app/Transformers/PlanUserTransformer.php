@@ -32,7 +32,7 @@ class PlanUserTransformer extends TransformerAbstract
           } else {
             $bill_amount = '$'.number_format($planuser->bill->total_paid, 0, ',', '.');
           }
-          
+
         }
 
         $period = '';
@@ -56,14 +56,16 @@ class PlanUserTransformer extends TransformerAbstract
             'id' => (int)$planuser->id,
             'start' => (string)$planuser->start_date,
             'end' => (string)$planuser->finish_date,
-            'vencimiento' => (string)ucfirst($planuser->finish_date->formatLocalized('%A %d')).' de '.ucfirst($planuser->finish_date->formatLocalized('%B, %Y')) ,
-            'inicio' => (string)ucfirst($planuser->start_date->formatLocalized('%A %d')).' de '.ucfirst($planuser->start_date->formatLocalized('%B, %Y')) ,
-            'counter' => (string)$planuser->counter,
-            'canContract' => (boolean)$canContract,
+            'inicio' => (string) ucfirst(strftime('%A %d de %B, %Y', $planuser->finish_date->timestamp)),
+            'vencimiento' => (string) ucfirst(strftime('%A %d de %B, %Y', $planuser->finish_date->timestamp)),
+            // 'vencimiento' => (string)ucfirst($planuser->finish_date->formatLocalized('%A %d')).' de '.ucfirst($planuser->finish_date->formatLocalized('%B, %Y')) ,
+            // 'inicio' => (string)ucfirst($planuser->start_date->formatLocalized('%A %d')).' de '.ucfirst($planuser->start_date->formatLocalized('%B, %Y')) ,
+            'counter' => (string) $planuser->counter,
+            'canContract' => (boolean) $canContract,
             'status' => [
-                'id' => (string)$planuser->plan_status_id,
-                'name' => (string)$planuser->planStatus->plan_status,
-                'class' => (string)$planuser->planStatus->type,
+                'id' => (string) $planuser->plan_status_id,
+                'name' => (string) $planuser->planStatus->plan_status,
+                'class' => (string) $planuser->planStatus->type,
             ],
 
             'rels' => [

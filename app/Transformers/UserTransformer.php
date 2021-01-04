@@ -15,20 +15,18 @@ class UserTransformer extends TransformerAbstract
      */
     public function transform(User $user)
     {
+        $userPlan = $user->active_planuser();
 
-       $userPlan = $user->active_planuser();
-       if($userPlan)
-       {
-         $plan = $userPlan->plan->plan;
-         $expiration = ucfirst($userPlan->finish_date->formatLocalized('%A %d')).' de '.ucfirst($userPlan->finish_date->formatLocalized('%B, %Y'));
-         $counter = $userPlan->counter;
-       } else {
-
-         $plan = 'Sin plan activo';
-         $expiration = '---';
-         $counter = '--' ;
-
-       }
+        if ($userPlan) {
+            $plan = $userPlan->plan->plan;
+            $expiration = c;
+            //  $expiration = ucfirst($userPlan->finish_date->formatLocalized('%A %d')).' de '.ucfirst($userPlan->finish_date->formatLocalized('%B, %Y'));
+            $counter = $userPlan->counter;
+        } else {
+           $plan = 'Sin plan activo';
+            $expiration = '---';
+            $counter = '--' ;
+        }
 
         return [
             'id' => (int)$user->id,

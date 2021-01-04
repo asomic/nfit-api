@@ -34,7 +34,8 @@ class WodTransformer extends TransformerAbstract
             'day' => (string) $wod->date->format('d'),
             'month' => (string) strtoupper($wod->date->formatLocalized('%b')),
             'year' => (string) $wod->date->formatLocalized('%Y'),
-            'dateHuman' =>  (string) ucfirst($wod->date->formatLocalized('%A %d')).' de '.ucfirst($wod->date->formatLocalized('%B')) ,
+            'dateHuman' => ucfirst(strftime('%A %d de %B', $wod->date->timestamp)),
+            // 'dateHuman' =>  (string) ucfirst($wod->date->formatLocalized('%A %d')).' de '.ucfirst($wod->date->formatLocalized('%B')) ,
             'rels' => [
                 'claseType' => [
                     'id' => (int) $wod->clase_type_id,
@@ -70,7 +71,7 @@ class WodTransformer extends TransformerAbstract
 
     /**
      *  [transformedAttribute changes the original attributes to the faced]
-     * 
+     *
      *  @return  [type]        [description]
      */
     public static function transformedAttribute($index)

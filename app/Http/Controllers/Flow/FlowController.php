@@ -32,9 +32,9 @@ class FlowController extends Controller
 
     public function payFlow(PlanUserFlow $planuserflow)
     {
-      $amount = $planuserflow->plan->amount;
-      $fee = $amount*0.0396;
-      $total = $amount + $fee;
+        $amount = $planuserflow->plan->amount;
+        $fee = $amount*0.0396;
+        $total = $amount + $fee;
 
       try {
         $paymentResponse = $this->flow->payment()->commit([
@@ -73,7 +73,7 @@ class FlowController extends Controller
         return view('flow.return');
       }
 
-      
+
       if($paymentData['date']==null){
         $planUserflow->paid = 3;
         $planUserflow->observations = 'Error fecha desde flow. Posiblemente error en el pago';
@@ -99,7 +99,7 @@ class FlowController extends Controller
         }
 
         if($planUser->save()){
-          
+
           $bill = new Bill;
           $bill->payment_type_id = 6;
           $bill->plan_user_id = $planUser->id;
@@ -121,7 +121,7 @@ class FlowController extends Controller
               'where' => 'FlowController',
               'created_at' => now(),
           ]);
-  
+
           return view('flow.return');
         } else {
           $planUserflow->paid = 0;
@@ -146,7 +146,7 @@ class FlowController extends Controller
           'data' => 'no',
           ]);
       }
-      
+
     if ($paymentData['date'] == null) {
         $planUserflow->paid = 3;
         $planUserflow->observations = 'Error fecha desde flow. Posiblemente error en el pago';
@@ -197,7 +197,7 @@ class FlowController extends Controller
               'where' => 'FlowController',
               'created_at' => now(),
           ]);
-  
+
           return response()->json([
             'data' => 'ok',
             ]);
@@ -210,7 +210,7 @@ class FlowController extends Controller
         }
       }
 
-      
+
       return response()->json([
         'data' => 'no',
         ]);
@@ -222,14 +222,14 @@ class FlowController extends Controller
     // {
     //     $fcmUrl = 'https://fcm.googleapis.com/fcm/send';
     //     $token= $userToken;
-        
+
 
     //     $notification = [
     //         'body' => $body,
     //         'title' => $title,
     //         'sound' => true,
     //     ];
-        
+
     //     $extraNotificationData = ["message" => $notification,"moredata" =>'dd'];
 
     //     $fcmNotification = [

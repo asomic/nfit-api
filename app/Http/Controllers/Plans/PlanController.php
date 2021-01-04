@@ -33,11 +33,9 @@ class PlanController extends ApiController
         return $this->showOne($plan);
     }
 
-
-
     public function dates(Plan $plan)
     {
-        $user_plan = Auth::user()->plan_users()->where('plan_status_id','!=',3)->orderBy('finish_date', 'desc')->first();
+        $user_plan = Auth::user()->plan_users()->where('plan_status_id', '!=', 3)->orderBy('finish_date', 'desc')->first();
 
         $start = Carbon::now();
         $end = Carbon::now();
@@ -47,31 +45,28 @@ class PlanController extends ApiController
                 $start = $user_plan->finish_date->addDay();
                 $end = $user_plan->finish_date->addDay();
             }
-
-        } 
-
-        
+        }
 
         switch ($plan->plan_period_id) {
             case 1:
-                $end->addMonths(1);
+                $end->addMonths(1)->subDay();
                 break;
             case 3:
-                $end->addMonths(3);
+                $end->addMonths(3)->subDay();
                 break;
             case 5:
-                $end->addMonths(6);
+                $end->addMonths(6)->subDay();
                 break;
             case 6:
-                $end->addYear();
+                $end->addYear()->subDay();
                 break;
         }
 
-
         return response()->json([
-            'start' => (string)(string)ucfirst($start->formatLocalized('%A %d')).' de '.ucfirst($start->formatLocalized('%B, %Y')) ,
-            'end'  => (string)ucfirst($end->subDay()->formatLocalized('%A %d')).' de '.ucfirst($end->subDay()->formatLocalized('%B, %Y')),
-
+            'start' => (string) ucfirst(strftime('%A %d de %B, %Y', $start->timestamp)),
+            'end' => (string) ucfirst(strftime('%A %d de %B, %Y', $end->timestamp)),
+            // 'start' => (string) ucfirst($start->formatLocalized('%A %d')).' de '.ucfirst($start->formatLocalized('%B, %Y')) ,
+            // 'end'  => (string) ucfirst($end->subDay()->formatLocalized('%A %d')).' de '.ucfirst($end->subDay()->formatLocalized('%B, %Y')),
           ], 200);
     }
 
@@ -89,7 +84,7 @@ class PlanController extends ApiController
                 $end = $user_plan->finish_date->addDay();
             }
 
-        } 
+        }
 
         switch ($plan->plan_period_id) {
             case 1:

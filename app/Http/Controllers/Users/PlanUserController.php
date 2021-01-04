@@ -16,6 +16,7 @@ class PlanUserController extends ApiController
     public function index(User $user)
     {
         $plans = $user->plan_users;
+
         return $this->showAll($plans);
     }
 
@@ -34,6 +35,7 @@ class PlanUserController extends ApiController
     public function active(User $user)
     {
         $plan = $user->active_planuser();
+        
         return $this->showOne($plan);
     }
 
@@ -60,5 +62,5 @@ class PlanUserController extends ApiController
         //
     }
 
-    
+
 }

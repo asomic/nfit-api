@@ -2,7 +2,7 @@
 
 Route::middleware(['auth:api'])->group(function() {
     /**
-     * Bills resources
+     *  Bills resources
      */
     Route::Apiresource('bills', 'Bills\BillController');
 
@@ -19,7 +19,7 @@ Route::middleware(['auth:api'])->group(function() {
         Route::post('clases/{clase}/reserve', 'Clases\ClaseController@reserve');
         Route::post('clases/{clase}/remove', 'Clases\ClaseController@remove');
         Route::post('clases/{clase}/confirm', 'Clases\ClaseController@confirm');
-        Route::get('clases/{clase}/zoom', 'Clases\ClaseController@getZoom');   
+        Route::get('clases/{clase}/zoom', 'Clases\ClaseController@getZoom');
 
 
     //week
@@ -50,12 +50,11 @@ Route::middleware(['auth:api'])->group(function() {
         Route::Apiresource('users.planusers', 'Users\PlanUserController');
         Route::get('users/{user}/planusers-active', 'Users\PlanUserController@active')->name('users.planusers.active');
         Route::get('users-alerts', 'Users\UserController@alerts')->name('users.alerts');
-        
+
 
     /**
      *  Videos
-     */       
-    
+     */
     Route::get('video', 'Videos\VideoController@index')->name('video.index');
     Route::get('video/lastest', 'Videos\VideoController@lastest')->name('video.lastest');
     Route::get('video/{video}', 'Videos\VideoController@show')->name('video.show');
@@ -79,7 +78,7 @@ Route::middleware(['auth:api'])->group(function() {
         Route::get('flow/{planuserflow}', 'Flow\FlowController@payFlow')->name('flow.pay');
 
 
-        
+
     /**
      *  Wods
      */

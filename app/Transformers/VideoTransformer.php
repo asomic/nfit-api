@@ -17,17 +17,17 @@ class VideoTransformer extends TransformerAbstract
      */
     public function transform(Video $video)
     {
-
         return [
             'id' => (int)$video->id,
             'title' => (string)$video->title,
             'description' => (string)$video->description,
-            'duration' => (int)$video->duration, 
+            'duration' => (int)$video->duration,
             // 'duration_minutes' => (int) ($video->duration)/60,
             'thumbnail_path' => (string) $video->thumbnail_path,
             'url' => (string) 'https://player.vimeo.com/video/'.$video->id,
             'release_raw' => (string) $video->release_at,
-            'release_human' => (string)ucfirst($video->release_at->formatLocalized('%A %d')).' de '.ucfirst($video->release_at->formatLocalized('%B')),
+            'release_human' => ucfirst(strftime('%A %d de %B', $video->release_at->timestamp)),
+            // 'release_human' => (string)ucfirst($video->release_at->formatLocalized('%A %d')).' de '.ucfirst($video->release_at->formatLocalized('%B')),
         ];
     }
 
@@ -35,7 +35,7 @@ class VideoTransformer extends TransformerAbstract
      *  Undocumented function
      *
      *  @param   [type] $index
-     * 
+     *
      *  @return  array|null
      */
     public static function originalAttribute($index)
@@ -52,7 +52,7 @@ class VideoTransformer extends TransformerAbstract
      *  Undocumented function
      *
      *  @param  [type] $index
-     *  
+     *
      *  @return  array|null
      */
     public static function transformedAttribute($index)
