@@ -219,9 +219,14 @@ class Clase extends Model
             if(count($auth_reservations) >= $planUser->plan->daily_clases) {
                 return false;
             }
-
+            if (!$this->block) {
+                return false;
+            }
             $ids = $this->block->getPlansIdAttribute()->toArray();
-            if((in_array($planUser->plan_id,$ids)) && ($planUser->counter > 0 ) ) {
+
+
+            // dd($planUser->counter);
+            if((in_array($planUser->plan_id, $ids)) && ($planUser->counter > 0 ) ) {
                 return true;
             } else {
                 return false;

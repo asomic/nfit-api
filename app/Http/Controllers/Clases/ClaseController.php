@@ -59,7 +59,7 @@ class ClaseController extends ApiController
             $day = ["date" => (string) $date->toDateString(),
                 "day" => (string) $date->format('d'),
                 // "dayName" => (string) ucfirst($date->formatLocalized('%A')),
-                'dayName' => (string) strftime('%A', $date->timestamp),
+                'dayName' => (string) ucfirst(strftime('%A', $date->timestamp)),
                 "today" => $isToday,
                 "dayHasClases" => $day_has_clases,
                 "canReserve" => (bool) true,
@@ -130,7 +130,6 @@ class ClaseController extends ApiController
      */
     public function reserve(Request $request, Clase $clase)
     {
-
         $planuser = PlanUser::where('start_date', '<=', Carbon::parse($clase->date))
             ->where('finish_date', '>=', Carbon::parse($clase->date))
             ->where('user_id', Auth::id())
@@ -140,7 +139,7 @@ class ClaseController extends ApiController
             return $this->errorResponse('No tienes un plan que te permita tomar esta clase', 403);
         }
 
-        if (count($clase->users) >= $clase->quota ) {
+        if (count($clase->users) >= $clase->quota) {
             return $this->errorResponse('No puedes reservar, la clase esta llena.', 403);
         }
 

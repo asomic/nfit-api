@@ -19,7 +19,7 @@ class UserTransformer extends TransformerAbstract
 
         if ($userPlan) {
             $plan = $userPlan->plan->plan;
-            $expiration = c;
+            $expiration = ucfirst(strftime('%A %d de %B, %Y', $userPlan->finish_date->timestamp));
             //  $expiration = ucfirst($userPlan->finish_date->formatLocalized('%A %d')).' de '.ucfirst($userPlan->finish_date->formatLocalized('%B, %Y'));
             $counter = $userPlan->counter;
         } else {
