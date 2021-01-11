@@ -17,6 +17,7 @@ Route::middleware(['auth:api'])->group(function() {
         Route::get('clases/{clase}/reservations', 'Clases\ClaseController@reservations')->name('clases.reservations');
 
         Route::post('clases/{clase}/reserve', 'Clases\ClaseController@reserve');
+        Route::post('clases/{clase}/directconfirm', 'Clases\ClaseController@directConfirm');
         Route::post('clases/{clase}/remove', 'Clases\ClaseController@remove');
         Route::post('clases/{clase}/confirm', 'Clases\ClaseController@confirm');
         Route::get('clases/{clase}/zoom', 'Clases\ClaseController@getZoom');

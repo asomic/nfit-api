@@ -179,6 +179,46 @@ class ClaseController extends ApiController
         return $this->showOne($reservation->clase, 201);
     }
 
+    public function directConfirm(Request $request, Clase $clase)
+    {
+        $planuser = PlanUser::where('start_date', '<=', Carbon::parse($clase->date))
+            ->where('finish_date', '>=', Carbon::parse($clase->date))
+            ->where('user_id', Auth::id())
+            ->whereIn('plan_status_id', [1, 3])
+            ->first();
+        if (!$planuser) {
+            return $this->errorResponse('No tienes un plan que te permita tomar esta clase', 403);
+        }
+
+        if (count($clase->users) >= $clase->quota) {
+            return $this->errorResponse('No puedes reservar, la clase esta llena.', 403);
+        }
+
+        $hasReserve = $this->hasReserve($clase);
+        if ($hasReserve) {
+            return $this->errorResponse($hasReserve, 403);
+        }
+        $reservation = new Reservation;
+        $reservation->user_id = Auth::user()->id;
+        $reservation->clase_id = $clase->id;
+        $reservation->by_god = false;
+        $reservation->reservation_status_id = 2;
+        $reservation->plan_user_id = $planuser->id;
+
+        if (!in_array($planuser->plan->id, $clase->block->plans->pluck('id')->toArray())) {
+            return $this->errorResponse('Tu plan no te deja tomar esta clase', 403);
+        }
+
+        if ($reservation->save()) {
+            $planuser->counter = $planuser->counter - 1;
+            $planuser->save();
+            return $this->showOne($reservation->clase, 201);
+        } else {
+            return $this->errorResponse('No se pudo tomar la clase', 400);
+        }
+
+    }
+
     private function hasReserve($clase)
     {
         $response = '';
@@ -288,24 +328,6 @@ class ClaseController extends ApiController
         $stringEnd = $clase->date->format('Y-m-d')." ".$clase->finish_at;
         $end = Carbon::createFromFormat('Y-m-d H:i:s', $stringEnd);
 
-        // $ifzoom = false;
-        // if($clase->zoom_link != null) {
-        //     $ifzoom = true;
-        // }
-
-        // $ifStart = false;
-        // if($start->lte(Carbon::now())) {
-        //     $ifStart = true;
-        // }
-
-        // $ifEnd = false;
-        // if($end->gte(Carbon::now())) {
-        //     $ifEnd = true;
-        // }
-        // $ifclase = false;
-        // if($clase->authReservedThis()) {
-        //     $ifclase = true;
-        // }
 
         if(($clase->zoom_link != null) && ($start->lte(Carbon::now()))  && ($end->gte(Carbon::now()))  && $clase->authReservedThis() ) {
             $can_zoom = true;
@@ -316,10 +338,7 @@ class ClaseController extends ApiController
 
         //test
         return response()->json([
-            // 'ifZoom' => $ifzoom,
-            // 'ifStar' => $ifStart,
-            // 'ifEnd' => $ifEnd,
-            // 'ifClase' => $ifclase,
+
             'now' => Carbon::now(),
             'start' => $start,
             'end' => $end,

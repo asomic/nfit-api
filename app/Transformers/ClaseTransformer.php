@@ -25,15 +25,12 @@ class ClaseTransformer extends TransformerAbstract
         $dateTimeStringEnd = $clase->date->format('Y-m-d')." ".$end;
         $dateTimeStart = Carbon::createFromFormat('Y-m-d H:i:s', $dateTimeStringStart);
         $dateTimeEnd = Carbon::createFromFormat('Y-m-d H:i:s', $dateTimeStringEnd);
+        $onlyConfirm = false;
 
-        // $pruebaCount = 0;
-        // foreach ($clase->users as $user) {
-        //     if($user->status_user == StatusUser::PRUEBA) {
-        //         $pruebaCount++;
-        //     }
+        if(now() > $dateTimeStart->subMinutes(45)) {
+            $onlyConfirm = true;
+        }
 
-
-        // }
 
         if ($clase->authReservedThis()) {
             $reservation = Reservation::where('user_id', Auth::user()->id)
@@ -64,7 +61,7 @@ class ClaseTransformer extends TransformerAbstract
             'active' => (bool) $clase->stillActive(),
             'finished' => (bool)$clase->hasFinished(),
             'coach' => (string) isset($clase->profesor) ? $clase->profesor->full_name : null,
-
+            'only_confirm'=> (bool)$onlyConfirm,
             'rels' => [
                 'wod' => [
                     'id' => (int)$clase->wod_id,
