@@ -24,10 +24,11 @@ class ClaseTransformer extends TransformerAbstract
         $dateTimeStringStart = $clase->date->format('Y-m-d')." ".$start;
         $dateTimeStringEnd = $clase->date->format('Y-m-d')." ".$end;
         $dateTimeStart = Carbon::createFromFormat('Y-m-d H:i:s', $dateTimeStringStart);
+        $dateTimeStartConfirm = Carbon::createFromFormat('Y-m-d H:i:s', $dateTimeStringStart)->subMinutes(45);
         $dateTimeEnd = Carbon::createFromFormat('Y-m-d H:i:s', $dateTimeStringEnd);
         $onlyConfirm = false;
 
-        if(now() > $dateTimeStart->subMinutes(45)) {
+        if((now() > $dateTimeStartConfirm) && (now() < $dateTimeStart) ) {
             $onlyConfirm = true;
         }
 
