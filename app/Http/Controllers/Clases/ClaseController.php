@@ -174,6 +174,18 @@ class ClaseController extends ApiController
         if (!$reservation) {
             return $this->errorResponse('No puede confirmar una clase en la que no esta', 403);
         }
+        
+        $dateTimeStringStart = $clase->date->format('Y-m-d')." ".$start;
+        $dateTimeStart = Carbon::createFromFormat('Y-m-d H:i:s', $dateTimeStringStart);
+
+        if (now() > $dateTimeStart) {
+            return $this->errorResponse('No puedes reservar, la clase ya comenzó.', 403);
+        }
+
+        // if (count($clase->users) >= $clase->quota) {
+        //     return $this->errorResponse('No puedes reservar, la clase esta llena.', 403);
+        // }
+
         $reservation->reservation_status_id = 2;
         $reservation->save();
         return $this->showOne($reservation->clase, 201);
@@ -193,6 +205,14 @@ class ClaseController extends ApiController
         if (count($clase->users) >= $clase->quota) {
             return $this->errorResponse('No puedes reservar, la clase esta llena.', 403);
         }
+
+        $dateTimeStringStart = $clase->date->format('Y-m-d')." ".$start;
+        $dateTimeStart = Carbon::createFromFormat('Y-m-d H:i:s', $dateTimeStringStart);
+
+        if (now() > $dateTimeStart) {
+            return $this->errorResponse('No puedes reservar, la clase ya comenzó.', 403);
+        }
+
 
         $hasReserve = $this->hasReserve($clase);
         if ($hasReserve) {
