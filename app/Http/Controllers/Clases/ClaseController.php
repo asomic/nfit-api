@@ -174,7 +174,7 @@ class ClaseController extends ApiController
         if (!$reservation) {
             return $this->errorResponse('No puede confirmar una clase en la que no esta', 403);
         }
-        
+        $start = $clase->getOriginal('start_at');
         $dateTimeStringStart = $clase->date->format('Y-m-d')." ".$start;
         $dateTimeStart = Carbon::createFromFormat('Y-m-d H:i:s', $dateTimeStringStart);
 
@@ -205,7 +205,7 @@ class ClaseController extends ApiController
         if (count($clase->users) >= $clase->quota) {
             return $this->errorResponse('No puedes reservar, la clase esta llena.', 403);
         }
-
+        $start = $clase->getOriginal('start_at');
         $dateTimeStringStart = $clase->date->format('Y-m-d')." ".$start;
         $dateTimeStart = Carbon::createFromFormat('Y-m-d H:i:s', $dateTimeStringStart);
 
