@@ -51,8 +51,8 @@ class ClaseTransformer extends TransformerAbstract
             'type' => (int) $clase->clase_type_id,
             'typeName' => (string) $clase->claseType->clase_type,
             'date' => (string) $clase->date->toDateString(),
-            'date_human' => (string) strftime('%A %d de %B', $clase->date->timestamp),
-            // 'dateHuman' => (string) ucfirst($clase->date->formatLocalized('%A %d de %B')),
+            'date_human' => (string) strftime('%A %d de %B', $clase->date->timestamp), //es el nuevo
+            'dateHuman' => (string) strftime('%A %d de %B', $clase->date->timestamp), //descontinuar con app nueva
             'day' => (string) $clase->date->format('d'),
             'month' =>(string) $clase->date->formatLocalized('%b'),
             'year' => (string) $clase->date->formatLocalized('%Y'),
