@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers\Clases;
 
-use App\Http\Controllers\ApiController;
-use App\Models\Clases\Clase;
-use App\Models\Clases\Reservation;
-use App\Models\Clases\ClaseType;
-use App\Models\Plans\PlanUser;
 use Auth;
 use Carbon\Carbon;
+use App\Models\Clases\Clase;
 use Illuminate\Http\Request;
+use App\Models\Plans\PlanUser;
+use App\Models\Clases\ClaseType;
+use App\Models\Clases\Reservation;
+use App\Http\Controllers\ApiController;
+use App\Models\Clases\ReservationStatus;
 
 class ClaseController extends ApiController
 {
@@ -171,14 +172,17 @@ class ClaseController extends ApiController
     public function confirm(Request $request, Clase $clase)
     {
         $reservation = Reservation::where('clase_id', $clase->id)->where('user_id', Auth::id())->first();
+
         if (!$reservation) {
             return $this->errorResponse('No puede confirmar una clase en la que no esta', 403);
         }
-        $start = $clase->getOriginal('start_at');
-        $dateTimeStringStart = $clase->date->format('Y-m-d')." ".$start;
+
+        $start = $clase->start_at;
+        $dateTimeStringStart = $clase->date->format('Y-m-d') . " " . $start;
         $dateTimeStart = Carbon::createFromFormat('Y-m-d H:i:s', $dateTimeStringStart);
 
-        if (now() > $dateTimeStart) {
+        $timezone = auth()->user()->timezone ?? 'America/Santiago';
+        if (now($timezone) > $dateTimeStart) {
             return $this->errorResponse('No puedes reservar, la clase ya comenzó.', 403);
         }
 
@@ -186,7 +190,7 @@ class ClaseController extends ApiController
         //     return $this->errorResponse('No puedes reservar, la clase esta llena.', 403);
         // }
 
-        $reservation->reservation_status_id = 2;
+        $reservation->reservation_status_id = ReservationStatus::CONFIRMADA;
         $reservation->save();
         return $this->showOne($reservation->clase, 201);
     }

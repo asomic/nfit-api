@@ -10,6 +10,11 @@ use App\Models\Clases\Reservation;
  */
 class ReservationStatus extends Model
 {
+    const PENDIENTE = 1;
+    const CONFIRMADA = 2;
+    const CONSUMIDA = 3;
+    const PERDIDA = 4;
+
     protected $fillable = ['reservation_status'];
 
     /**
