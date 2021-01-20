@@ -179,9 +179,9 @@ class ClaseController extends ApiController
 
         $start = $clase->start_at;
         $dateTimeStringStart = $clase->date->format('Y-m-d') . " " . $start;
-        $dateTimeStart = Carbon::createFromFormat('Y-m-d H:i:s', $dateTimeStringStart);
-
         $timezone = auth()->user()->timezone ?? 'America/Santiago';
+        $dateTimeStart = Carbon::createFromFormat('Y-m-d H:i:s', $dateTimeStringStart, $timezone);
+
         if (now($timezone) > $dateTimeStart) {
             return $this->errorResponse('No puedes reservar, la clase ya comenzó.', 403);
         }

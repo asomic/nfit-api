@@ -355,16 +355,20 @@ class Clase extends Model
     {
         $timezone = auth()->user()->timezone ?? 'America/Santiago';
 
-        $dateTimeStartClase = $this->dateTimeThisHour($this->start_at);
+        $dateTimeStartClase = $this->dateTimeThisHour($this->start_at, $timezone);
 
         return $dateTimeStartClase > now($timezone)->copy()->format('Y-m-d H:i:s');
     }
 
-    public function dateTimeThisHour($hour)
+    /**
+     * 
+     */
+    public function dateTimeThisHour($hour, $timezone)
     {
         return Carbon::createFromFormat(
             'Y-m-d H:i:s',
-            $this->date->format('Y-m-d') . ' ' . $hour
+            $this->date->format('Y-m-d') . ' ' . $hour,
+            $timezone
         );
     }
 
@@ -377,8 +381,8 @@ class Clase extends Model
     {
         $timezone = auth()->user()->timezone ?? 'America/Santiago';
 
-        $dateTimeFinishClase = $this->dateTimeThisHour($this->finish_at);
+        $dateTimeFinishClase = $this->dateTimeThisHour($this->finish_at, $timezone);
 
-        return now($timezone)->copy()->format('Y-m-d H:i:s') > $dateTimeFinishClase;
+        return now($timezone)->copy() > $dateTimeFinishClase;
     }
 }
