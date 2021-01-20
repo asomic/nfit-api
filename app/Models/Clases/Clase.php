@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use App\Models\Users\User;
 use App\Models\Clases\Clase;
 use App\Models\Exercises\Stage;
+use Mockery\Generator\Parameter;
 use App\Models\Clases\Reservation;
 use App\Models\System\NfitTimeZone;
 use App\Transformers\ClaseTransformer;
@@ -352,9 +353,11 @@ class Clase extends Model
      */
     public function stillActive()
     {
-        $dateTimeStartClase = $this->dateTimeThisHour($this->getOriginal('start_at'));
+        $timezone = auth()->user()->timezone ?? 'America/Santiago';
 
-        return $dateTimeStartClase > now()->copy()->format('Y-m-d H:i:s');
+        $dateTimeStartClase = $this->dateTimeThisHour($this->start_at);
+
+        return $dateTimeStartClase > now($timezone)->copy()->format('Y-m-d H:i:s');
     }
 
     public function dateTimeThisHour($hour)
@@ -372,8 +375,10 @@ class Clase extends Model
      */
     public function hasFinished()
     {
-        $dateTimeFinishClase = $this->dateTimeThisHour($this->getOriginal('finish_at'));
+        $timezone = auth()->user()->timezone ?? 'America/Santiago';
 
-        return $dateTimeFinishClase < now()->copy()->format('Y-m-d H:i:s');
+        $dateTimeFinishClase = $this->dateTimeThisHour($this->finish_at);
+
+        return now($timezone)->copy()->format('Y-m-d H:i:s') > $dateTimeFinishClase;
     }
 }
