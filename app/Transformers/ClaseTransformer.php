@@ -21,17 +21,17 @@ class ClaseTransformer extends TransformerAbstract
         $start = $clase->getOriginal('start_at');
         $end = $clase->getOriginal('finish_at');
 
-        $dateTimeStringStart = $clase->date->format('Y-m-d')." ".$start;
-        $dateTimeStringEnd = $clase->date->format('Y-m-d')." ".$end;
-        $dateTimeStart = Carbon::createFromFormat('Y-m-d H:i:s', $dateTimeStringStart);
-        $dateTimeStartConfirm = Carbon::createFromFormat('Y-m-d H:i:s', $dateTimeStringStart)->subMinutes(45);
-        $dateTimeEnd = Carbon::createFromFormat('Y-m-d H:i:s', $dateTimeStringEnd);
+        $timezone = auth()->user()->timezone ?? 'America/Santiago';
+        $dateTimeStringStart = $clase->date->format('Y-m-d') . " " . $start;
+        $dateTimeStringEnd = $clase->date->format('Y-m-d') . " " . $end;
+        $dateTimeStart = Carbon::createFromFormat('Y-m-d H:i:s', $dateTimeStringStart, $timezone);
+        $dateTimeStartConfirm = Carbon::createFromFormat('Y-m-d H:i:s', $dateTimeStringStart, $timezone)->subMinutes(45);
+        $dateTimeEnd = Carbon::createFromFormat('Y-m-d H:i:s', $dateTimeStringEnd, $timezone);
         $onlyConfirm = false;
 
-        if((now() > $dateTimeStartConfirm) && (now() < $dateTimeStart) ) {
+        if ((now($timezone)->copy() > $dateTimeStartConfirm) && (now($timezone)->copy() < $dateTimeStart) ) {
             $onlyConfirm = true;
         }
-
 
         if ($clase->authReservedThis()) {
             $reservation = Reservation::where('user_id', Auth::user()->id)
@@ -65,21 +65,21 @@ class ClaseTransformer extends TransformerAbstract
             'only_confirm'=> (bool)$onlyConfirm,
             'rels' => [
                 'wod' => [
-                    'id' => (int)$clase->wod_id,
-                    'href' => route('wods.show', ['wod' => (int)$clase->wod_id]),
-                    'stages' => route('wods.stages', ['wod' => (int)$clase->wod_id])
+                    'id' => (int) $clase->wod_id,
+                    'href' => route('wods.show', ['wod' => (int) $clase->wod_id]),
+                    'stages' => route('wods.stages', ['wod' => (int) $clase->wod_id])
                 ],
                 'reservations' => [
                     'count' => (int)count($clase->users),
                     'prueba_count' => $pruebaCount ?? 0,
-                    'href' => route('clases.reservations', ['clase' => (int)$clase->id])
+                    'href' => route('clases.reservations', ['clase' => (int) $clase->id])
                 ],
                 'auth_reservation' => [
-                    'has' => (bool)$clase->authReservedThis(),
-                    'can' => (bool)$clase->auth_can_reserve(),
-                    'reservation_id' => (int)$reservation_id,
-                    'status' => (Array)$reservation_status,
-                    'details' => (string)$reservation_details,
+                    'has' => (bool) $clase->authReservedThis(),
+                    'can' => (bool) $clase->auth_can_reserve(),
+                    'reservation_id' => (int) $reservation_id,
+                    'status' => (Array) $reservation_status,
+                    'details' => (string) $reservation_details,
                 ],
                 'claseType' => [
                     'id' => (string)$clase->claseType->id,

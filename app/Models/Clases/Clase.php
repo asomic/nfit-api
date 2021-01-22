@@ -215,16 +215,14 @@ class Clase extends Model
                                                 ->where('finish_date', '>=', $this->date)
                                                 ->whereIn('plan_status_id', [1, 3])
                                                 ->first();
-
-        if ($planUser) {
-            if(count($auth_reservations) >= $planUser->plan->daily_clases) {
+                                                if ($planUser) {
+        if(count($auth_reservations) >= $planUser->plan->daily_clases) {
                 return false;
             }
             if (!$this->block) {
                 return false;
             }
             $ids = $this->block->getPlansIdAttribute()->toArray();
-
 
             // dd($planUser->counter);
             if((in_array($planUser->plan_id, $ids)) && ($planUser->counter > 0 ) ) {
@@ -361,7 +359,7 @@ class Clase extends Model
     }
 
     /**
-     * 
+     *
      */
     public function dateTimeThisHour($hour, $timezone)
     {

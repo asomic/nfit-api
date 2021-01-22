@@ -209,14 +209,15 @@ class ClaseController extends ApiController
         if (count($clase->users) >= $clase->quota) {
             return $this->errorResponse('No puedes reservar, la clase esta llena.', 403);
         }
-        $start = $clase->getOriginal('start_at');
-        $dateTimeStringStart = $clase->date->format('Y-m-d')." ".$start;
-        $dateTimeStart = Carbon::createFromFormat('Y-m-d H:i:s', $dateTimeStringStart);
 
-        if (now() > $dateTimeStart) {
+        $timezone = auth()->user()->timezone ?? 'America/Santiago';
+        $start = $clase->start_at;
+        $dateTimeStringStart = $clase->date->format('Y-m-d')." ".$start;
+        $dateTimeStart = Carbon::createFromFormat('Y-m-d H:i:s', $dateTimeStringStart, $timezone);
+
+        if (now($timezone)->copy() > $dateTimeStart) {
             return $this->errorResponse('No puedes reservar, la clase ya comenzó.', 403);
         }
-
 
         $hasReserve = $this->hasReserve($clase);
         if ($hasReserve) {
@@ -345,25 +346,30 @@ class ClaseController extends ApiController
     // por mientras
     public function getZoom(Clase $clase)
     {
+        $timezone = auth()->user()->timezone ?? 'America/Santiago';
+
         $can_zoom = false;
         $zoom_link = null;
-        $stringStart = $clase->date->format('Y-m-d')." ".$clase->start_at;
-        $start = Carbon::createFromFormat('Y-m-d H:i:s', $stringStart)->subMinutes(10);
-        $stringEnd = $clase->date->format('Y-m-d')." ".$clase->finish_at;
-        $end = Carbon::createFromFormat('Y-m-d H:i:s', $stringEnd);
+        $now = Carbon::now($timezone)->copy();
 
+        $stringStart = $clase->date->format('Y-m-d') . " " . $clase->start_at;
+        $start = Carbon::createFromFormat('Y-m-d H:i:s', $stringStart, $timezone)->subMinutes(10);
 
-        if(($clase->zoom_link != null) && ($start->lte(Carbon::now()))  && ($end->gte(Carbon::now()))  && $clase->authReservedThis() ) {
+        $stringEnd = $clase->date->format('Y-m-d') . " " . $clase->finish_at;
+        $end = Carbon::createFromFormat('Y-m-d H:i:s', $stringEnd, $timezone);
+
+        if (($clase->zoom_link !== null) &&
+            $start->lte(Carbon::now($timezone)->copy())  &&
+            $end->gte(Carbon::now($timezone)->copy())  &&
+            $clase->authReservedThis()
+        ) {
             $can_zoom = true;
             $zoom_link = $clase->zoom_link;
         }
 
-
-
         //test
         return response()->json([
-
-            'now' => Carbon::now(),
+            'now' => $now,
             'start' => $start,
             'end' => $end,
             'has' => $clase->authReservedThis(),
@@ -371,6 +377,5 @@ class ClaseController extends ApiController
             'zoom_link' => $zoom_link,
         ]);
     }
-
 }
 
