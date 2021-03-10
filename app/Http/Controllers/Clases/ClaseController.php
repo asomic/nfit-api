@@ -151,7 +151,7 @@ class ClaseController extends ApiController
         $reservation = new Reservation;
         $reservation->user_id = Auth::user()->id;
         $reservation->clase_id = $clase->id;
-        $reservation->by_god = false;
+        $reservation->by_user = Auth::user()->id;
         $reservation->reservation_status_id = 1;
         $reservation->plan_user_id = $planuser->id;
 
@@ -226,7 +226,7 @@ class ClaseController extends ApiController
         $reservation = new Reservation;
         $reservation->user_id = Auth::user()->id;
         $reservation->clase_id = $clase->id;
-        $reservation->by_god = false;
+        $reservation->by_user = Auth::user()->id;
         $reservation->reservation_status_id = 2;
         $reservation->plan_user_id = $planuser->id;
 
