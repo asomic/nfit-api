@@ -136,6 +136,7 @@ class ClaseController extends ApiController
             ->where('user_id', Auth::id())
             ->whereIn('plan_status_id', [1, 3])
             ->first();
+
         if (!$planuser) {
             return $this->errorResponse('No tienes un plan que te permita tomar esta clase', 403);
         }
@@ -145,9 +146,11 @@ class ClaseController extends ApiController
         }
 
         $hasReserve = $this->hasReserve($clase);
+
         if ($hasReserve) {
             return $this->errorResponse($hasReserve, 403);
         }
+
         $reservation = new Reservation;
         $reservation->user_id = Auth::user()->id;
         $reservation->clase_id = $clase->id;

@@ -2,14 +2,12 @@
 
 namespace App\Models\Clases;
 
-use Auth;
 use Carbon\Carbon;
 use App\Models\Users\User;
-use App\Models\Clases\Clase;
 use App\Models\Exercises\Stage;
-use Mockery\Generator\Parameter;
 use App\Models\Clases\Reservation;
 use App\Models\System\NfitTimeZone;
+use Illuminate\Support\Facades\Auth;
 use App\Transformers\ClaseTransformer;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -167,7 +165,7 @@ class Clase extends Model
      */
     public function auth_can_reserve()
     {
-        $user = Auth::User();
+        $user = Auth::user();
         $clase_type = $this->claseType;
 
         $clases = Clase::where('date', $this->date)->pluck('id');
@@ -262,7 +260,7 @@ class Clase extends Model
      */
     public function users()
     {
-        return $this->belongsToMany(User::Class, 'reservations', 'clase_id');
+        return $this->belongsToMany(User::class, 'reservations', 'clase_id');
     }
 
     /**
@@ -272,7 +270,7 @@ class Clase extends Model
      */
     public function profesor()
     {
-        return $this->belongsTo(User::Class, 'profesor_id');
+        return $this->belongsTo(User::class, 'profesor_id');
     }
 
     /**
@@ -292,7 +290,7 @@ class Clase extends Model
      */
     public function pruebaUsersCount()
     {
-        $users = $this->belongsToMany(User::Class)->using(Reservation::class)->get();
+        $users = $this->belongsToMany(User::class)->using(Reservation::class)->get();
         $count = 0;
         foreach ($users as  $user) {
             $count++;

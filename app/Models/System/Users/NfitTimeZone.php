@@ -38,7 +38,7 @@ use Illuminate\Support\Facades\Auth;
  *      ['name' => 'America/Argentina/La_Rioja', 'human_name' => 'Argentina/La Rioja'],
  *      ['name' => 'America/Bahia_Banderas', 'human_name' => 'Mexico/Bahia Banderas'],
  */
-class NfitTimeZone 
+class NfitTimeZone
 {
     /**
      *  Default Timezone used for date/time conversions.
@@ -130,9 +130,7 @@ class NfitTimeZone
             return $to_utc ? $date->addHours($diff_hours * -1) : $date->subHours($diff_hours * -1);
         }
 
-        return $to_utc ? $date->subHours($diff_hours) : $date->addHours($diff_hours);
-    }
-
+        return $to_utc ? $date->subHours($diff_hours) : $date->addHours($diff_hours);Parameter::
 
     /**
      *  Adjust an specofic date, adding or removing hours

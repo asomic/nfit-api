@@ -2,11 +2,11 @@
 
 namespace App\Transformers;
 
-use Auth;
 use Carbon\Carbon;
 use App\Models\Clases\Clase;
-use App\Models\Users\StatusUser;
 use App\Models\Clases\Reservation;
+use App\Models\Settings\Parameter;
+use Illuminate\Support\Facades\Auth;
 use League\Fractal\TransformerAbstract;
 
 class ClaseTransformer extends TransformerAbstract
@@ -25,7 +25,8 @@ class ClaseTransformer extends TransformerAbstract
         $dateTimeStringStart = $clase->date->format('Y-m-d') . " " . $start;
         $dateTimeStringEnd = $clase->date->format('Y-m-d') . " " . $end;
         $dateTimeStart = Carbon::createFromFormat('Y-m-d H:i:s', $dateTimeStringStart, $timezone);
-        $dateTimeStartConfirm = Carbon::createFromFormat('Y-m-d H:i:s', $dateTimeStringStart, $timezone)->subMinutes(45);
+        $minutes_only_for_confirmation = Parameter::value('minutes_to_remove_users');
+        $dateTimeStartConfirm = Carbon::createFromFormat('Y-m-d H:i:s', $dateTimeStringStart, $timezone)->subMinutes($minutes_only_for_confirmation);
         $dateTimeEnd = Carbon::createFromFormat('Y-m-d H:i:s', $dateTimeStringEnd, $timezone);
         $onlyConfirm = false;
 
@@ -47,44 +48,44 @@ class ClaseTransformer extends TransformerAbstract
         }
 
         return [
-            'id' => (int) $clase->id,
-            'type' => (int) $clase->clase_type_id,
-            'typeName' => (string) $clase->claseType->clase_type,
-            'date' => (string) $clase->date->toDateString(),
-            'date_human' => (string) strftime('%A %d de %B', $clase->date->timestamp), //es el nuevo
-            'dateHuman' => (string) strftime('%A %d de %B', $clase->date->timestamp), //descontinuar con app nueva
-            'day' => (string) $clase->date->format('d'),
-            'month' =>(string) $clase->date->formatLocalized('%b'),
-            'year' => (string) $clase->date->formatLocalized('%Y'),
-            'start' => (string) date('H:i', strtotime($clase->start_at)),
-            'end' => (string) date('H:i', strtotime($clase->finish_at)),
-            'quota' => (int)$clase->quota,
-            'active' => (bool) $clase->stillActive(),
-            'finished' => (bool)$clase->hasFinished(),
-            'coach' => (string) isset($clase->profesor) ? $clase->profesor->full_name : null,
-            'only_confirm'=> (bool)$onlyConfirm,
+            'id'           => (int) $clase->id,
+            'type'         => (int) $clase->clase_type_id,
+            'typeName'     => (string) $clase->claseType->clase_type,
+            'date'         => (string) $clase->date->toDateString(),
+            'date_human'   => (string) strftime('%A %d de %B', $clase->date->timestamp), //es el nuevo
+            'dateHuman'    => (string) strftime('%A %d de %B', $clase->date->timestamp), //descontinuar con app nueva
+            'day'          => (string) $clase->date->format('d'),
+            'month'        => (string) $clase->date->formatLocalized('%b'),
+            'year'         => (string) $clase->date->formatLocalized('%Y'),
+            'start'        => (string) date('H:i', strtotime($clase->start_at)),
+            'end'          => (string) date('H:i', strtotime($clase->finish_at)),
+            'quota'        => (int) $clase->quota,
+            'active'       => (bool) $clase->stillActive(),
+            'finished'     => (bool) $clase->hasFinished(),
+            'coach'        => (string) isset($clase->profesor) ? $clase->profesor->full_name : null,
+            'only_confirm' => (bool) $onlyConfirm,
             'rels' => [
                 'wod' => [
-                    'id' => (int) $clase->wod_id,
-                    'href' => route('wods.show', ['wod' => (int) $clase->wod_id]),
+                    'id'     => (int) $clase->wod_id,
+                    'href'   => route('wods.show', ['wod' => (int) $clase->wod_id]),
                     'stages' => route('wods.stages', ['wod' => (int) $clase->wod_id])
                 ],
                 'reservations' => [
-                    'count' => (int)count($clase->users),
+                    'count'        => (int)count($clase->users),
                     'prueba_count' => $pruebaCount ?? 0,
-                    'href' => route('clases.reservations', ['clase' => (int) $clase->id])
+                    'href'         => route('clases.reservations', ['clase' => (int) $clase->id])
                 ],
                 'auth_reservation' => [
-                    'has' => (bool) $clase->authReservedThis(),
-                    'can' => (bool) $clase->auth_can_reserve(),
+                    'has'            => (bool) $clase->authReservedThis(),
+                    'can'            => (bool) $clase->auth_can_reserve(),
                     'reservation_id' => (int) $reservation_id,
-                    'status' => (Array) $reservation_status,
-                    'details' => (string) $reservation_details,
+                    'status'         => (Array) $reservation_status,
+                    'details'        => (string) $reservation_details,
                 ],
                 'claseType' => [
-                    'id' => (string)$clase->claseType->id,
-                    'name' => (string)$clase->claseType->clase_type,
-                    'icon' => (string) $clase->claseType->icon,
+                    'id'        => (string)$clase->claseType->id,
+                    'name'      => (string)$clase->claseType->clase_type,
+                    'icon'      => (string) $clase->claseType->icon,
                     'iconWhite' => (string) $clase->claseType->icon_white,
                 ]
             ],
