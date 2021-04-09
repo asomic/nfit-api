@@ -12,9 +12,9 @@ use League\Fractal\TransformerAbstract;
 class ClaseTransformer extends TransformerAbstract
 {
     /**
-     * A Fractal transformer.
+     *  A Fractal transformer.
      *
-     * @return array
+     *  @return  array
      */
     public function transform(Clase $clase)
     {
@@ -71,7 +71,7 @@ class ClaseTransformer extends TransformerAbstract
                     'stages' => route('wods.stages', ['wod' => (int) $clase->wod_id])
                 ],
                 'reservations' => [
-                    'count'        => (int)count($clase->users),
+                    'count'        => (int) count($clase->users),
                     'prueba_count' => $pruebaCount ?? 0,
                     'href'         => route('clases.reservations', ['clase' => (int) $clase->id])
                 ],
@@ -83,8 +83,8 @@ class ClaseTransformer extends TransformerAbstract
                     'details'        => (string) $reservation_details,
                 ],
                 'claseType' => [
-                    'id'        => (string)$clase->claseType->id,
-                    'name'      => (string)$clase->claseType->clase_type,
+                    'id'        => (string) $clase->claseType->id,
+                    'name'      => (string) $clase->claseType->clase_type,
                     'icon'      => (string) $clase->claseType->icon,
                     'iconWhite' => (string) $clase->claseType->icon_white,
                 ]
@@ -102,11 +102,11 @@ class ClaseTransformer extends TransformerAbstract
     public static function originalAttribute($index)
     {
         $attributes = [
-            'id' => 'id',
-            'type' => 'clase_type_id',
-            'date' => 'date',
+            'id'    => 'id',
+            'type'  => 'clase_type_id',
+            'date'  => 'date',
             'start' => 'start_at',
-            'end' => 'finish_at',
+            'end'   => 'finish_at',
             'quota' => 'quota'
         ];
 
@@ -123,12 +123,12 @@ class ClaseTransformer extends TransformerAbstract
     public static function transformedAttribute($index)
     {
         $attributes = [
-            'id' => 'id',
+            'id'            => 'id',
             'clase_type_id' => 'type',
-            'date' => 'date',
-            'start_at' => 'start',
-            'finish_at' => 'end',
-            'quota' => 'quota'
+            'date'          => 'date',
+            'start_at'      => 'start',
+            'finish_at'     => 'end',
+            'quota'         => 'quota'
         ];
 
         return isset($attributes[$index]) ? $attributes[$index] : null;

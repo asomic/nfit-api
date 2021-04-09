@@ -3,7 +3,7 @@
 namespace App\Models\System\Users;
 
 use Carbon\Carbon;
-// use App\Models\Tenant\Settings\Parameter;
+use App\Models\Settings\Parameter;
 
 class Timezone
 {

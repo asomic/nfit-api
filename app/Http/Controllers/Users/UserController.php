@@ -2,38 +2,15 @@
 
 namespace App\Http\Controllers\Users;
 
-
+use App\Models\Wods\Wod;
 use App\Models\Users\User;
 use App\Models\Users\Alert;
-use App\Models\Wods\Wod;
-use App\Models\Clases\Reservation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ApiController;
-use Carbon\Carbon;
-use Auth;
-use Storage;
-//use Image;
-
 
 class UserController extends ApiController
 {
-    /** [__construct description] */
-    // public function __construct()
-    // {
-    //   parent::__construct();
-    //   $this->middleware('can:view,user')->only('show');
-    // }
-
-    /**
-     * Display a listing of the resource.
-     * @return \Illuminate\Http\Response
-     */
-    // public function index()
-    // {
-    //   $users = User::all();
-    //   return $this->showAll($users);
-    // }
-
     /**
      * Request for the auth user profile
      * @return [json] [return authenticated user]
@@ -41,12 +18,14 @@ class UserController extends ApiController
     public function profile()
     {
         $user = Auth::user();
+
         return $this->showOne($user, 200);
     }
 
     public function tutorial()
     {
         Auth::user()->update(['tutorial' => true]);
+
         return $this->successResponse('Seen', 200);
     }
 
@@ -171,9 +150,9 @@ class UserController extends ApiController
             Auth::user()->token()->revoke();
 
             return response()->json(['success' =>'Sesion finalizada'], 200);
-        } else {
-            return response()->json(['error' =>'api.something_went_wrong'], 500);
         }
+
+        return response()->json(['error' =>'api.something_went_wrong'], 500);
     }
 
     /**
@@ -291,17 +270,22 @@ class UserController extends ApiController
     public function fcmToken(Request $request)
     {
         Auth::user()->fcm_token = $request->fcmtoken;
+
         if(Auth::user()->save()) {
-            return response()->json('guardado-'.Auth::user()->fcm_token.' enviado:'.$request->fcmtoken.'request:'.$request->toJson(), 200);
-        } else {
-            return response()->json('no guardado', 401);
+            return response()->json(
+                'guardado-' . Auth::user()->fcm_token . ' enviado:' . $request->fcmtoken . 'request:' . $request->toJson(),
+                200
+            );
         }
+
+        return response()->json('no guardado', 401);
     }
 
     public function fcmTokenGet($token)
     {
         Auth::user()->fcm_token = $token;
-        if(Auth::user()->save()) {
+
+        if (Auth::user()->save()) {
             return response()->json('guardado'.Auth::user()->fcm_token, 200);
         }
 

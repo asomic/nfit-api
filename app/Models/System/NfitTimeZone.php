@@ -4,7 +4,7 @@ namespace App\Models\System;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Tenant\Settings\Parameter;
+use App\Models\Settings\Parameter;
 
 /**
  *  OTHER TIMEZONES
@@ -40,23 +40,6 @@ use App\Models\Tenant\Settings\Parameter;
 class NfitTimeZone
 {
     /**
-     *  Default Timezone used for date/time conversions.
-     *
-     *  @var  string
-     */
-    protected static $timezone = 'UTC';
-
-    /**
-     *  Class constructor
-     */
-    public function __construct()
-    {
-        $timezone = Auth::user()->timezone ?? 'UTC';
-
-        self::setTimeZone($timezone);
-    }
-
-    /**
      *  methodDescription
      *
      *  @return  returnType
@@ -75,25 +58,25 @@ class NfitTimeZone
     {
         return [
             ['name' => 'America/Argentina/Buenos_Aires', 'human_name' => 'Argentina/Buenos Aires'],
-            ['name' => 'America/Argentina/Cordoba', 'human_name' => 'Argentina/Cordoba'],
-            ['name' => 'America/Argentina/Mendoza', 'human_name' => 'Argentina/Mendoza'],
-            ['name' => 'America/Belize', 'human_name' => 'Belice/Belize'],
-            ['name' => 'America/Belem', 'human_name' => 'Brasil/Belem'],
-            ['name' => 'America/Fortaleza', 'human_name' => 'Brasil/Fortaleza'],
-            ['name' => 'America/Sao_Paulo', 'human_name' => 'Brasil/Sao Paulo'],
-            ['name' => 'America/Punta_Arenas', 'human_name' => 'Chile/Punta Arenas'],
-            ['name' => 'America/Santiago', 'human_name' => 'Chile/Santiago'],
-            ['name' => 'America/Bogota', 'human_name' => 'Colombia/Bogota'],
-            ['name' => 'America/Santo_Domingo', 'human_name' => 'Costa Rica/Santo Domingo'],
-            ['name' => 'America/Cancun', 'human_name' => 'Mexico/Cancun'],
-            ['name' => 'America/Mexico_City', 'human_name' => 'Mexico/Ciudad de Mexico'],
-            ['name' => 'America/Asuncion', 'human_name' => 'Paraguay/Asuncion'],
-            ['name' => 'America/La_Paz', 'human_name' => 'Peru/La Paz'],
-            ['name' => 'America/Lima', 'human_name' => 'Peru/Lima'],
-            ['name' => 'America/Panama', 'human_name' => 'Panama/Panama'],
-            ['name' => 'America/Montevideo', 'human_name' => 'Uruguay/Montevideo'],
-            ['name' => 'America/Caracas', 'human_name' => 'Venezuela/Caracas'],
-            ['name' => 'UTC', 'human_name' => 'UTC/Hora Universal coordinada'],
+            ['name' => 'America/Argentina/Cordoba',      'human_name' => 'Argentina/Cordoba'],
+            ['name' => 'America/Argentina/Mendoza',      'human_name' => 'Argentina/Mendoza'],
+            ['name' => 'America/Belize',                 'human_name' => 'Belice/Belize'],
+            ['name' => 'America/Belem',                  'human_name' => 'Brasil/Belem'],
+            ['name' => 'America/Fortaleza',              'human_name' => 'Brasil/Fortaleza'],
+            ['name' => 'America/Sao_Paulo',              'human_name' => 'Brasil/Sao Paulo'],
+            ['name' => 'America/Punta_Arenas',           'human_name' => 'Chile/Punta Arenas'],
+            ['name' => 'America/Santiago',               'human_name' => 'Chile/Santiago'],
+            ['name' => 'America/Bogota',                 'human_name' => 'Colombia/Bogota'],
+            ['name' => 'America/Santo_Domingo',          'human_name' => 'Costa Rica/Santo Domingo'],
+            ['name' => 'America/Cancun',                 'human_name' => 'Mexico/Cancun'],
+            ['name' => 'America/Mexico_City',            'human_name' => 'Mexico/Ciudad de Mexico'],
+            ['name' => 'America/Asuncion',               'human_name' => 'Paraguay/Asuncion'],
+            ['name' => 'America/La_Paz',                 'human_name' => 'Peru/La Paz'],
+            ['name' => 'America/Lima',                   'human_name' => 'Peru/Lima'],
+            ['name' => 'America/Panama',                 'human_name' => 'Panama/Panama'],
+            ['name' => 'America/Montevideo',             'human_name' => 'Uruguay/Montevideo'],
+            ['name' => 'America/Caracas',                'human_name' => 'Venezuela/Caracas'],
+            ['name' => 'UTC',                            'human_name' => 'UTC/Hora Universal coordinada'],
         ];
     }
 
@@ -151,14 +134,40 @@ class NfitTimeZone
     /**
      *  Adjust an specofic date, to UTC hour
      *
-     *  @param  string   $date      '2001-01-01 00:00:00'
+     *  @param   string   $date      '2001-01-01 00:00:00'
      *
-     *  @return Carbon/Date
+     *  @return  Carbon/Date
      */
     public static function adjustDateToUTC($date)
     {
         $timezone = Auth::user()->timezone ?? 'UTC';
 
         return self::convertDateTimeZone($date, $timezone, true);
+    }
+
+    /**
+     *  Calculate difference timwezone by user timezone
+     *
+     *  @return  integer  Number of hours
+     */
+    public static function changeTimeAccordingAuthTimezone($time)
+    {
+        $hours_of_difference = self::hoursDifferenceSportCenterVsAuthUser();
+
+        return Carbon::parse($time)->addHours($hours_of_difference)->format('H:i');
+    }
+
+    /**
+     *  Calculate hours difference between Auth user timezon and Sport Center timezone
+     *
+     *  @return  int
+     */
+    public static function hoursDifferenceSportCenterVsAuthUser()
+    {
+        $auth_user_timezone = Auth::user()->timezone ?? 'utc';
+
+        $box_timezone = Parameter::value('timezone');
+
+        return today($auth_user_timezone)->diffInHours(today($box_timezone), false);
     }
 }

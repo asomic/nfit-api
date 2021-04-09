@@ -1,5 +1,13 @@
 <?php
 
+use App\Models\Settings\Parameter;
+use Illuminate\Support\Facades\Route;
+
+
+Route::get('hola', function() {
+    return Parameter::first();
+});
+
 Route::middleware(['auth:api'])->group(function() {
     /**
      *  Bills resources
@@ -22,18 +30,18 @@ Route::middleware(['auth:api'])->group(function() {
         Route::post('clases/{clase}/confirm', 'Clases\ClaseController@confirm');
         Route::get('clases/{clase}/zoom', 'Clases\ClaseController@getZoom');
 
-
     //week
-        Route::get('week/{clase_type?}', 'Clases\ClaseController@week');
+    Route::get('week/{clase_type?}', 'Clases\ClaseController@week');
+
     /**
      * Reservation resources
      */
     Route::get('reservations/next', 'Clases\ReservationController@next')->name('reservations.next');
     Route::Apiresource('reservations', 'Clases\ReservationController');
-    //Route::get('reservations/{reservation}/users', 'Clases\ReservationController@users')->name('reservations.users');
-        Route::get('reservations-historic/', 'Clases\ReservationController@historic')->name('reservations.historic');
-        Route::get('reservations-coming/', 'Clases\ReservationController@coming')->name('reservations.reserved');
-        Route::post('reservations/{reservation}/details', 'Clases\ReservationController@details')->name('reservations.details');
+    Route::get('reservations-historic/', 'Clases\ReservationController@historic')->name('reservations.historic');
+    Route::get('reservations-coming/', 'Clases\ReservationController@coming')->name('reservations.reserved');
+    Route::post('reservations/{reservation}/details', 'Clases\ReservationController@details')->name('reservations.details');
+
     /**
      *  Users resources
      */
@@ -61,24 +69,20 @@ Route::middleware(['auth:api'])->group(function() {
     Route::get('video/{video}', 'Videos\VideoController@show')->name('video.show');
     Route::get('video/{video}/comments', 'Videos\VideoController@videoComments')->name('video.comments');
 
-
     /**
      *  Plans
      */
-
     Route::resource('plans', 'Plans\PlanController')->only([
         'index', 'show'
     ]);
 
-        Route::get('plans/{plan}/dates', 'Plans\PlanController@dates')->name('plans.user.date');
-        Route::get('plans/{plan}/contract', 'Plans\PlanController@contract')->name('plans.user.contract');
+    Route::get('plans/{plan}/dates', 'Plans\PlanController@dates')->name('plans.user.date');
+    Route::get('plans/{plan}/contract', 'Plans\PlanController@contract')->name('plans.user.contract');
 
     /**
      *  FLOW
      */
-        Route::get('flow/{planuserflow}', 'Flow\FlowController@payFlow')->name('flow.pay');
-
-
+    Route::get('flow/{planuserflow}', 'Flow\FlowController@payFlow')->name('flow.pay');
 
     /**
      *  Wods

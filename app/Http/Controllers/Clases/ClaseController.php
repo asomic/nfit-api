@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\Clases;
 
-use Auth;
 use Carbon\Carbon;
 use App\Models\Clases\Clase;
 use Illuminate\Http\Request;
 use App\Models\Plans\PlanUser;
 use App\Models\Clases\ClaseType;
+use App\Models\Plans\PlanStatus;
 use App\Models\Clases\Reservation;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ApiController;
 use App\Models\Clases\ReservationStatus;
 
@@ -132,10 +133,10 @@ class ClaseController extends ApiController
     public function reserve(Request $request, Clase $clase)
     {
         $planuser = PlanUser::where('start_date', '<=', Carbon::parse($clase->date))
-            ->where('finish_date', '>=', Carbon::parse($clase->date))
-            ->where('user_id', Auth::id())
-            ->whereIn('plan_status_id', [1, 3])
-            ->first();
+                            ->where('finish_date', '>=', Carbon::parse($clase->date))
+                            ->where('user_id', Auth::id())
+                            ->whereIn('plan_status_id', [PlanStatus::ACTIVO, PlanStatus::PRECOMPRA])
+                            ->first();
 
         if (!$planuser) {
             return $this->errorResponse('No tienes un plan que te permita tomar esta clase', 403);
