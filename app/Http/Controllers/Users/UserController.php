@@ -35,7 +35,6 @@ class UserController extends ApiController
       $user = Auth::user();
 
       if ($request->hasFile('image')) {
-
           \Cloudinary::config(array(
             "cloud_name" => "asomic",
             "api_key" => "848272583179274",

@@ -34,7 +34,7 @@ Route::middleware(['auth:api'])->group(function() {
     Route::get('week/{clase_type?}', 'Clases\ClaseController@week');
 
     /**
-     * Reservation resources
+     *  Reservation resources
      */
     Route::get('reservations/next', 'Clases\ReservationController@next')->name('reservations.next');
     Route::Apiresource('reservations', 'Clases\ReservationController');

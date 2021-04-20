@@ -2,28 +2,31 @@
 
 namespace App\Http\Controllers\Clases;
 
-use Auth;
-use Carbon\Carbon;
-use App\Models\Clases\Clase;
 use Illuminate\Http\Request;
-use App\Models\Plans\PlanUser;
 use App\Models\Clases\Reservation;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ApiController;
 
 class ReservationController extends ApiController
 {
 
   /**
-   * Display the specified resource.
+   *  Display the specified resource.
    *
-   * @param  \App\Models\Clases\Reservation  $clase
-   * @return \Illuminate\Http\Response
+   *  @param   \App\Models\Clases\Reservation  $clase
+   *
+   *  @return  \Illuminate\Http\Response
    */
     public function show(Reservation $reservation)
     {
         return $this->showOne($reservation, 200);
     }
 
+    /**
+     *  [historic description]
+     *
+     *  @return
+     */
     public function historic()
     {
         $reservations = Auth::user()->historic_reservations;
@@ -50,7 +53,7 @@ class ReservationController extends ApiController
         $reservation->details = $request->details;
 
         if ($reservation->save()) {
-            return response()->json('nota guardada reserva :'.$reservation->detail, 200);
+            return response()->json('nota guardada reserva: ' . $reservation->detail, 200);
         }
 
         return response()->json('error al guardar nota', 401);
@@ -77,10 +80,11 @@ class ReservationController extends ApiController
     // }
 
     /**
-     * Display the specified resource.
+     *  Display the specified resource.
      *
-     * @param  \App\Models\Clases\Clase  $clase
-     * @return \Illuminate\Http\Response
+     *  @param   \App\Models\Clases\Clase  $clase
+     *
+     *  @return  \Illuminate\Http\Response
      */
     // public function show(Clase $clase)
     // {

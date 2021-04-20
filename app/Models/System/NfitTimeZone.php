@@ -3,8 +3,8 @@
 namespace App\Models\System;
 
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Auth;
 use App\Models\Settings\Parameter;
+use Illuminate\Support\Facades\Auth;
 
 /**
  *  OTHER TIMEZONES
@@ -119,9 +119,7 @@ class NfitTimeZone
 
     /**
      *  Adjust an specofic date, adding or removing hours
-     *
-     *  @param  string   $date      '2001-01-01 00:00:00'
-     *
+     *NfitTimeZone
      *  @return Carbon/Date
      */
     public static function adjustToTimeZoneDate($date)
@@ -154,7 +152,7 @@ class NfitTimeZone
     {
         $hours_of_difference = self::hoursDifferenceSportCenterVsAuthUser();
 
-        return Carbon::parse($time)->addHours($hours_of_difference)->format('H:i');
+        return Carbon::parse($time)->addHours($hours_of_difference)->format('H:i:s');
     }
 
     /**

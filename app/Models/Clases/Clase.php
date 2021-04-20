@@ -64,76 +64,28 @@ class Clase extends Model
         parent::boot();
     }
 
-    // /**
-    //  *  Convert from UTC to user timezone
-    //  *
-    //  *  @param   string|null  $value
-    //  *
-    //  *  @return  Carbon\Carbon
-    //  */
-    // public function getDateAttribute($value)
-    // {
-    //     return NfitTimeZone::adjustToTimeZoneDate($value);
-    // }
-
-    // /**
-    //  *  Calculate the user timezone and parse to UTC time to storage in the database
-    //  *
-    //  *  @param   string|Carbon
-    //  *
-    //  *  @return  void
-    //  */
-    // public function setDateAttribute($value)
-    // {
-    //     $this->attributes['date'] = NfitTimeZone::adjustDateToUTC($value);
-    // }
-
     /**
      *  Convert from UTC to user timezone and display to hour and minute format
      *
      *  @param   string|null  $value
      *
-     *  @return  Carbon\Carbon
+     *  @return  string       '19:00'
      */
     public function getStartAtAttribute($value)
     {
-        return NfitTimeZone::adjustToTimeZoneDate($value)->format('H:i:s');
+        return NfitTimeZone::changeTimeAccordingAuthTimezone($value);
     }
 
     /**
-     *  Calculate the user timezone and parse to UTC time to storage in the database
-     *
-     *  @param   string|Carbon
-     *
-     *  @return  void
-     */
-    public function setStartAtAttribute($value)
-    {
-        $this->attributes['start_at'] = NfitTimeZone::adjustDateToUTC($value);
-    }
-
-    /**
-     *  Convert from UTC to user timezone and display to hour and minute format
+     *  Convert string hour to timezone user and display to hour and minute format
      *
      *  @param   string|null  $value
      *
-     *  @return  Carbon\Carbon
+     *  @return  string       '20:00'
      */
     public function getFinishAtAttribute($value)
     {
-        return NfitTimeZone::adjustToTimeZoneDate($value)->format('H:i:s');
-    }
-
-    /**
-     *  Calculate the user timezone and parse to UTC time to storage in the database
-     *
-     *  @param   string|Carbon
-     *
-     *  @return  void
-     */
-    public function setFinishAtAttribute($value)
-    {
-        $this->attributes['finish_at'] = NfitTimeZone::adjustDateToUTC($value);
+        return NfitTimeZone::changeTimeAccordingAuthTimezone($value);
     }
 
     /**
@@ -177,44 +129,13 @@ class Clase extends Model
                 return false;
             }
         }
-        // foreach ($clases as $clase) {
-        //     $reservations = Reservation::where('user_id', Auth::id())->where('clase_id', $clase->id)->get();
-        //     $reservations_clase_type = $reservations->pluck('clase_types');
-
-        //     $clase_count = $clase_count + count($reservations);
-        //     if($clase_count >= $auth_plan->daily_clases)
-        //     {
-        //       return false;
-        //     }
-        //     if(in_array($clase_type->id,$reservations_clase_type ))
-        //     {
-        //       return false;
-        //     }
-        // }
-
-        //maximo de 3 usuarios de prueba
-        //   if(Auth::user()->status_user == 3){
-
-        //     $pruebaCount = 0;
-        //     foreach ($this->users as $user) {
-        //       if($user->status_user == 3){
-        //         $pruebaCount++;
-        //       }
-        //     }
-        //     if($pruebaCount >= 3)
-        //     {
-        //       return false;
-        //     }
-        //   }
-
-
 
         $planUser = Auth::user()->plan_users()->where('start_date', '<=', $this->date)
                                                 ->where('finish_date', '>=', $this->date)
                                                 ->whereIn('plan_status_id', [1, 3])
                                                 ->first();
-                                                if ($planUser) {
-        if(count($auth_reservations) >= $planUser->plan->daily_clases) {
+        if ($planUser) {
+            if(count($auth_reservations) >= $planUser->plan->daily_clases) {
                 return false;
             }
             if (!$this->block) {
