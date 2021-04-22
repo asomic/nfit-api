@@ -2,29 +2,20 @@
 
 namespace App\Http\Controllers\Clases;
 
-use Auth;
 use Carbon\Carbon;
 use App\Models\Clases\Clase;
 use Illuminate\Http\Request;
 use App\Models\Plans\PlanUser;
 use App\Models\Clases\ClaseType;
 use App\Models\Clases\Reservation;
+use App\Models\Settings\Parameter;
+use App\Models\Plans\PlanUserStatus;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ApiController;
 use App\Models\Clases\ReservationStatus;
 
 class ClaseController extends ApiController
 {
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
     /**
      *  Undocumented function
      *
@@ -34,67 +25,83 @@ class ClaseController extends ApiController
      */
     public function index(Request $request)
     {
-        $request->request->add(['sort_by_asc' => 'start','per_page' => 15]); //por ahora despues este request debe estar en la app cliente
+        $request->request->add(['sort_by_asc' => 'start', 'per_page' => 15]); //por ahora despues este request debe estar en la app cliente
 
         $clases = Clase::all();
 
         return $this->showAll($clases);
     }
 
+    /**
+     *  Get the days of the week
+     *
+     *  @param   ClaseType  $clase_type
+     *
+     *  @return  json
+     */
     public function week(ClaseType $clase_type)
     {
+        $timezone = Parameter::value('timezone') ?? 'America/Santiago';
         $week = [];
-        $today = carbon::today();
+        $today = today($timezone);
         $date = $today;
         $day = [];
-        for ($i = 0; $i <= 7; $i++) {
-            $dow = $date->dayOfWeek;
-            if ($i == 0) {
-                $isToday = (bool) true;
-            } else {
-                $isToday = (bool) false;
-            }
 
-            $day_has_clases = $this->dayHasClases($date, $clase_type);
-            //$can_reserve = $this->canReserve($date);
-            $day = ["date" => (string) $date->toDateString(),
-                "day" => (string) $date->format('d'),
+        for ($i = 0; $i <= 7; $i++) {
+            $isToday = $i === 0 ? true : false;
+
+            $day = [
+                "date"         => (string) $date->toDateString(),
+                "day"          => (string) $date->format('d'),
+                'dayName'      => (string) ucfirst(strftime('%A', $date->timestamp)),
+                "today"        => (bool) $isToday,
+                "dayHasClases" => $this->dayHasClases($date, $clase_type),
+                "canReserve"   => (bool) true,
+                "hasReserve"   => (bool) false,
                 // "dayName" => (string) ucfirst($date->formatLocalized('%A')),
-                'dayName' => (string) ucfirst(strftime('%A', $date->timestamp)),
-                "today" => $isToday,
-                "dayHasClases" => $day_has_clases,
-                "canReserve" => (bool) true,
-                "hasReserve" => (bool) false,
                 // "canReserve" => $can_reserve,
             ];
 
+            $dow = $date->dayOfWeek;
             $week = array_add($week, $dow, $day);
-
             $date = $date->addDay();
         }
+
         $week[7] = $week[0];
         array_forget($week, '0');
 
         return response()->json(['data' => $week], 200);
-
     }
 
+    /**
+     *  [historic description]
+     *
+     *  @return  [type]  [return description]
+     */
     public function historic()
     {
         $clases = Auth::user()->clases()->where('date', '<=', today())->get();
+
         return $this->showAll($clases);
     }
 
+    /**
+     *  [types description]
+     *
+     *  @return  [type]  [return description]
+     */
     public function types()
     {
         $types = Clasetype::all();
 
-        return  $this->showAll($types);
+        return $this->showAll($types);
     }
 
     public function coming()
     {
-        $clases = Auth::user()->clases->where('date', '>=', today());
+        $timezone = Parameter::value('timezone') ?? 'America/Santiago';
+
+        $clases = Auth::user()->clases->where('date', '>=', today($timezone));
 
         return $this->showAll($clases);
     }
@@ -132,10 +139,10 @@ class ClaseController extends ApiController
     public function reserve(Request $request, Clase $clase)
     {
         $planuser = PlanUser::where('start_date', '<=', Carbon::parse($clase->date))
-            ->where('finish_date', '>=', Carbon::parse($clase->date))
-            ->where('user_id', Auth::id())
-            ->whereIn('plan_status_id', [1, 3])
-            ->first();
+                                ->where('finish_date', '>=', Carbon::parse($clase->date))
+                                ->where('user_id', Auth::id())
+                                ->whereIn('plan_status_id', [PlanUserStatus::ACTIVO, PlanUserStatus::PRECOMPRA])
+                                ->first();
 
         if (!$planuser) {
             return $this->errorResponse('No tienes un plan que te permita tomar esta clase', 403);
@@ -274,39 +281,42 @@ class ClaseController extends ApiController
         return $response;
     }
 
-    private function dayHasClases($date, ClaseType $clase_type )
+    /**
+     *  Check if in a specific day there are classes available
+     *
+     *  @param   [type]     $date        [$date description]
+     *  @param   ClaseType  $clase_type  [$clase_type description]
+     *
+     *  @return  bool
+     */
+    private function dayHasClases($date, ClaseType $clase_type)
     {
-        $response = false;
-        if(!$clase_type->exists){
+        if (!$clase_type->exists) {
             $clase_type = ClaseType::first();
         }
 
-
-        $clases = $clase_type->clases()->whereDate('date', $date->format('Y-m-d'))->first();
-        if($clases){
-            $response = true;
-        }
-
-        // if(!$response){
-        //     dd($date,$clase_type,$response, $clases);
-        // }
-
-
-        return $response;
+        return $clase_type->clases()->whereDate('date', $date->format('Y-m-d'))->exists('id');
     }
 
+    /**
+     * [canReserve description]
+     *
+     * @param   [type]  $date  [$date description]
+     *
+     * @return  [type]         [return description]
+     */
     public function canReserve($date)
     {
         $response = false;
-        $planusers = PlanUser::whereIn('plan_status_id', [1, 3])->where('user_id', Auth::id())->get();
-        foreach ($planusers as $planuser) {
 
+        $planusers = PlanUser::whereIn('plan_status_id', [1, 3])->where('user_id', Auth::id())->get();
+
+        foreach ($planusers as $planuser) {
             if ($date->between(Carbon::parse($planuser->start_date), Carbon::parse($planuser->finish_date))) {
                 if ($planuser->counter > 0) {
                     $response = true;
                 }
             }
-
         }
 
         return $response;
