@@ -99,9 +99,10 @@ class ClaseController extends ApiController
 
     public function coming()
     {
-        $timezone = Parameter::value('timezone') ?? 'America/Santiago';
 
-        $clases = Auth::user()->clases->where('date', '>=', today($timezone));
+        $timezone = Parameter::value('timezone') ?? 'America/Santiago';
+        
+        $clases = Auth::user()->clases->where('date', '>=', today($timezone)->format('Y-m-d'));
 
         return $this->showAll($clases);
     }
