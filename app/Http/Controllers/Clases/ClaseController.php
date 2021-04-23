@@ -244,10 +244,11 @@ class ClaseController extends ApiController
     public function directConfirm(Request $request, Clase $clase)
     {
         $planuser = PlanUser::where('start_date', '<=', Carbon::parse($clase->date))
-            ->where('finish_date', '>=', Carbon::parse($clase->date))
-            ->where('user_id', Auth::id())
-            ->whereIn('plan_status_id', [1, 3])
-            ->first();
+                            ->where('finish_date', '>=', Carbon::parse($clase->date))
+                            ->where('user_id', Auth::id())
+                            ->whereIn('plan_status_id', [PlanStatus::ACTIVO, PlanStatus::PRECOMPRA])
+                            ->first();
+
         if (!$planuser) {
             return $this->errorResponse('No tienes un plan que te permita tomar esta clase', 403);
         }
@@ -301,32 +302,14 @@ class ClaseController extends ApiController
     {
         $response = '';
         $clases = Clase::where('date', $clase->date)->where('clase_type_id', $clase->clase_type_id)->get();
+
         foreach ($clases as $clase) {
             $reservations = Reservation::where('user_id', Auth::id())->where('clase_id', $clase->id)->get();
             if (count($reservations) != 0) {
                 $response = 'Ya tiene una clase tomada este dia';
             }
         }
-        return $response;
-    }
 
-    /**
-     * [hasClase description]
-     *
-     * @param   [type]  $date  [$date description]
-     *
-     * @return  [type]         [return description]
-     */
-    private function hasClase($date)
-    {
-        $response = false;
-        $clases = Clases::where('date', $date)->get();
-        foreach ($clases as $clase) {
-            $reservations = Reservation::where('user_id', Auth::id())->where('clase_id', $clase->id)->get();
-            if (count($reservations) != 0) {
-                $response = true;
-            }
-        }
         return $response;
     }
 
