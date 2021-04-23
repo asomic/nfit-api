@@ -7,6 +7,7 @@ use App\Models\Clases\Clase;
 use Illuminate\Http\Request;
 use App\Models\Plans\PlanUser;
 use App\Models\Clases\ClaseType;
+use App\Models\Plans\PlanStatus;
 use App\Models\Clases\Reservation;
 use App\Models\Settings\Parameter;
 use App\Models\Plans\PlanUserStatus;
@@ -97,16 +98,27 @@ class ClaseController extends ApiController
         return $this->showAll($types);
     }
 
+    /**
+     *  [coming description]
+     *
+     * @return  [type]  [return description]
+     */
     public function coming()
     {
-
         $timezone = Parameter::value('timezone') ?? 'America/Santiago';
-        
+
         $clases = Auth::user()->clases->where('date', '>=', today($timezone)->format('Y-m-d'));
 
         return $this->showAll($clases);
     }
 
+    /**
+     * [users description]
+     *
+     * @param   Clase  $clase  [$clase description]
+     *
+     * @return  [type]         [return description]
+     */
     public function users(Clase $clase)
     {
         $users = $clase->users;
@@ -114,6 +126,13 @@ class ClaseController extends ApiController
         return $this->showAll($users, 200);
     }
 
+    /**
+     * [reservations description]
+     *
+     * @param   Clase  $clase  [$clase description]
+     *
+     * @return  [type]         [return description]
+     */
     public function reservations(Clase $clase)
     {
         $reservations = $clase->reservations;
@@ -180,6 +199,14 @@ class ClaseController extends ApiController
 
     }
 
+    /**
+     * [confirm description]
+     *
+     * @param   Request  $request  [$request description]
+     * @param   Clase    $clase    [$clase description]
+     *
+     * @return  [type]             [return description]
+     */
     public function confirm(Request $request, Clase $clase)
     {
         $reservation = Reservation::where('clase_id', $clase->id)->where('user_id', Auth::id())->first();
@@ -206,6 +233,14 @@ class ClaseController extends ApiController
         return $this->showOne($reservation->clase, 201);
     }
 
+    /**
+     * [directConfirm description]
+     *
+     * @param   Request  $request  [$request description]
+     * @param   Clase    $clase    [$clase description]
+     *
+     * @return  [type]             [return description]
+     */
     public function directConfirm(Request $request, Clase $clase)
     {
         $planuser = PlanUser::where('start_date', '<=', Carbon::parse($clase->date))
@@ -255,6 +290,13 @@ class ClaseController extends ApiController
 
     }
 
+    /**
+     * [hasReserve description]
+     *
+     * @param   [type]  $clase  [$clase description]
+     *
+     * @return  [type]          [return description]
+     */
     private function hasReserve($clase)
     {
         $response = '';
@@ -268,7 +310,13 @@ class ClaseController extends ApiController
         return $response;
     }
 
-
+    /**
+     * [hasClase description]
+     *
+     * @param   [type]  $date  [$date description]
+     *
+     * @return  [type]         [return description]
+     */
     private function hasClase($date)
     {
         $response = false;
@@ -323,15 +371,30 @@ class ClaseController extends ApiController
         return $response;
     }
 
+    /**
+     * [remove description]
+     *
+     * @param   Request  $request  [$request description]
+     * @param   Clase    $clase    [$clase description]
+     *
+     * @return  [type]             [return description]
+     */
     public function remove(Request $request, Clase $clase)
     {
-        $reservation = Reservation::where('clase_id', $clase->id)->where('user_id', Auth::id())->first();
-        if ($reservation == null) {
+        $reservation = Reservation::where('clase_id', $clase->id)
+                                    ->where('user_id', Auth::id())
+                                    ->first();
+
+        if (is_null($reservation)) {
             return $this->errorResponse('No puede votar una clase en la que no esta', 403);
         }
-        $planUser = Auth::user()->plan_users()->where('start_date', '<=', $clase->date)->where('finish_date', '>=', $clase->date) ->whereIn('plan_status_id', [1, 3])->first();
 
-        if(!$planUser){
+        $planUser = Auth::user()->plan_users()->where('start_date', '<=', $clase->date)
+                                ->where('finish_date', '>=', $clase->date)
+                                ->whereIn('plan_status_id', [PlanStatus::ACTIVO, PlanStatus::PRECOMPRA])
+                                ->first();
+
+        if (!$planUser) {
             return $this->errorResponse('no existe el plan', 403);
         }
 

@@ -33,7 +33,7 @@ class PlanUser extends Model
      *  @var  array
      */
     protected $dates = ['deleted_at','start_date', 'finish_date'];
-    
+
     /**
      * Massive assignment data
      *
@@ -66,7 +66,7 @@ class PlanUser extends Model
     //  *  Convert from UTC to user timezone
     //  *
     //  *  @param   String  $value
-    //  * 
+    //  *
     //  *  @return  Carbon\Carbon
     //  */
     // public function getStartDateAttribute($value)
@@ -80,7 +80,7 @@ class PlanUser extends Model
     //  *  Convert from UTC to user timezone
     //  *
     //  *  @param   String  $value
-    //  * 
+    //  *
     //  *  @return  Carbon\Carbon
     //  */
     // public function getFinishDateAttribute($value)
@@ -154,6 +154,6 @@ class PlanUser extends Model
      */
     public function planStatus()
     {
-        return $this->belongsTo(PlanStatus::class,'plan_status_id');
+        return $this->belongsTo(PlanStatus::class, 'plan_status_id');
     }
 }

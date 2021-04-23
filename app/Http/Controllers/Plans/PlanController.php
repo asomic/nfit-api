@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Plans;
 
-use App\Models\Plans\Plan;
-use App\Models\Plans\PlanUserFlow;
-use Illuminate\Http\Request;
-use App\Http\Controllers\ApiController;
-use Auth;
 use Carbon\Carbon;
+use App\Models\Plans\Plan;
+use Illuminate\Http\Request;
+use App\Models\Plans\PlanUserFlow;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\ApiController;
 
 class PlanController extends ApiController
 {
@@ -19,6 +19,7 @@ class PlanController extends ApiController
     public function index()
     {
         $plans = Plan::whereNotNull('plan_period_id')->where('custom',0)->get();
+
         return $this->showAll($plans);
     }
 
@@ -35,7 +36,8 @@ class PlanController extends ApiController
 
     public function dates(Plan $plan)
     {
-        $user_plan = Auth::user()->plan_users()->where('plan_status_id', '!=', 3)->orderBy('finish_date', 'desc')->first();
+        $user_plan = Auth::user()->plan_users()->where('plan_status_id', '!=', 3)
+                                                ->orderBy('finish_date', 'desc')->first();
 
         $start = Carbon::now();
         $end = Carbon::now();
@@ -72,18 +74,16 @@ class PlanController extends ApiController
 
     public function contract(Plan $plan)
     {
-
         $user_plan = Auth::user()->plan_users()->where('plan_status_id','!=',3)->orderBy('finish_date', 'desc')->first();
 
         $start = Carbon::now();
         $end = Carbon::now();
 
-        if($user_plan) {
-            if($user_plan->finish_date->addDay() > Carbon::now() ){
+        if ($user_plan) {
+            if ($user_plan->finish_date->addDay() > Carbon::now()) {
                 $start = $user_plan->finish_date->addDay();
                 $end = $user_plan->finish_date->addDay();
             }
-
         }
 
         switch ($plan->plan_period_id) {

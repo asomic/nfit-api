@@ -15,21 +15,24 @@ use App\Models\Clases\ReservationStatus;
  */
 class Reservation extends Model
 {
+    protected $with = ['clase'];
 
-  protected $with = ['clase'];
-  protected $dates = ['deleted_at'];
-  protected $fillable = ['clase_id', 'reservation_status_id', 'user_id', 'details'];
+    protected $dates = ['deleted_at'];
 
-  public $transformer = ReservationTransformer::class;
+    protected $fillable = ['clase_id', 'reservation_status_id', 'user_id', 'details'];
+
+    public $transformer = ReservationTransformer::class;
 
     /**
-     * [reservation_statistic_stages description]
-     * @method reservation_statistic_stages
-     * @return [model]                       [description]
+     *  [reservation_statistic_stages description]
+     *
+     *  @method reservation_statistic_stages
+     *
+     *  @return [model]                       [description]
      */
     public function reservation_statistic_stages()
     {
-      return $this->hasMany(ReservationStatisticStage::class);
+        return $this->hasMany(ReservationStatisticStage::class);
     }
 
     /**
@@ -38,20 +41,21 @@ class Reservation extends Model
      */
     public function user()
     {
-      return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class);
     }
 
     /**
-     * [clase description]
-     * @return [model] [description]
+     *  [clase description]
+     *
+     *  @return  [model] [description]
      */
     public function clase()
     {
-      return $this->belongsTo(Clase::class);
+        return $this->belongsTo(Clase::class);
     }
 
     public function status()
     {
-      return $this->belongsTo(ReservationStatus::class,'reservation_status_id');
+        return $this->belongsTo(ReservationStatus::class,'reservation_status_id');
     }
 }
