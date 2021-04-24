@@ -42,7 +42,7 @@ class ClaseController extends ApiController
      */
     public function week(ClaseType $clase_type)
     {
-        $timezone = Parameter::value('timezone') ?? 'America/Santiago';
+        $timezone = Auth::user()->timezone ?? 'America/Santiago';
         $week = [];
         $today = today($timezone);
         $date = $today;
@@ -105,7 +105,7 @@ class ClaseController extends ApiController
      */
     public function coming()
     {
-        $timezone = Parameter::value('timezone') ?? 'America/Santiago';
+        $timezone = Auth::user()->timezone ?? 'America/Santiago';
 
         $clases = Auth::user()->clases->where('date', '>=', today($timezone)->format('Y-m-d'));
 
@@ -122,7 +122,7 @@ class ClaseController extends ApiController
     public function users(Clase $clase)
     {
         $users = $clase->users;
-        //dd($users);
+
         return $this->showAll($users, 200);
     }
 
@@ -136,15 +136,16 @@ class ClaseController extends ApiController
     public function reservations(Clase $clase)
     {
         $reservations = $clase->reservations;
-        //dd($users);
+
         return $this->showAll($reservations, 200);
     }
 
     /**
-     * Display the specified resource.
+     *  Display the specified resource.
      *
-     * @param  \App\Models\Clases\Clase  $clase
-     * @return \Illuminate\Http\Response
+     *  @param  \App\Models\Clases\Clase   $clase
+     *  
+     *  @return \Illuminate\Http\Response
      */
     public function show(Clase $clase)
     {
@@ -152,9 +153,10 @@ class ClaseController extends ApiController
     }
 
     /**
-     * [reserve description]
-     * @param  Request $request [description]
-     * @return [instance]           [description]
+     *  [reserve description]
+     * 
+     *  @param   Request     $request  [description]
+     *  @return  [instance]            [description]
      */
     public function reserve(Request $request, Clase $clase)
     {
@@ -173,21 +175,32 @@ class ClaseController extends ApiController
         }
 
         $hasReserve = $this->hasReserve($clase);
-
         if ($hasReserve) {
             return $this->errorResponse($hasReserve, 403);
         }
 
-        $reservation = new Reservation;
-        $reservation->user_id = Auth::user()->id;
-        $reservation->clase_id = $clase->id;
-        $reservation->by_user = Auth::user()->id;
-        $reservation->reservation_status_id = 1;
-        $reservation->plan_user_id = $planuser->id;
+        $timezone = auth()->user()->timezone ?? 'UTC';
+        $dateTimeStart = Carbon::createFromFormat(
+            'Y-m-d H:i:s',
+            "{$clase->date->format('Y-m-d')} {$clase->start_at}",
+            $timezone
+        );
+
+        if (now($timezone) > $dateTimeStart) {
+            return $this->errorResponse('No puedes reservar, la clase ya comenzó.', 403);
+        }
 
         if (!in_array($planuser->plan->id, $clase->block->plans->pluck('id')->toArray())) {
             return $this->errorResponse('Tu plan no te deja tomar esta clase', 403);
         }
+
+        $reservation = new Reservation;
+        $reservation->user_id = Auth::id();
+        $reservation->clase_id = $clase->id;
+        $reservation->by_user = Auth::id();
+        $reservation->reservation_status_id = ReservationStatus::PENDIENTE;
+        $reservation->plan_user_id = $planuser->id;
+
 
         if ($reservation->save()) {
             $planuser->counter = $planuser->counter - 1;
@@ -196,37 +209,25 @@ class ClaseController extends ApiController
         } else {
             return $this->errorResponse('No se pudo tomar la clase', 400);
         }
-
     }
 
     /**
-     * [confirm description]
+     *  [confirm description]
      *
-     * @param   Request  $request  [$request description]
-     * @param   Clase    $clase    [$clase description]
+     *  @param   Request  $request  [$request description]
+     *  @param   Clase    $clase    [$clase description]
      *
-     * @return  [type]             [return description]
+     *  @return  [type]             [return description]
      */
     public function confirm(Request $request, Clase $clase)
     {
-        $reservation = Reservation::where('clase_id', $clase->id)->where('user_id', Auth::id())->first();
+        $reservation = Reservation::where('clase_id', $clase->id)
+                                    ->where('user_id', Auth::id())
+                                    ->first();
 
         if (!$reservation) {
             return $this->errorResponse('No puede confirmar una clase en la que no esta', 403);
         }
-
-        $start = $clase->start_at;
-        $dateTimeStringStart = $clase->date->format('Y-m-d') . " " . $start;
-        $timezone = auth()->user()->timezone ?? 'America/Santiago';
-        $dateTimeStart = Carbon::createFromFormat('Y-m-d H:i:s', $dateTimeStringStart, $timezone);
-
-        if (now($timezone) > $dateTimeStart) {
-            return $this->errorResponse('No puedes reservar, la clase ya comenzó.', 403);
-        }
-
-        // if (count($clase->users) >= $clase->quota) {
-        //     return $this->errorResponse('No puedes reservar, la clase esta llena.', 403);
-        // }
 
         $reservation->reservation_status_id = ReservationStatus::CONFIRMADA;
         $reservation->save();
@@ -301,7 +302,9 @@ class ClaseController extends ApiController
     private function hasReserve($clase)
     {
         $response = '';
-        $clases = Clase::where('date', $clase->date)->where('clase_type_id', $clase->clase_type_id)->get();
+        $clases = Clase::where('date', $clase->date)
+                            ->where('clase_type_id', $clase->clase_type_id)
+                            ->get();
 
         foreach ($clases as $clase) {
             $reservations = Reservation::where('user_id', Auth::id())->where('clase_id', $clase->id)->get();
@@ -364,6 +367,7 @@ class ClaseController extends ApiController
      */
     public function remove(Request $request, Clase $clase)
     {
+        $timezone = Auth::user()->timezone ?? 'UTC';
         $reservation = Reservation::where('clase_id', $clase->id)
                                     ->where('user_id', Auth::id())
                                     ->first();
@@ -381,9 +385,9 @@ class ClaseController extends ApiController
             return $this->errorResponse('no existe el plan', 403);
         }
 
-        if ($clase->date < toDay()->format('Y-m-d')) {
+        if ($clase->date < toDay($timezone)->format('Y-m-d')) {
             return $this->errorResponse('No puede votar una clase de un día anterior a hoy', 403);
-        } elseif ($clase->date > toDay()->format('Y-m-d')) {
+        } elseif ($clase->date > toDay($timezone)->format('Y-m-d')) {
             if ($reservation->delete()) {
                 $planUser->counter = $planUser->counter + 1;
                 $planUser->save();
@@ -424,8 +428,8 @@ class ClaseController extends ApiController
         );
 
         if (($clase->zoom_link !== null) &&
-            $start->lte(Carbon::now($authTimezone)->copy())  &&
-            $end->gte(Carbon::now($authTimezone)->copy())  &&
+            $start->lte(now($authTimezone)->copy())  &&
+            $end->gte(now($authTimezone)->copy())  &&
             $clase->authReservedThis()
         ) {
             $can_zoom = true;
@@ -433,7 +437,7 @@ class ClaseController extends ApiController
         }
 
         return response()->json([
-            'now' => Carbon::now($authTimezone)->copy(),
+            'now' => now($authTimezone)->copy(),
             'start' => $start,
             'end' => $end,
             'has' => $clase->authReservedThis(),
