@@ -99,9 +99,9 @@ class ClaseController extends ApiController
     }
 
     /**
-     *  [coming description]
+     * Undocumented function
      *
-     * @return  [type]  [return description]
+     * @return void
      */
     public function coming()
     {
