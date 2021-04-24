@@ -9,21 +9,12 @@ use Illuminate\Http\Request;
 use App\Models\Plans\PlanUser;
 use App\Models\Clases\ClaseType;
 use App\Models\Clases\Reservation;
+use App\Models\Settings\Parameter;
 use App\Http\Controllers\ApiController;
 use App\Models\Clases\ReservationStatus;
 
 class ClaseController extends ApiController
 {
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
 
     /**
      *  Undocumented function
@@ -34,7 +25,7 @@ class ClaseController extends ApiController
      */
     public function index(Request $request)
     {
-        $request->request->add(['sort_by_asc' => 'start','per_page' => 15]); //por ahora despues este request debe estar en la app cliente
+        $request->request->add(['sort_by_asc' => 'start', 'per_page' => 15]); //por ahora despues este request debe estar en la app cliente
 
         $clases = Clase::all();
 
@@ -82,6 +73,7 @@ class ClaseController extends ApiController
     public function historic()
     {
         $clases = Auth::user()->clases()->where('date', '<=', today())->get();
+
         return $this->showAll($clases);
     }
 
@@ -92,6 +84,11 @@ class ClaseController extends ApiController
         return  $this->showAll($types);
     }
 
+    /**
+     * Undocumented function
+     *
+     * @return void
+     */
     public function coming()
     {
         $clases = Auth::user()->clases->where('date', '>=', today());
@@ -349,30 +346,34 @@ class ClaseController extends ApiController
     // por mientras
     public function getZoom(Clase $clase)
     {
-        $timezone = auth()->user()->timezone ?? 'America/Santiago';
+        $authTimezone = auth()->user()->timezone ?? 'America/Santiago';
 
         $can_zoom = false;
         $zoom_link = null;
-        $now = Carbon::now($timezone)->copy();
 
-        $stringStart = $clase->date->format('Y-m-d') . " " . $clase->start_at;
-        $start = Carbon::createFromFormat('Y-m-d H:i:s', $stringStart, $timezone)->subMinutes(10);
-
-        $stringEnd = $clase->date->format('Y-m-d') . " " . $clase->finish_at;
-        $end = Carbon::createFromFormat('Y-m-d H:i:s', $stringEnd, $timezone);
+        $start = Carbon::createFromFormat(
+            'Y-m-d H:i:s',
+            "{$clase->date->format('Y-m-d')} {$clase->start_at}",
+            $authTimezone
+        )->subMinutes(10);
+            
+        $end = Carbon::createFromFormat(
+            'Y-m-d H:i:s',
+            "{$clase->date->format('Y-m-d')} {$clase->finish_at}",
+            $authTimezone
+        );
 
         if (($clase->zoom_link !== null) &&
-            $start->lte(Carbon::now($timezone)->copy())  &&
-            $end->gte(Carbon::now($timezone)->copy())  &&
+            $start->lte(Carbon::now($authTimezone)->copy())  &&
+            $end->gte(Carbon::now($authTimezone)->copy())  &&
             $clase->authReservedThis()
         ) {
             $can_zoom = true;
             $zoom_link = $clase->zoom_link;
         }
 
-        //test
         return response()->json([
-            'now' => $now,
+            'now' => Carbon::now($authTimezone)->copy(),
             'start' => $start,
             'end' => $end,
             'has' => $clase->authReservedThis(),

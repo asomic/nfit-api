@@ -20,7 +20,6 @@ class ClaseTransformer extends TransformerAbstract
     {
         $start = $clase->getOriginal('start_at');
         $end = $clase->getOriginal('finish_at');
-
         $timezone = auth()->user()->timezone ?? 'America/Santiago';
         $dateTimeStringStart = $clase->date->format('Y-m-d') . " " . $start;
         $dateTimeStringEnd = $clase->date->format('Y-m-d') . " " . $end;

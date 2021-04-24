@@ -3,8 +3,8 @@
 namespace App\Models\System;
 
 use Carbon\Carbon;
+use App\Models\Settings\Parameter;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Tenant\Settings\Parameter;
 
 /**
  *  OTHER TIMEZONES
@@ -110,6 +110,19 @@ class NfitTimeZone
         return $userTimezone->diffInHours($utc, false);
     }
 
+    /**
+     *  Calculate difference timwezone
+     *
+     *  @return  integer  Number of hours
+     */
+    public static function calculateTimezoneDifferenceForUser($timezoneName = 'UTC') {
+        $box_center_timezone = Parameter::value('timezone') ?? 'UTC';
+        $box_center_timezone = today($box_center_timezone)->copy(); 
+        
+        $userTimezone = Carbon::createMidnightDate(today()->year, today()->month, today()->day, $timezoneName);
+
+        return $userTimezone->diffInHours($box_center_timezone, false);
+    }
 
     /**
      *  Transform to an specific timezone an given date
@@ -135,6 +148,29 @@ class NfitTimeZone
 
 
     /**
+     *  Transform to an specific timezone an given date
+     *
+     *  @param  string   $date      '2001-01-01 00:00:00'
+     *  @param  string   $timezone  'America/Santiago'
+     *  @param  boolean  $to_utc    If its converts to date to UTC or date to Timezone
+     *
+     *  @return Carbon/Date
+     */
+    public static function convertDateTimeZoneForUser($time, $timezone, $to_utc = false)
+    {
+        $time = Carbon::parse($time);
+
+        $diff_hours = self::calculateTimezoneDifferenceForUser($timezone);
+
+        if ($diff_hours < 0) {
+            return $to_utc ? $time->addHours($diff_hours * -1) : $time->subHours($diff_hours * -1);
+        }
+
+        return $to_utc ? $time->subHours($diff_hours) : $time->addHours($diff_hours);
+    }
+
+
+    /**
      *  Adjust an specofic date, adding or removing hours
      *
      *  @param  string   $date      '2001-01-01 00:00:00'
@@ -146,6 +182,13 @@ class NfitTimeZone
         $timezone = Auth::user()->timezone ?? 'UTC';
 
         return self::convertDateTimeZone($date, $timezone, false);
+    }
+
+    public static function adjustToTimeZoneDateForUser($time)
+    {
+        $timezone = Auth::user()->timezone ?? 'UTC';
+
+        return self::convertDateTimeZoneForUser($time, $timezone, false);
     }
 
     /**
