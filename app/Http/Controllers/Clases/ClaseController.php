@@ -406,30 +406,34 @@ class ClaseController extends ApiController
     // por mientras
     public function getZoom(Clase $clase)
     {
-        $timezone = auth()->user()->timezone ?? 'America/Santiago';
+        $authTimezone = auth()->user()->timezone ?? 'America/Santiago';
 
         $can_zoom = false;
         $zoom_link = null;
-        $now = Carbon::now($timezone)->copy();
 
-        $stringStart = $clase->date->format('Y-m-d') . " " . $clase->start_at;
-        $start = Carbon::createFromFormat('Y-m-d H:i:s', $stringStart, $timezone)->subMinutes(10);
-
-        $stringEnd = $clase->date->format('Y-m-d') . " " . $clase->finish_at;
-        $end = Carbon::createFromFormat('Y-m-d H:i:s', $stringEnd, $timezone);
+        $start = Carbon::createFromFormat(
+            'Y-m-d H:i:s',
+            "{$clase->date->format('Y-m-d')} {$clase->start_at}",
+            $authTimezone
+        )->subMinutes(10);
+            
+        $end = Carbon::createFromFormat(
+            'Y-m-d H:i:s',
+            "{$clase->date->format('Y-m-d')} {$clase->finish_at}",
+            $authTimezone
+        );
 
         if (($clase->zoom_link !== null) &&
-            $start->lte(Carbon::now($timezone)->copy())  &&
-            $end->gte(Carbon::now($timezone)->copy())  &&
+            $start->lte(Carbon::now($authTimezone)->copy())  &&
+            $end->gte(Carbon::now($authTimezone)->copy())  &&
             $clase->authReservedThis()
         ) {
             $can_zoom = true;
             $zoom_link = $clase->zoom_link;
         }
 
-        //test
         return response()->json([
-            'now' => $now,
+            'now' => Carbon::now($authTimezone)->copy(),
             'start' => $start,
             'end' => $end,
             'has' => $clase->authReservedThis(),

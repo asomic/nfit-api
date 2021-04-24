@@ -97,7 +97,7 @@ class Clase extends Model
      */
     public function getStartAtAttribute($value)
     {
-        return NfitTimeZone::adjustToTimeZoneDate($value)->format('H:i:s');
+        return NfitTimeZone::adjustToTimeZoneDateForUser($value)->format('H:i:s');
     }
 
     /**
@@ -121,7 +121,7 @@ class Clase extends Model
      */
     public function getFinishAtAttribute($value)
     {
-        return NfitTimeZone::adjustToTimeZoneDate($value)->format('H:i:s');
+        return NfitTimeZone::adjustToTimeZoneDateForUser($value)->format('H:i:s');
     }
 
     /**
@@ -153,7 +153,7 @@ class Clase extends Model
      */
     public function authReservedThis()
     {
-        return Reservation::where('user_id', Auth::user()->id)
+        return Reservation::where('user_id', Auth::id())
                             ->where('clase_id', $this->id)
                             ->exists('id');
     }

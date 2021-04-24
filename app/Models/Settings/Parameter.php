@@ -40,5 +40,5 @@ use Hyn\Tenancy\Traits\UsesTenantConnection;
  */
 class Parameter extends Model
 {
-	use UsesTenantConnection;
+    
 }
