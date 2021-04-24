@@ -74,7 +74,7 @@ class FlowController extends Controller
       }
 
 
-      if($paymentData['date']==null){
+      if ($paymentData['date'] == null) {
         $planUserflow->paid = 3;
         $planUserflow->observations = 'Error fecha desde flow. Posiblemente error en el pago';
         $planUserflow->save();

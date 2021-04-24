@@ -27,7 +27,8 @@ class ClientController extends Controller
 
     public function getDomain($email)
     {
-        $boxUser = DB::table('box_users')->whereNull('deleted_at')->where('email',$email)->latest()->first();
+        $boxUser = DB::table('box_users')->whereNull('deleted_at')->where('email', $email)->latest()->first();
+
         return response()->json(['domain' => $boxUser->domain ]);
     }
 }

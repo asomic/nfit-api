@@ -7,10 +7,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class PlanStatus extends Model
 {
-  protected $table = 'plan_status';
+	/** ID status Plan */
+	const ACTIVO = 1;
+	const CONGELADO = 2;
+	const PRECOMPRA = 3;
+	const COMPLETADO = 4;
+	const CANCELADO = 5;
 
-  public function plans()
-  {
-      return $this->hasMany(Plan::class);
-  }
+    protected $table = 'plan_status';
+
+    public function plans()
+    {
+        return $this->hasMany(Plan::class);
+    }
 }

@@ -12,11 +12,8 @@ use App\Models\Plans\PlanUser;
 use App\Models\Users\Emergency;
 use App\Models\Users\Millestone;
 use App\Models\Users\Role;
-use App\Models\Users\RoleUser;
-use App\Models\Users\StatusUser;
 use App\Notifications\MyResetPassword;
 use App\Transformers\UserTransformer;
-use Freshwork\ChileanBundle\Rut;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -30,12 +27,15 @@ class User extends Authenticatable
     use HasApiTokens, Notifiable, SoftDeletes;
 
     protected $fillable = [
-      'rut', 'first_name', 'last_name',
-      'birthdate', 'gender', 'email',
-      'address', 'password', 'phone',
-      'emergency_id', 'status_user', 'tutorial'];
+        'rut', 'first_name', 'last_name', 'birthdate',
+        'gender', 'email', 'address', 'password', 'phone',
+        'emergency_id', 'status_user', 'tutorial'
+    ];
+
     protected $hidden = ['password', 'remember_token'];
+
     protected $dates = ['deleted_at'];
+
     protected $appends = ['full_name'];
 
     public $transformer = UserTransformer::class;
@@ -69,7 +69,7 @@ class User extends Authenticatable
      */
     public function hasRole($role)
     {
-        return $this->role === role;
+        return $this->role === $role;
     }
 
     /**
@@ -100,14 +100,14 @@ class User extends Authenticatable
     }
 
     /**
-    * [clases description]
-    * @return [type] [description]
-    */
+     *  Get all the clases of this User through reservations table
+     *
+     *  @return  belongsToMany
+     */
     public function clases()
     {
-      //return $this->belongsToMany(Clase::Class)->using(Reservation::class);
-        return $this->belongsToMany(Clase::Class, 'reservations', 'user_id')->withPivot('reservation_status_id');
-      //return $this->hasManyThrough(Clase::Class, Reservation::class);
+        return $this->belongsToMany(Clase::class, 'reservations', 'user_id')
+                    ->withPivot('reservation_status_id');
     }
 
     /**
