@@ -71,12 +71,12 @@ class Wod extends Model
      *  Undocumented function
      *
      *  @param   int   $id
-     * 
+     *
      *  @return  void
      */
     public function stage($id)
     {
-        return $this->hasMany(Stage::class)->where('stage_type_id',$id)->first() ?? null;
+        return $this->hasMany(Stage::class)->where('stage_type_id', $id)->first() ?? null;
     }
 
     /**

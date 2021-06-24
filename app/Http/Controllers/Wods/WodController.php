@@ -2,13 +2,9 @@
 
 namespace App\Http\Controllers\Wods;
 
-use Auth;
-use Session;
 use App\Models\Wods\Wod;
-use App\Models\Wods\Stage;
-use Illuminate\Http\Request;
-use App\Models\Wods\StageType;
 use App\Models\Users\StatusUser;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ApiController;
 
 class WodController extends ApiController
@@ -20,10 +16,14 @@ class WodController extends ApiController
      */
     public function today()
     {
+        $todayTimezoned = Auth::user()->timezone ?? 'America/Santiago';
+
         if ((int) Auth::user()->status_user !== StatusUser::INACTIVO) {
-            $wods = Wod::where('date', today())->get();
+            $wods = Wod::where('date', today($todayTimezoned))->get();
+
             return $this->showAll($wods);
         }
+
         return $this->showAll(collect());
     }
 
@@ -31,7 +31,7 @@ class WodController extends ApiController
      *  Undocumented function
      *
      *  @param  Wod  $wod
-     * 
+     *
      *  @return  void
      */
     public function show(Wod $wod)
@@ -42,13 +42,12 @@ class WodController extends ApiController
     /**
      *  Undocumented function
      *
-     *  @param Wod $wod
-     * 
-     *  @return void
+     *  @param  Wod  $wod
+     *
+     *  @return  json
      */
     public function stages(Wod $wod)
     {
-        $stages = $wod->stages;
-        return $this->showAll($stages, 200);
+        return $this->showAll($wod->stages, 200);
     }
 }
