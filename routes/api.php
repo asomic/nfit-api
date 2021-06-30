@@ -111,3 +111,7 @@ Route::post(
     'oauth/token',
     '\Laravel\Passport\Http\Controllers\AccessTokenController@issueToken'
 )->middleware('tenancy.enforce');
+
+Route::get('hola', function() {
+    return 'holoalalal';
+});
