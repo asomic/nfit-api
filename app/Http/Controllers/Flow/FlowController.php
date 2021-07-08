@@ -101,6 +101,7 @@ class FlowController extends Controller
           $bill = new Bill;
           $bill->payment_type_id = 6;
           $bill->plan_user_id = $planUser->id;
+          $bill->user_id = $planUserflow->user_id;
           $bill->date = today();
           $bill->start_date = $planUser->start_date;
           $bill->finish_date = $planUser->finish_date;
@@ -176,6 +177,7 @@ class FlowController extends Controller
           $bill = new Bill;
           $bill->payment_type_id = 6;
           $bill->plan_user_id = $planUser->id;
+          $bill->user_id = $planUserflow->user_id;
           $bill->date = today();
           $bill->start_date = $planUser->start_date;
           $bill->finish_date = $planUser->finish_date;
