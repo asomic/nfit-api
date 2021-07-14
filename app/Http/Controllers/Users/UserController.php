@@ -119,7 +119,10 @@ class UserController extends ApiController
      */
     public function actualPlan()
     {
-        $user_plan = Auth::user()->plan_users()->where('plan_status_id','!=',3)->orderBy('finish_date', 'desc')->first();
+        $user_plan = Auth::user()->plan_users()
+                                ->where('plan_status_id','!=',3)
+                                ->orderBy('finish_date', 'desc')
+                                ->first();
 
         return $this->showOne($user_plan, 200);
     }

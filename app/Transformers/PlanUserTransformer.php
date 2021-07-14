@@ -14,15 +14,14 @@ class PlanUserTransformer extends TransformerAbstract
      */
     public function transform(PlanUser $planuser)
     {
-         //dd($planuser->planStatus->plan_status);
         $hasBill = false;
         $bill_id = '--';
         $bill_date = '--';
         $bill_method = '--';
         $bill_detail = '--';
         $bill_amount = '--';
-        if($planuser->bill)
-        {
+
+        if ($planuser->bill) {
           $hasBill = true;
           $bill_id = $planuser->bill->id;
           $bill_date = $planuser->bill->date->format('d-m-Y');
@@ -38,59 +37,50 @@ class PlanUserTransformer extends TransformerAbstract
         $period = '';
         $periodId = 0;
         $hasPeriod = false;
-        if($planuser->plan->plan_period)
-        {
+        if ($planuser->plan->plan_period) {
             $period = $planuser->plan->plan_period->period;
             $hasPeriod = true;
             $periodId =$planuser->plan->plan_period_id;
         }
         $canContract = true;
-        if(!$planuser->plan->plan_period || $planuser->plan->custom == 1)
-        {
+        if (!$planuser->plan->plan_period || $planuser->plan->custom == 1) {
             $canContract = false;
         }
 
-
-
         return [
-            'id' => (int)$planuser->id,
-            'start' => (string)$planuser->start_date,
-            'end' => (string)$planuser->finish_date,
-            'inicio' => (string) ucfirst(strftime('%A %d de %B, %Y', $planuser->finish_date->timestamp)),
+            'id'          => (int) $planuser->id,
+            'start'       => (string) $planuser->start_date,
+            'end'         => (string) $planuser->finish_date,
+            'inicio'      => (string) ucfirst(strftime('%A %d de %B, %Y', $planuser->start_date->timestamp)),
             'vencimiento' => (string) ucfirst(strftime('%A %d de %B, %Y', $planuser->finish_date->timestamp)),
-            // 'vencimiento' => (string)ucfirst($planuser->finish_date->formatLocalized('%A %d')).' de '.ucfirst($planuser->finish_date->formatLocalized('%B, %Y')) ,
-            // 'inicio' => (string)ucfirst($planuser->start_date->formatLocalized('%A %d')).' de '.ucfirst($planuser->start_date->formatLocalized('%B, %Y')) ,
-            'counter' => (string) $planuser->counter,
+            'counter'     => (string) $planuser->counter,
             'canContract' => (boolean) $canContract,
-            'status' => [
-                'id' => (string) $planuser->plan_status_id,
-                'name' => (string) $planuser->planStatus->plan_status,
+            'status'      => [
+                'id'    => (string) $planuser->plan_status_id,
+                'name'  => (string) $planuser->planStatus->plan_status,
                 'class' => (string) $planuser->planStatus->type,
             ],
-
-            'rels' => [
+            'rels'        => [
                 'user' => [
                   'user_id' => $planuser->user->id,
                 ],
                 'plan' => [
-                    'id' => (int)$planuser->plan_id,
-                    'name' => (string)$planuser->plan->plan,
+                    'id'        => (int)$planuser->plan_id,
+                    'name'      => (string)$planuser->plan->plan,
                     'hasPeriod' => (boolean)$hasPeriod,
-                    'period' => (string)$period,
+                    'period'    => (string)$period,
                     'period_id' => (int)$periodId,
-                    'amount' => (string)'$'.number_format($planuser->plan->amount, 0, ',', '.'),
+                    'amount'    => (string)'$'.number_format($planuser->plan->amount, 0, ',', '.'),
                   ],
                 'bill' => [
-                  'has' => (bool)$hasBill,
-                  'id' => (string)$bill_id,
+                  'has'    => (bool)$hasBill,
+                  'id'     => (string)$bill_id,
                   'method' => (string)$bill_method,
-                  'date' => (string)$bill_date,
+                  'date'   => (string)$bill_date,
                   'detail' => (string)$bill_detail,
                   'amount' => (string)  $bill_amount,
-
                 ],
             ],
-            //
         ];
     }
 
@@ -102,11 +92,11 @@ class PlanUserTransformer extends TransformerAbstract
     public static function originalAttribute($index)
     {
         $attributes = [
-            'id' => 'id',
-            'start' => 'start_date',
-            'end' => 'finish_date',
+            'id'      => 'id',
+            'start'   => 'start_date',
+            'end'     => 'finish_date',
             'counter' => 'counter',
-            'status' => 'plan_status_id',
+            'status'  => 'plan_status_id',
         ];
 
         return isset($attributes[$index]) ? $attributes[$index] : null;
@@ -120,10 +110,10 @@ class PlanUserTransformer extends TransformerAbstract
     public static function transformedAttribute($index)
     {
         $attributes = [
-            'id' => 'id',
-            'start_date' => 'start',
-            'finish_date' => 'end',
-            'counter' => 'counter',
+            'id'             => 'id',
+            'start_date'     => 'start',
+            'finish_date'    => 'end',
+            'counter'        => 'counter',
             'plan_status_id' => 'status',
         ];
 
