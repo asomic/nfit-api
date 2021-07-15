@@ -70,7 +70,7 @@ class ClaseTransformer extends TransformerAbstract
                     'stages' => route('wods.stages', ['wod' => (int) $clase->wod_id])
                 ],
                 'reservations' => [
-                    'count'        => (int)count($clase->users),
+                    'count'        => (int) count($clase->users),
                     'prueba_count' => $pruebaCount ?? 0,
                     'href'         => route('clases.reservations', ['clase' => (int) $clase->id])
                 ],

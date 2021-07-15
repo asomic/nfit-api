@@ -8,6 +8,7 @@ use App\Models\Clases\Block;
 use App\Models\Clases\Clase;
 use App\Models\Clases\Reservation;
 use App\Models\Plans\Plan;
+use App\Models\Plans\PlanStatus;
 use App\Models\Plans\PlanUser;
 use App\Models\Users\Emergency;
 use App\Models\Users\Millestone;
@@ -170,15 +171,15 @@ class User extends Authenticatable
     }
 
     /**
-    * metodo  para obtener el plan activo del usuario
-    * @return [type] [description]
+    *  metodo  para obtener el plan activo del usuario
+    *
+    *  @return [type] [description]
     */
     public function active_planuser()
     {
-      $active = PlanUser::where('user_id', $this->id)
-                          ->where('plan_status_id', 1)
-                          ->first();
-      return $active;
+        return PlanUser::where('user_id', $this->id)
+                        ->where('plan_status_id', PlanStatus::ACTIVO)
+                        ->first();
     }
 
     // public function actual_planuser()

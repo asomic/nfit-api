@@ -5,6 +5,7 @@ namespace App\Models\Clases;
 use Carbon\Carbon;
 use App\Models\Users\User;
 use App\Models\Exercises\Stage;
+use App\Models\Plans\PlanStatus;
 use App\Models\Clases\Reservation;
 use App\Models\System\NfitTimeZone;
 use Illuminate\Support\Facades\Auth;
@@ -170,10 +171,11 @@ class Clase extends Model
 
         $clases = Clase::where('date', $this->date)->pluck('id');
         $auth_reservations = $user->reservations()->whereIn('clase_id', $clases)->get();
+
         $auth_plan = Auth::user()->active_planuser();
 
         foreach ($auth_reservations as $res) {
-            if($clase_type->id == $res->clase->clase_type_id ) {
+            if ($clase_type->id == $res->clase->clase_type_id ) {
                 return false;
             }
         }
@@ -209,19 +211,21 @@ class Clase extends Model
 
 
 
-        $planUser = Auth::user()->plan_users()->where('start_date', '<=', $this->date)
-                                                ->where('finish_date', '>=', $this->date)
-                                                ->whereIn('plan_status_id', [1, 3])
-                                                ->first();
-                                                if ($planUser) {
-        if(count($auth_reservations) >= $planUser->plan->daily_clases) {
+        $planUser = Auth::user()->plan_users()
+                                ->where('start_date', '<=', $this->date)
+                                ->where('finish_date', '>=', $this->date)
+                                ->whereIn('plan_status_id', [PlanStatus::ACTIVO, PlanStatus::PRECOMPRA])
+                                ->first();
+        if ($planUser) {
+            if (count($auth_reservations) >= $planUser->plan->daily_clases) {
                 return false;
             }
             if (!$this->block) {
                 return false;
+
             }
             $ids = $this->block->getPlansIdAttribute()->toArray();
-
+            
             // dd($planUser->counter);
             if((in_array($planUser->plan_id, $ids)) && ($planUser->counter > 0 ) ) {
                 return true;
